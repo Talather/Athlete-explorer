@@ -1,24 +1,13 @@
-
 import { Routes, Route, Link } from 'react-router-dom'
 
-
-function Navbar() {
+function Navbar () {
   return (
     <div className='navbar'>
-      <div className='logo'>
-
-
-
-
-        <nav>
-  <Link to='/page'>Athlete Explorer</Link>
-</nav>
-
-       
-
-
-
-        </div>
+      <nav>
+        <Link to='/page'>
+          <div className='logo'>Athlete Explorer </div>
+        </Link>
+      </nav>
     </div>
   )
 }
