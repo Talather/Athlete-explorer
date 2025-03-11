@@ -7,7 +7,7 @@ function RightSection ({ isExpanded, selectedEvent, onClose }) {
             ×
           </div>
           <h2>{selectedEvent?.title}</h2>
-          <p>{selectedEvent?.content}</p>
+          <p>{selectedEvent?.description}</p>
         </>
       ) : (
         <>

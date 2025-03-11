@@ -9,7 +9,7 @@ function AthleteDetails ({ athlete, events, onEventClick, isBlurred }) {
               <p>{athlete.description}</p>
             </div>
             <video autoPlay muted loop>
-              <source src={'https://nargvalmcrunehnemvpa.supabase.co/storage/v1/object/sign/Athlete/AQP7fVnWSGc0z-v1SIiWeU-dA5xtUXnJlJwiuwtnFzCYUlV3VV26KSVTsTjVg4SAFZsxqikhCP3NAy1xFepscdEv.mp4?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJBdGhsZXRlL0FRUDdmVm5XU0djMHotdjFTSWlXZVUtZEE1eHRVWG5KbEp3aXV3dG5GekNZVWxWM1ZWMjZLU1ZUc1RqVmc0U0FGWnN4cWlraENQM05BeTF4RmVwc2NkRXYubXA0IiwiaWF0IjoxNzQxNTk3MDE0LCJleHAiOjE3NDIyMDE4MTR9.Y3kXf_gVqVrRe9tT4nJ-zXLxBixkPd6gP_pY3ELuhkc'} type='video/mp4' />
+              <source src={athlete.video_url} type='video/mp4' />
             </video>
           </>
         ) : (

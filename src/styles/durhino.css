@@ -1,0 +1,331 @@
+
+
+/* 🌐 Global Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #fafafa;
+  color: #1d1d1f;
+  line-height: 1.6;
+}
+
+/* 📦 Page Container */
+.durinho-wrapper {
+  width: 100%;
+  /* padding: 0; */
+  /* margin: 0; */
+}
+
+.durinho-container {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: 05px;
+  padding-left: 10px;
+  padding-right: 10px;
+  /* padding-top:0px; */
+  /* max-width: 1400px; */
+  margin: 0 ;
+}
+
+/* === Left === */
+.durinho-left {
+  flex: 1 1 50%;
+  min-width: 220px;
+  position: relative;
+}
+
+.video-wrapper {
+  position: relative;
+  border-radius: 36px;
+  overflow: hidden;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  margin-bottom: 16px;
+  margin-left:8px;
+  width: 98%;
+  height: 64vh;
+}
+
+.video-wrapper iframe {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 16/9;
+  border: none;
+  display: block;
+}
+
+.timer-overlay {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: 20px;
+}
+
+.tokens-left {
+  font-size: 22px;
+  font-style: normal ;
+  font-weight: 400;
+  margin-bottom: 20px;
+  margin-left: 13px;
+  color: #1d1d1f;
+}
+
+.token-bar {
+  height: 17px;
+  width: 90%;
+  background: #ffffff;
+  border-radius: 10px;
+  border: #e99289 1px solid;
+  overflow: hidden;
+  margin-top: 1px;
+}
+
+.token-bar .filled {
+  height: 100%;
+  background: linear-gradient(to right, #e99289, #7e7cda);
+  border-radius: 10px;
+  transition: width 0.3s ease-in-out;
+}
+
+/* === Right === */
+.durinho-right {
+  flex: 1 1 49%;
+  /* background: red; */
+  border-radius: 16px;
+  padding: 0px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  justify-content:space-between;
+  flex-wrap: wrap;
+}
+
+.pMain{
+   display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+
+}
+
+.profile img {
+  width: 81px;
+  height: 81px;
+  border-radius: 50%;
+}
+
+.profile .label {
+  font-size: 15px;
+  color: #777;
+}
+
+.publish {
+  /* text-align: right; */
+  display: flex;
+  flex-direction: column;
+  font-size: 15px;
+}
+
+.publish strong {
+  font-size: 26px;
+}
+
+
+.name-block{
+  align-items: center;
+ 
+}
+.name-block h3 {
+  text-align: center;
+  margin-bottom: 0px;
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.name-block p {text-align: center;
+  font-size: 17px;
+  color: #717071;
+}
+
+
+
+
+
+
+
+
+.token-info {
+  display: flex;
+  justify-content: space-around;
+  /* gap: 10px; */
+  flex-wrap: wrap;
+}
+
+.token-info p{
+  font-size: 27px;
+  /* color: #717071; */
+}
+
+.token-info p{
+  font-size: 17px;
+  color: #717071;
+}
+
+.price {
+  font-size: 28px;
+  text-align: center;
+  color: #a75eff;
+  font-weight: bold;
+}
+
+.buy-durinho {
+  
+  padding: 12px;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  background: linear-gradient(to right, #fff, #fff) padding-box,
+              linear-gradient(to right, #e070ff, #a3a1ff) border-box;
+  color: #a75eff;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.buy-durinho:hover {
+  background: linear-gradient(to right, #f7f7f7, #f7f7f7) padding-box,
+              linear-gradient(to right, #e070ff, #a3a1ff) border-box;
+}
+
+.faq-section {
+  margin-top: 10px;
+}
+
+.faq-item {
+  background: #f9f9f9;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.faq-question {
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+  background: white;
+}
+
+.faq-answer {
+  padding: 0 16px 16px;
+  font-size: 14px;
+  color: #555;
+}
+
+/* === Responsive === */
+@media (max-width: 768px) {
+  .durinho-container {
+    flex-direction: column;
+    padding: 16px;
+  }
+
+  .token-info {
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+  }
+
+  .profile {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .publish {
+    text-align: left;
+  }
+}
+
+@media (max-width: 480px) {
+  .durinho-right {
+    padding: 20px;
+  }
+
+  .buy-durinho {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .price {
+    font-size: 24px;
+  }
+}
+
+
+
+.header {
+  background: linear-gradient(to right, #e99289, #9352ee);
+  /* padding: 23px 20px; */
+  height: 90px;
+  /* border-radius: 20px; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3vw;
+  gap: 16px;
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.header h1 {
+  font-size: 2.9vw;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.header-logo {
+  width: 100%;
+  height: 50px;
+  border-radius: 12px;
+  object-fit: cover;
+  align-items: center;
+  justify-content: center;
+  float: center;
+  text-align: center;
+  justify-items: center;
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .header {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .header h1 {
+    font-size: 22px;
+  }
+}
