@@ -1,7 +1,8 @@
 function Navbar () {
   return (
     <div className='navbar'>
-      <div className='logo'>Athlete Explorer</div>
+      <div className='logo'>
+        <a href='/page'>Athlete Explorer</a></div>
     </div>
   )
 }
