@@ -1,4 +1,6 @@
-function StickyBar () {
+import { Routes, Route, Link } from 'react-router-dom'
+
+function StickyBar() {
   return (
     <div className='sticky-bar'>
       <div className='menu-item'>
@@ -6,7 +8,9 @@ function StickyBar () {
       </div>
       <div className='separator'></div>
       <div className='menu-item'>
-        <i className='fas fa-coins'></i> FTO
+         <Link to='/page'>
+          <i className='fas fa-coins'></i> FTO
+          </Link>
       </div>
       <div className='separator'></div>
       <div className='menu-item'>
