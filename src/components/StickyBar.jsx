@@ -2,6 +2,7 @@ import { Routes, Route, Link } from 'react-router-dom'
 
 function StickyBar() {
   return (
+    <div className='bottom-bar-wrapper'>
     <div className='sticky-bar'>
       <div className='menu-item'>
         <i className='fas fa-house'></i> Home
@@ -24,7 +25,7 @@ function StickyBar() {
       <div className='menu-item'>
         <i className='fa fa-question-circle'></i> Help
       </div>
-    </div>
+    </div></div>
   )
 }
 

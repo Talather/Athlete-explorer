@@ -12,7 +12,7 @@ body {
 .navbar {
   width: 100%;
   background-color: #ffffff;
-  padding: 15px;
+  padding: 1px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -20,9 +20,10 @@ body {
 }
 
 .navbar .logo {
-  font-size: 24px;
+  /* font-size: 24px;
   font-weight: bold;
-  color: #000;
+  color: #000; */
+  margin-top:5px ;
 }
 
 /* Layout */
@@ -112,6 +113,7 @@ body {
 .content-section {
   width: 50%;
   padding: 20px;
+  /* padding-bottom: z; */
   overflow-y: auto;
   height: 100%;
   box-sizing: border-box;
@@ -133,7 +135,7 @@ body {
 }
 
 .athlete-details.expanded {
-  height: 200px;
+  height: 280px;
 }
 
 .athlete-details video {
@@ -167,8 +169,16 @@ body {
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
   margin-bottom: 15px;
+  /* margin-top: 15px; */
   cursor: pointer;
   transition: background-color 0.3s ease;
+}
+
+.athlete-loader {
+  text-align: center;
+  font-size: 18px;
+  padding: 30px;
+  color: #555;
 }
 
 .event-block:hover {
@@ -197,12 +207,14 @@ body {
 
 .right-section .close-btn {
   position: absolute;
-  top: 10px;
-  left: 10px;
-  font-size: 24px;
+  top: 0px;
+  /* left: 2px; */
+  right:15px;
+  font-size: 34px;
   color: #000000;
   cursor: pointer;
   display: none;
+  margin-bottom: 20px !important;
 }
 
 .right-section.expanded .close-btn {
@@ -210,7 +222,7 @@ body {
 }
 
 /* Sticky Bar */
-.sticky-bar {
+/* .sticky-bar {
   position: fixed;
   bottom: 0;
   left: 0;
@@ -224,7 +236,33 @@ body {
   border-top: 2px solid #333;
   z-index: 100;
   width: 100%;
+} */
+
+
+
+
+
+
+.bottom-bar-wrapper {
+  position: relative;
+  height: auto;
 }
+
+.sticky-bar {
+  position: sticky;
+  bottom: 0;
+  background-color: #eeeeee;
+  color: #1d1d1f;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px 20px;
+  margin-bottom: 5px;
+  border-top: 2px solid #333;
+  z-index: 100;
+  width: 100%;
+}
+
 
 .sticky-bar .menu-item {
   display: flex;
@@ -417,6 +455,7 @@ body {
   .event-block h3,
   .athlete-details .content h2 {
     font-size: 18px;
+    /* padding: 20px; */
   }
 
   .sticky-bar {
@@ -476,6 +515,7 @@ body {
   }
 
   .event-block {
+    margin-top: 20px;
     padding: 12px;
   }
 
@@ -537,4 +577,53 @@ body {
     transform: translateY(0);
     opacity: 1;
   }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.menu-item a {
+  text-decoration: none; /* Removes underline */
+  color: inherit;         /* Inherits color from parent (.menu-item) */
+}
+
+.menu-item a:visited {
+  color: inherit; /* Remove purple visited color */
 }

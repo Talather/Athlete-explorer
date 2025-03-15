@@ -1,50 +1,4 @@
-// function Footer () {
-//   return (
-//     <footer className='footer'>
-//       <div className='footer-content'>
-//         <div className='footer-left'>
-//           <a href='https://twitter.com' target='_blank' rel='noreferrer'>
-//             <i className='fab fa-twitter'></i>
-//           </a>
-//         </div>
-
-//         <div className='footer-center'>
-//           <p>Every day is a fan's day</p>
-//         </div>
-
-//         <div className='footer-right'>
-//           <a href='#'>Terms and Conditions</a>
-//           <a href='#'>Privacy Policy</a>
-//         </div>
-//       </div>
-
-//       <div className='footer-bottom'>
-//         <p>© 2023 FansDay | All rights reserved</p>
-//       </div>
-//     </footer>
-//   )
-// }
-
-// export default Footer
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+import { FaXTwitter, FaInstagram, FaDiscord } from 'react-icons/fa6'
 
 import React from 'react'
 import './footer-styles.css'
@@ -53,12 +7,13 @@ const Footer = () => {
   const currentYear = new Date().getFullYear()
 
   return (
-    <div className='footer' id='footer' style={{backgroundColor:'#f5f5f7'}}>
+    <div className='footer' id='footer' style={{ backgroundColor: '#f5f5f7' }}>
       <div className='card grey-bkg'>
         <div className='footer-area'>
           {/* Social Links */}
+
           <div className='social-links-grid _5vw-margin'>
-            <a
+            {/* <a
               href='https://twitter.com/fansdayofficial'
               target='_blank'
               rel='noopener noreferrer'
@@ -70,7 +25,39 @@ const Footer = () => {
                 width='20'
                 loading='lazy'
               />
-            </a>
+            </a> */}
+
+            <div className='social-icons'>
+              {/* X (Twitter) */}
+              <a
+                href='https://twitter.com/yourprofile'
+                target='_blank'
+                rel='noopener noreferrer'
+                aria-label='X'
+              >
+                <FaXTwitter />
+              </a>
+
+              {/* Instagram */}
+              <a
+                href='https://instagram.com/yourprofile'
+                target='_blank'
+                rel='noopener noreferrer'
+                aria-label='Instagram'
+              >
+                <FaInstagram />
+              </a>
+
+              {/* Discord */}
+              <a
+                href='https://discord.gg/yourserver'
+                target='_blank'
+                rel='noopener noreferrer'
+                aria-label='Discord'
+              >
+                <FaDiscord />
+              </a>
+            </div>
           </div>
 
           {/* Tagline */}
@@ -82,7 +69,7 @@ const Footer = () => {
               Terms and Conditions
             </a>
             <a href='privacy-policy.html' className='footer-link normal ml-2'>
-              Privacy Policy
+              Cookies Policy
             </a>
           </div>
         </div>
@@ -144,4 +131,3 @@ const Footer = () => {
 }
 
 export default Footer
-

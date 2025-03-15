@@ -3,11 +3,13 @@ function RightSection ({ isExpanded, selectedEvent, onClose }) {
     <div className={`right-section ${isExpanded ? 'expanded' : ''}`}>
       {isExpanded ? (
         <>
-          <div className='close-btn' onClick={onClose}>
+          <div className='close-btn'  onClick={onClose}>
             ×
           </div>
-          <h2>{selectedEvent?.title}</h2>
-          <p>{selectedEvent?.description}</p>
+          <div>
+          <h2 >{selectedEvent?.title}</h2>
+            <p>{selectedEvent?.description}</p>
+            </div>
         </>
       ) : (
         <>

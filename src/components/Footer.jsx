@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { FaXTwitter, FaInstagram, FaDiscord } from 'react-icons/fa6'
 
 function Footer () {
   useEffect(() => {
@@ -41,7 +42,7 @@ function Footer () {
         </div>
         <div className='social-links'>
           <h3>Follow Us</h3>
-          <div className='social-icons'>
+          {/* <div className='social-icons'>
             <a href='#'>
               <i className='fab fa-instagram'></i>
             </a>
@@ -56,6 +57,37 @@ function Footer () {
             </a>
             <a href='#'>
               <i className='fab fa-tiktok'></i>
+            </a>
+          </div> */}
+           <div className='social-icons'>
+            {/* X (Twitter) */}
+            <a
+              href='https://twitter.com/yourprofile'
+              target='_blank'
+              rel='noopener noreferrer'
+              aria-label='X'
+            >
+              <FaXTwitter />
+            </a>
+          
+            {/* Instagram */}
+            <a
+              href='https://instagram.com/yourprofile'
+              target='_blank'
+              rel='noopener noreferrer'
+              aria-label='Instagram'
+            >
+              <FaInstagram />
+            </a>
+          
+            {/* Discord */}
+            <a
+              href='https://discord.gg/yourserver'
+              target='_blank'
+              rel='noopener noreferrer'
+              aria-label='Discord'
+            >
+              <FaDiscord />
             </a>
           </div>
         </div>

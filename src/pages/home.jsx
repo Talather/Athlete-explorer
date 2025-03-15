@@ -57,6 +57,7 @@ function Home () {
           isBlurred={isExpanded}
         />
         <AthleteDetails
+          key={selectedAthlete?.id}
           athlete={selectedAthlete}
           events={events}
           onEventClick={handleEventClick}

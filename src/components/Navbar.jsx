@@ -4,7 +4,7 @@ function Navbar () {
     <div className='navbar'>
       <nav>
        
-          <div className='logo'>Athlete Explorer </div>
+        <div className='logo'><img style={{ height:'80px',width:'80px'}} src={'/sixer.gif'}></img></div>
        
       </nav>
     </div>
