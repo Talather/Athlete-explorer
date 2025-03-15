@@ -61,7 +61,10 @@ const Footer = () => {
           </div>
 
           {/* Tagline */}
-          <p className='paragraph bold black'>Every day is a fan's day</p>
+          <p className='' style={{ fontFamily: 'Nexa, sans-serif',
+    fontWeight: 700,
+    color: '#000',
+    fontSize: '23px',}} >Every day is a fan's day</p>
 
           {/* Policy Links */}
           <div>

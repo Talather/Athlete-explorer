@@ -36,6 +36,7 @@ const RightSidebar = ({ isOpen, onClose }) => {
   }
 
   const handleDecrease = e => {
+    console.log("bawaja decrease")
     e.preventDefault()
     setQuantity(prev => (prev > 0 ? prev - 1 : 0))
   }
@@ -62,199 +63,126 @@ const RightSidebar = ({ isOpen, onClose }) => {
             animate='visible'
             exit='exit'
           >
+
+
+
             <img
-              src='/closeButton.svg'
-              alt='close'
-              className='image-11 button-cancel'
-              onClick={onClose}
-              style={{ cursor: 'pointer' }}
+  src='/closeButton.svg'
+  alt='close'
+  className='image-11 button-cancel'
+  onClick={onClose}
+  style={{ cursor: 'pointer' }}
             />
+            
 
-            <div className='div-block-16'>
-              <h1 className='heading-7'>$DURINHO</h1>
 
-              {/* Quantity Selector */}
-              <div className='div-block-17'>
-                <form className='form'>
-                  <div className='div-block-18'>
-                    <a
-                      href='#'
-                      className='btn-minus w-button'
-                      onClick={handleDecrease}
-                    >
-                      −
-                    </a>
-                    <input
-                      type='number'
-                      className='input-number w-input'
-                      value={quantity}
-                      onChange={e => setQuantity(Number(e.target.value))}
-                      min={0}
-                      placeholder='0'
-                    />
-                    <a
-                      href='#'
-                      className='btn-plus w-button'
-                      onClick={handleIncrease}
-                    >
-                      +
-                    </a>
+<div className='sidebar-content' >
+              {/* LEFT SIDE – NFT Quantity */}
+              
+
+
+
+
+
+
+
+
+
+
+  <div className='sidebar-left'>
+                <h1 className='heading'>$DURINHO</h1>
+                
+
+
+   <div className='parent-quan'>
+    <div className='quantity-box'>
+      <button className='btn1' onClick = { handleDecrease }
+>−</button>
+                    <span className='qty'>{ quantity}</span>
+      <button className='btn2' onClick={handleIncrease}>+</button>
                   </div>
+                 
 
-                  <div className='columns-4 w-row'>
-                    <div className='w-col w-col-6'>
-                      <h5 className='heading-8'>NFT price</h5>
-                    </div>
-                    <div className='w-col w-col-6'>
-                      <h5 className='heading-8 right'>
-                        <strong>${pricePerNFT}</strong>
-                      </h5>
-                    </div>
+    <div className='price-box'>
+      <div className='price-row1'>
+        <span>NFT price</span>
+        <span>$5</span>
+      </div>
+      <div className='price-row2'>
+        <span>Total</span>
+                      <span>${total}</span>
+      </div>
                   </div>
-
-                  <div className='columns-3 w-row'>
-                    <div className='w-col w-col-6'>
-                      <div className='text-block-10 font-size'>Total</div>
-                    </div>
-                    <div className='w-col w-col-6'>
-                      <h5 className='heading-8 right total-price'>
-                        <strong>${total}</strong>
-                      </h5>
-                    </div>
-                  </div>
-                </form>
+                   </div>
               </div>
+              
 
-              {/* Form Section */}
-              <div className='div-block-17 spc-0'>
-                <form className='form'>
-                  <div className='div-block-19'>
-                    <label className='field-label'>Email address</label>
-                    <input
-                      type='text'
-                      className='text-field w-input'
-                      placeholder='Email address'
-                      required
-                    />
-                  </div>
 
-                  <label className='field-label l-10'>NFT delivery</label>
-                  <div className='div-block-19 bg'>
-                    <div className='div-block-19 flx'>
-                      <img src='/winterLogo.png' width='25' alt='Winter' />
-                      <h6 className='heading-9'>Winter wallet</h6>
-                    </div>
-                    <div className='text-block-11'>
-                      No Ethereum wallet? No worries, Winter will store and
-                      manage your NFT for you.
-                    </div>
-                  </div>
+              
 
-                  <div className='div-block-19 bg'>
-                    <div className='div-block-19 flx'>
-                      <img src='/ethLogo.png' width='25' alt='ETH' />
-                      <h6 className='heading-9'>
-                        <strong>Ethereum-supported Wallet Address</strong>
-                      </h6>
-                    </div>
-                    <div className='text-block-11'>
-                      Buy this NFT to an Ethereum wallet.
-                    </div>
-                    <div className='tgl'>
-                      <input
-                        type='text'
-                        className='text-field mm w-input'
-                        placeholder='e.g. 0xe0CB5... or joe.eth'
-                        required
-                      />
-                      <div className='text-block-11 c'>or</div>
-                      <input
-                        type='submit'
-                        value='Connect your ETH wallet'
-                        className='submit-button w-button'
-                        style={{ backgroundColor: 'black' }}
-                      />
-                      <div className='text-block-11 c'>
-                        <strong>
-                          🚨 WARNING! Do NOT enter a Coinbase address. Only use
-                          a wallet you control.
-                        </strong>
-                      </div>
-                    </div>
-                  </div>
+  {/* RIGHT SIDE – Payment Section */}
+  <div className='sidebar-right'>
+    <form className='form-section'>
+      <label>Email address</label>
+      <input type='email' placeholder='Email address' />
 
-                  <div className='div-block-19'>
-                    <label className='field-label'>Card number</label>
-                    <input
-                      type='text'
-                      className='text-field w-input'
-                      placeholder='1234 1234 1234 1234'
-                      required
-                    />
-                  </div>
+      <label>NFT delivery</label>
+      <div className='wallet-option'>
+        <img src='/winterLogo.png' alt='Winter' />
+        <div>
+          <strong>Winter wallet</strong>
+          <p>No Ethereum wallet? Winter will manage your NFT.</p>
+        </div>
+      </div>
 
-                  <div className='w-row'>
-                    <div className='column-4 w-col w-col-6'>
-                      <div className='div-block-19 mt-10 mr-10'>
-                        <label className='field-label'>Expiration</label>
-                        <input
-                          type='text'
-                          className='text-field w-input'
-                          placeholder='MM / YY'
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className='column-5 w-col w-col-6'>
-                      <div className='div-block-19 mt-10'>
-                        <label className='field-label'>CVC</label>
-                        <input
-                          type='text'
-                          className='text-field w-input'
-                          placeholder='CVC'
-                          required
-                        />
-                      </div>
-                    </div>
-                  </div>
+      <div className='wallet-option'>
+        <img src='/ethLogo.png' alt='ETH' />
+        <div>
+          <strong>Ethereum Wallet</strong>
+          <p>Buy this NFT to an Ethereum wallet.</p>
+        </div>
+      </div>
 
-                  <div className='div-block-19 mt-10 r-10 hide'>
-                    <label className='field-label'>Country</label>
-                    <select className='text-field w-select'>
-                      <option value=''>Select one...</option>
-                      <option value='First'>First choice</option>
-                      <option value='Second'>Second choice</option>
-                      <option value='Third'>Third choice</option>
-                    </select>
-                  </div>
+      <label>Card number</label>
+      <input type='text' placeholder='1234 1234 1234 1234' />
 
-                  <label className='w-checkbox checkbox-field'>
-                    <input type='checkbox' className='w-checkbox-input' />
-                    <span className='checkbox-label w-form-label'>
-                      I accept Fansday's Terms and Conditions.
-                    </span>
-                  </label>
+      <div className='row'>
+        <div>
+          <label>Expiration</label>
+          <input type='text' placeholder='MM / YY' />
+        </div>
+        <div>
+          <label>CVC</label>
+          <input type='text' placeholder='CVC' />
+        </div>
+      </div>
 
-                  <div style={{ marginTop: '20px', width: '100%' }}>
-                    <a
-                      href='#'
-                      className='_w-100 mt-10 w-button black-section'
-                      style={{
-                        backgroundColor: 'black',
-                        paddingLeft: '50px',
-                        paddingRight: '50px'
-                      }}
-                    >
-                      Pay with card
-                    </a>
-                  </div>
-                </form>
-              </div>
-            </div>
+      <label className='checkbox-wrapper'>
+        <input type='checkbox' />I accept Fansday’s Terms and Conditions.
+      </label>
+
+      <button className='pay-button'>Pay with card</button>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+            
           </motion.div>
         </>
       )}
     </AnimatePresence>
+
+
+
+
+
   )
 }
 
