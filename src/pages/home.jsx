@@ -6,6 +6,8 @@ import AthleteDetails from '../components/AthleteDetails'
 import RightSection from '../components/RightSection'
 import StickyBar from '../components/StickyBar'
 import Footer from '../components/Footer'
+import MobileOnlyPage from '../components/mobileHome'
+import MobileStickyBar from '../components/mobileStickyBar'
 
 function Home () {
   const [athletes, setAthletes] = useState([])
@@ -14,6 +16,45 @@ function Home () {
   const [selectedEvent, setSelectedEvent] = useState(null)
   const [isExpanded, setIsExpanded] = useState(false)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  const [isMobile, setIsMobile] = useState(false)
+
+useEffect(() => {
+  const checkScreenSize = () => {
+    setIsMobile(window.innerWidth <= 768) // Adjust breakpoint as needed
+  }
+
+  checkScreenSize()
+  window.addEventListener('resize', checkScreenSize)
+
+  return () => window.removeEventListener('resize', checkScreenSize)
+}, [])
+
+  
+  
+
+
+
+
+  
   useEffect(() => {
     const fetchAthletes = async () => {
         const { data, error } = await supabase.from('Athlete').select('*')
@@ -48,31 +89,79 @@ function Home () {
   }
 
   return (
-    <>
-      <Navbar />
-      <div className='content'>
-        <Sidebar
-          athletes={athletes}
-          onSelect={handleSelectAthlete}
-          isBlurred={isExpanded}
-        />
-        <AthleteDetails
-          key={selectedAthlete?.id}
-          athlete={selectedAthlete}
-          events={events}
-          onEventClick={handleEventClick}
-          isBlurred={isExpanded}
-        />
-        <RightSection
-          isExpanded={isExpanded}
-          selectedEvent={selectedEvent}
-          onClose={handleClose}
-        />
-      </div>
-      <StickyBar />
-      <Footer />
-    </>
-  )
+  <>
+    {isMobile ? (
+        <>
+          
+
+
+           {/* <Navbar />
+        <div className='content'>
+          <Sidebar
+            athletes={athletes}
+            onSelect={handleSelectAthlete}
+            isBlurred={isExpanded}
+          />
+          <AthleteDetails
+            key={selectedAthlete?.id}
+            athlete={selectedAthlete}
+            events={events}
+            onEventClick={handleEventClick}
+            isBlurred={isExpanded}
+          />
+          <RightSection
+            isExpanded={isExpanded}
+            selectedEvent={selectedEvent}
+            onClose={handleClose}
+          />
+        </div> */}
+          <Navbar />
+
+        <MobileStickyBar />
+        {/* <Footer />  */}
+          <MobileOnlyPage
+  athletes={athletes}
+  selectedAthlete={selectedAthlete}
+  events={events}
+  onSelectAthlete={handleSelectAthlete}
+  onEventClick={handleEventClick}
+          />
+          
+          <Footer />
+
+
+      </>
+       
+      
+    ) : (
+      <>
+        <Navbar />
+        <div className='content'>
+          <Sidebar
+            athletes={athletes}
+            onSelect={handleSelectAthlete}
+            isBlurred={isExpanded}
+          />
+          <AthleteDetails
+            key={selectedAthlete?.id}
+            athlete={selectedAthlete}
+            events={events}
+            onEventClick={handleEventClick}
+            isBlurred={isExpanded}
+          />
+          <RightSection
+            isExpanded={isExpanded}
+            selectedEvent={selectedEvent}
+            onClose={handleClose}
+          />
+        </div>
+        <StickyBar />
+        <Footer />
+      </>
+    )}
+  </>
+)
+
 }
 
 export default Home
