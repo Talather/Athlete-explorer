@@ -4,8 +4,10 @@ function StickyBar() {
   return (
     <div className='bottom-bar-wrapper'>
     <div className='sticky-bar'>
-      <div className='menu-item'>
+        <div className='menu-item'>
+          <Link to = '/'>
         <i className='fas fa-house'></i> Home
+        </Link>
       </div>
       <div className='separator'></div>
       <div className='menu-item'>
