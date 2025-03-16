@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 const TimerOverlay = () => {
-  const saleEndTime = new Date('2025-03-14T23:59:59') // Your target end time
+  const saleEndTime = new Date('2025-03-18T23:59:59') // ✅ Make sure it's in the future!
   const [timeLeft, setTimeLeft] = useState('')
 
   useEffect(() => {
@@ -25,12 +25,15 @@ const TimerOverlay = () => {
       }
     }, 1000)
 
-    return () => clearInterval(interval) // Clean up
-  }, [saleEndTime])
+    return () => clearInterval(interval) // Cleanup
+  }, [])
 
   return (
-    <div className='timer-overlay'>
-      The sale will end in <strong>{timeLeft}</strong>
+    <div
+      className='timer-overlay'
+      
+    >
+      The Sale ends in <strong>{timeLeft}</strong>
     </div>
   )
 }

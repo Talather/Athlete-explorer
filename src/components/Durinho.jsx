@@ -3,7 +3,7 @@ import FAQItem from '../components/FAQItem'
 import RightSidebar from '../components/durhino_siderbar/code' // Sidebar component
 import '../styles/durhino.css'
 import '../components/durhino_siderbar/style.css'
-import TimerOverlay from './timeOverlay'
+
 import VideoWithCover from './videoWithCover'
 
 function DurinhoPage () {
@@ -40,7 +40,7 @@ function DurinhoPage () {
                 The sale will end in <strong>21:28:32</strong>
               </div> */}
 
-              <TimerOverlay />
+              
             </div>
 
             <div className='tokens-left'>
@@ -66,7 +66,7 @@ function DurinhoPage () {
                   <img src='/lsg.png' alt='Durinho' />
                 </div>
                 <div>
-                  <h2 style={{ fontSize: '26px' }}>
+                  <h2 style={{ fontSize: '25px',fontWeight:"500" }}>
                     $DURINHO{' '}
                     <span role='img'>
                       <img
@@ -91,7 +91,9 @@ function DurinhoPage () {
             </div>
 
             <div className='name-block'>
-              <h3>Gilbert &quot;Durinho&quot; Burns</h3>
+              <h3  style={{
+                          fontWeight:'550',fontSize:'33px'
+                        }} >Gilbert &quot;Durinho&quot; Burns</h3>
               <p>Brazilian mixed martial artist, UFC Welterweight fighter</p>
             </div>
 
@@ -105,7 +107,7 @@ function DurinhoPage () {
                   // padding: '15px 65px'
                 }}
               >
-                <strong style={{ fontSize: '27px' }}>100 000 $DURINHO</strong>
+                <strong style={{ fontSize: '26px',fontWeight:"550" }}>100 000 $DURINHO</strong>
                 <p style={{ fontSize: '21px' }}>Tokens for sale</p>
               </div>
 
@@ -118,7 +120,7 @@ function DurinhoPage () {
                 }}
                 className='token-infoo'
               >
-                <strong style={{ fontSize: '27px' }}>07/15/2023</strong>
+                <strong style={{ fontSize: '26px',fontWeight:"550" }}>07/15/2023</strong>
                 <p style={{ fontSize: '21px' }}>Token sale start date</p>
               </div>
             </div>
@@ -131,13 +133,13 @@ function DurinhoPage () {
                 alignItems: 'center'
               }}
             >
-              <h3 className='price' style={{ marginLeft: '6vw' }}>
+              <h3 className='price' style={{ marginLeft: '6vw',fontSize:"50px" }}>
                 $5.00
               </h3>
 
               <div
                 className='fto-button-border-gradient'
-                style={{ marginLeft: '0px' }}
+                style={{ marginLeft: '0px',fontSize:"50px" }}
               >
                 <div
                   className='fto-button-wrappr'

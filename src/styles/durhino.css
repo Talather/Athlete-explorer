@@ -81,7 +81,7 @@ body {
   right: 12px;
   background: rgba(0, 0, 0, 0.75);
   color: #fff;
-  padding: 6px 12px;
+  padding: 3px 10px;
   font-size: 21px;
   font-weight: 500;
   border-radius: 20px;
@@ -96,7 +96,7 @@ body {
     /* align-items: center; */
     width: auto;
     /* min-width: 290px; */
-    padding: 10px 15px;
+    /* padding: 10px 15px; */
     /* display: flex */
 /* ;
     position: relative; */
@@ -162,7 +162,7 @@ body {
 }
 
 .profile .label {
-  font-size: 15px;
+  font-size: 20px;
   color: #777;
 }
 
@@ -170,12 +170,15 @@ body {
   /* text-align: right; */
   display: flex;
   flex-direction: column;
-  font-size: 15px;
+  font-size: 17px;
+  color: #777;
   margin-right: 10px;
 }
 
 .publish strong {
   font-size: 26px;
+  font-weight: 400;
+  color: #000;
 }
 
 
