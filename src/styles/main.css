@@ -7,6 +7,7 @@ body {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  font-family: Arial, sans-serif !important ;
 }
 
 .navbar {
@@ -35,6 +36,8 @@ body {
   padding-bottom: 20px;
 }
 
+
+.sidebar-text{font-family: Arial, sans-serif !important ;}
 /* Sidebar */
 .sidebar {
   width: 25%;
@@ -47,6 +50,7 @@ body {
   border-bottom: 2px solid #333;
   border-radius: 8px;
   transition: opacity 0.3s, filter 0.3s;
+  font-family: Arial, sans-serif !important ;
 }
 
 /* Search Bar */
@@ -118,6 +122,7 @@ body {
   height: 100%;
   box-sizing: border-box;
   border-radius: 8px;
+  font-family: Arial, sans-serif !important ;
   transition: opacity 0.3s, filter 0.3s;
 }
 
@@ -132,6 +137,7 @@ body {
   overflow: hidden;
   transition: height 0.3s ease-in-out;
   transform: translateY(-20px);
+  font-family: Arial, sans-serif !important ;
 }
 
 .athlete-details.expanded {
@@ -156,6 +162,7 @@ body {
   flex-direction: column;
   justify-content: center;
   height: 100%;
+  font-family: Arial, sans-serif !important ;
 }
 
 .event-section {
@@ -432,6 +439,7 @@ body {
     width: 100%;
     margin: 0 0 20px;
     height: auto;
+    font-family: Arial, sans-serif !important ;
   }
 
   .right-section.expanded {
@@ -596,8 +604,30 @@ body {
 
 
 
+/* * {
+  font-family: Arial, sans-serif !important;
+} */
 
-
+/* Enforce Arial for key UI sections */
+.navbar,
+.navbar .logo,
+.sidebar,
+.search-bar input,
+.athlete-list li,
+.content-section,
+.athlete-details,
+.event-block,
+.right-section,
+.footer,
+.footer-menu,
+.footer-menu ul li a,
+.social-links,
+.sticky-bar,
+.sticky-bar .menu-item,
+.sticky-bar .menu-item i,
+.menu-item a {
+  font-family: Arial, sans-serif;
+}
 
 
 

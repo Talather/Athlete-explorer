@@ -65,8 +65,8 @@ function DurinhoPage () {
                 >
                   <img src='/lsg.png' alt='Durinho' />
                 </div>
-                <div>
-                  <h2 style={{ fontSize: '25px',fontWeight:"500" }}>
+                <div style={{ marginLeft:'10px' }}>
+                  <h2 style={{ fontSize: '25px',fontWeight:"550" }}>
                     $DURINHO{' '}
                     <span role='img'>
                       <img
@@ -94,7 +94,7 @@ function DurinhoPage () {
               <h3  style={{
                           fontWeight:'550',fontSize:'33px'
                         }} >Gilbert &quot;Durinho&quot; Burns</h3>
-              <p>Brazilian mixed martial artist, UFC Welterweight fighter</p>
+              <p className='name-block-p'>Brazilian mixed martial artist, UFC Welterweight fighter</p>
             </div>
 
             <div className='token-info'>
@@ -108,7 +108,7 @@ function DurinhoPage () {
                 }}
               >
                 <strong style={{ fontSize: '26px',fontWeight:"550" }}>100 000 $DURINHO</strong>
-                <p style={{ fontSize: '21px' }}>Tokens for sale</p>
+                <p style={{ fontSize: '20px',fontWeight:550 }}>Tokens for sale</p>
               </div>
 
               <div
@@ -121,7 +121,8 @@ function DurinhoPage () {
                 className='token-infoo'
               >
                 <strong style={{ fontSize: '26px',fontWeight:"550" }}>07/15/2023</strong>
-                <p style={{ fontSize: '21px' }}>Token sale start date</p>
+                <p style={{ fontSize: '20px',fontWeight: 550
+ }}>Token sale start date</p>
               </div>
             </div>
 
@@ -133,7 +134,7 @@ function DurinhoPage () {
                 alignItems: 'center'
               }}
             >
-              <h3 className='price' style={{ marginLeft: '6vw',fontSize:"50px" }}>
+              <h3 className='price' style={{ marginLeft: '6vw',fontSize:"50px",fontWeight:800 }}>
                 $5.00
               </h3>
 

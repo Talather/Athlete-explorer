@@ -14,7 +14,7 @@ function Sidebar ({ athletes, onSelect, isBlurred }) {
 
   return (
     <div className={`sidebar ${isBlurred ? 'blurred' : ''}`}>
-      <h2>Athletes</h2>
+      <h2 className='sidebar-text'>Athletes</h2>
       <div className='search-bar'>
         <input
           type='text'

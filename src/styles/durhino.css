@@ -5,15 +5,18 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  font-family:'Nexa',sans-serif ;
+  
   
 }
 
 body {
+  
   /* font-family: 'Segoe UI', sans-serif; */
   background-color: #ffffff;
   color: #1d1d1f;
   line-height: 1.6;
-  font-family: 'Nexa Light', sans-serif;
+  /* font-family: 'Nexa', sans-serif; */
 }
 
 /* 📦 Page Container */
@@ -163,7 +166,9 @@ body {
 
 .profile .label {
   font-size: 20px;
+  font-weight: 500;
   color: #777;
+   font-family:'Satoshi',sans-serif ;
 }
 
 .publish {
@@ -172,13 +177,20 @@ body {
   flex-direction: column;
   font-size: 17px;
   color: #777;
+  font-weight: 500;
   margin-right: 10px;
 }
 
 .publish strong {
   font-size: 26px;
-  font-weight: 400;
+  font-weight: 550;
   color: #000;
+}
+
+.publish span {
+  font-size: 17px;
+  font-weight: 550;
+  /* color: #000; */
 }
 
 
@@ -194,7 +206,8 @@ body {
 }
 
 .name-block p {text-align: center;
-  font-size: 22px;
+  font-size: 19px;
+  font-weight: 500;
   color: #717071;
 }
 
@@ -346,9 +359,8 @@ body {
   font-size: 2.5vw;
   font-weight:630 ;
   /* letter-spacing: 0.5px; */
-  font-family:'Nexa', sans-serif;
-  /* font-family: 'Euclid Regular'; */
- /* font-family: 'Higher Jump' sans-serif; */
+  font-family:'Nexa',sans-serif ;
+  
 }
 
 
@@ -396,7 +408,10 @@ body {
 
 
 
-
+.name-block-p {
+  font-size: 1px;
+  font-family: 'Satoshi', sans-serif;
+}
 
 
 
@@ -881,3 +896,104 @@ body {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('../assets/fonts/Satoshi-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Satoshi';
+  src: url('../assets/fonts/Satoshi-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Satoshi';
+  src: url('../assets/fonts/Satoshi-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Nexa';
+  src: url('../assets/fonts/Nexa-Light.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Nexa';
+  src: url('../assets/fonts/Nexa-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Nexa';
+  src: url('../assets/fonts/Nexa-HeavyItalic.woff') format('woff');
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Euclid circular a';
+  src: url('../assets/fonts/Euclid-Circular-A-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Euclid circular a';
+  src: url('../assets/fonts/Euclid-Circular-A-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Euclid circular a';
+  src: url('../assets/fonts/Euclid-Circular-A-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Nexa Heavy';
+  src: url('../assets/fonts/Nexa-Heavy.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
