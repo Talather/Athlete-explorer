@@ -1,178 +1,212 @@
-import React, { useState } from 'react'
-import FAQItem from '../components/FAQItem'
-import RightSidebar from '../components/durhino_siderbar/code' // Sidebar component
-import '../styles/durhino.css'
-import '../components/durhino_siderbar/style.css'
+import React, { useState, useEffect } from "react";
+import FAQItem from "../components/FAQItem";
+import RightSidebar from "../components/durhino_siderbar/code"; 
+import "../styles/durhino.css";
+import "../components/durhino_siderbar/style.css";
+import VideoWithCover from "./videoWithCover";
+import { supabase } from "./../lib/supabase";
 
-import VideoWithCover from './videoWithCover'
+function DurinhoPage() {
+  const [showSidebar, setShowSidebar] = useState(false);
+  const [currentFto, setCurrentFto] = useState(null);
+  const [loading,setLoading] = useState(true);
+  useEffect(() => {
+    fetchCurrentFto();
+  }, []);
 
-function DurinhoPage () {
-  const [showSidebar, setShowSidebar] = useState(false)
+  const fetchCurrentFto = async () => {
+    const now = new Date().toISOString();
+    
+    const { data, error } = await supabase
+      .from('Ftos')
+      .select(`
+        *,
+        Atheletes (*)
+      `)
+      .lte('startDate', now)
+      .gte('endDate', now)
+      .single();
+
+    if (error) {
+      console.error('Error fetching FTO:', error);
+      return;
+    }
+
+    if (data) {
+      setCurrentFto(data);
+    }
+    setLoading(false);
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+  if (!currentFto) {
+    return <div>No Current Fto On Sale</div>;
+  }
+
+  const tokensLeft =100;
 
   return (
     <>
-      <div className='header-logo'>
-        <img src='/sixer.gif' width={80} height={70} alt='Logo' />
+      <div className="header-logo">
+        <img src="/sixer.gif" width={80} height={70} alt="Logo" />
       </div>
-      <div className='header'>
-        <h1>DURINHO day (Round 1)</h1>
+      <div className="header">
+        <h1>{currentFto.Atheletes.fanTokenSymbol}  Day (Round {currentFto.roundNumber})</h1>
       </div>
 
-      <div className='durinho-wrapper'>
-        <div className='durinho-container'>
+      <div className="durinho-wrapper">
+        <div className="durinho-container">
           {/* Left: Video + Progress */}
-          <div className='durinho-left'>
-            <div className='video-wrapper'>
-              {/* <iframe
-                src='https://www.youtube.com/embed/wsCmWZSASes'
-                frameBorder='0'
-                allowFullScreen
-                title='Durinho Video'
-              ></iframe> */}
+          <div className="durinho-left">
+            <div className="video-wrapper">
               <VideoWithCover
-                coverImage={'/durinho-fto-picture-p-800.png'}
-                videoSrc={
-                  'https://nargvalmcrunehnemvpa.supabase.co/storage/v1/object/sign/Athlete/AQP7fVnWSGc0z-v1SIiWeU-dA5xtUXnJlJwiuwtnFzCYUlV3VV26KSVTsTjVg4SAFZsxqikhCP3NAy1xFepscdEv.mp4?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJBdGhsZXRlL0FRUDdmVm5XU0djMHotdjFTSWlXZVUtZEE1eHRVWG5KbEp3aXV3dG5GekNZVWxWM1ZWMjZLU1ZUc1RqVmc0U0FGWnN4cWlraENQM05BeTF4RmVwc2NkRXYubXA0IiwiaWF0IjoxNzQyMDQzNjkxLCJleHAiOjE3NDI2NDg0OTF9.R-jDdDSgWUGcxK9zlp0w3_hRSUCszJZWuQerIqDNUok'
-                }
+                coverImage={currentFto.coverImageUrl}
+                videoSrc={currentFto.videoUrl}
+                endDate={currentFto.endDate}
               />
-
-              {/* <div className='timer-overlay'>
-                The sale will end in <strong>21:28:32</strong>
-              </div> */}
-
-              
+              {/* {timeRemaining && (
+                <div className='timer-overlay'>
+                  The sale will end in <strong>{timeRemaining}</strong>
+                </div>
+              )} */}
             </div>
 
-            <div className='tokens-left'>
-              Tokens left: <strong>14%</strong>
-              <div className='token-bar'>
-                <div className='filled' style={{ width: '14%' }}></div>
+            <div className="tokens-left">
+              Tokens left: <strong>{tokensLeft.toFixed(1)}%</strong>
+              <div className="token-bar">
+                <div className="filled" style={{ width: `${tokensLeft}%` }}></div>
               </div>
             </div>
           </div>
 
           {/* Right: Info Card */}
-          <div className='durinho-right'>
-            <div className='profile'>
-              <div className='pMain'>
+          <div className="durinho-right">
+            <div className="profile">
+              <div className="pMain">
                 <div
                   style={{
-                    width: '81px',
-                    height: '81px',
-                    borderRadius: '50%',
-                    marginRight: '7px'
+                    width: "81px",
+                    height: "81px",
+                    borderRadius: "50%",
+                    marginRight: "7px"
                   }}
                 >
-                  <img src='/lsg.png' alt='Durinho' />
+                  <img src={currentFto.Atheletes.profilePicture} alt={`${currentFto.Atheletes.firstName} ${currentFto.Atheletes.lastName}`} />
                 </div>
-                <div style={{ marginLeft:'10px' }}>
-                  <h2 style={{ fontSize: '25px',fontWeight:"550" }}>
-                    $DURINHO{' '}
-                    <span role='img'>
-                      <img
-                        style={{
-                          width: '35px',
-                          height: '25px',
-                          borderRadius: '0px'
-                        }}
-                        src='/brazilian-flag.png'
-                        alt='flag'
-                      />
-                    </span>
+                <div style={{ marginLeft: "10px" }}>
+                  <h2 style={{ fontSize: "25px", fontWeight: "550" }}>
+                    ${currentFto.Atheletes.fanTokenSymbol} {currentFto.Atheletes.country}
                   </h2>
-                  <p className='label'>Athlete</p>
+                  <p className="label">Athlete {currentFto.Atheletes.sport}</p>
                 </div>
               </div>
 
-              <div className='publish'>
-                <strong>FRIDAY</strong>
+              <div className="publish">
+                <strong>{new Date(currentFto.startDate).toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase()}</strong>
                 <span>Publication time</span>
               </div>
             </div>
 
-            <div className='name-block'>
-              <h3  style={{
-                          fontWeight:'550',fontSize:'33px'
-                        }} >Gilbert &quot;Durinho&quot; Burns</h3>
-              <p className='name-block-p'>Brazilian mixed martial artist, UFC Welterweight fighter</p>
-            </div>
-
-            <div className='token-info'>
-              <div
-                className='token-infoo'
+            <div className="name-block">
+              <h3
                 style={{
-                  backgroundColor: '#fafafa',
-                  textAlign: 'center',
-                  borderRadius: '4px'
-                  // padding: '15px 65px'
+                  fontWeight: "550",
+                  fontSize: "33px",
                 }}
               >
-                <strong style={{ fontSize: '26px',fontWeight:"550" }}>100 000 $DURINHO</strong>
-                <p style={{ fontSize: '20px',fontWeight:550 }}>Tokens for sale</p>
+                {currentFto.Atheletes.firstName} "{currentFto.Atheletes.nickName}" {currentFto.Atheletes.lastName}
+              </h3>
+              <p className="name-block-p">
+                {currentFto.Atheletes.description}
+              </p>
+            </div>
+
+            <div className="token-info">
+              <div
+                className="token-infoo"
+                style={{
+                  backgroundColor: "#fafafa",
+                  textAlign: "center",
+                  borderRadius: "4px",
+                }}
+              >
+                <strong style={{ fontSize: "26px", fontWeight: "550" }}>
+                  {currentFto.tokensForSale} ${currentFto.Atheletes.fanTokenSymbol}
+                </strong>
+                <p style={{ fontSize: "20px", fontWeight: 550 }}>
+                  Tokens for sale
+                </p>
               </div>
 
               <div
                 style={{
-                  backgroundColor: '#fafafa',
-                  textAlign: 'center',
-                  borderRadius: '4px'
-                  // padding: '15px 65px'
+                  backgroundColor: "#fafafa",
+                  textAlign: "center",
+                  borderRadius: "4px",
                 }}
-                className='token-infoo'
+                className="token-infoo"
               >
-                <strong style={{ fontSize: '26px',fontWeight:"550" }}>07/15/2023</strong>
-                <p style={{ fontSize: '20px',fontWeight: 550
- }}>Token sale start date</p>
+                <strong style={{ fontSize: "26px", fontWeight: "550" }}>
+                  {new Date(currentFto.startDate).toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' })}
+                </strong>
+                <p style={{ fontSize: "20px", fontWeight: 550 }}>
+                  Token sale start date
+                </p>
               </div>
             </div>
 
             <div
               style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'space-around',
-                alignItems: 'center'
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-around",
+                alignItems: "center",
               }}
             >
-              <h3 className='price' style={{ marginLeft: '6vw',fontSize:"50px",fontWeight:800 }}>
-                $5.00
+              <h3
+                className="price"
+                style={{  fontSize: "50px", fontWeight: 800 }}
+              >
+                ${currentFto.Atheletes.fanTokenInitialPrice}.00
               </h3>
 
               <div
-                className='fto-button-border-gradient'
-                style={{ marginLeft: '0px',fontSize:"50px" }}
+                className="fto-button-border-gradient"
+                style={{ marginLeft: "0px", fontSize: "50px" }}
               >
                 <div
-                  className='fto-button-wrappr'
+                  className="fto-button-wrappr"
                   onClick={() => setShowSidebar(true)}
                 >
                   <a
-                    href='#'
-                    className='button mt-80 bdr m-hide button-show w-button'
+                    href="#"
+                    className="button mt-80 bdr m-hide button-show w-button"
                   >
-                    <strong className='bold-text-2'>Buy $DURINHO</strong>
+                    <strong className="bold-text-2">Buy ${currentFto.Atheletes.fanTokenSymbol}</strong>
                   </a>
                 </div>
               </div>
             </div>
 
-            <div className='faq-section'>
+            <div className="faq-section">
               <FAQItem
-                question='What is $DURINHO?'
-                answer="$DURINHO is Gilbert Burns' fan token. By owning $DURINHO, you will be able to engage with the athlete and other fan token holders, participate in contests, earn rewards, and vote in polls to influence significant decisions Gilbert has to make!"
+                question={`What is $${currentFto.Atheletes.fanTokenSymbol}?`}
+                answer={`${currentFto.Atheletes.fanTokenSymbol} is ${currentFto.Atheletes.firstName} ${currentFto.Atheletes.lastName}' fan token. By owning $${currentFto.Atheletes.fanTokenSymbol}, you will be able to engage with the athlete and other fan token holders, participate in contests, earn rewards, and vote in polls to influence significant decisions ${currentFto.Atheletes.firstName} has to make!`}
               />
               <FAQItem
-                question='How do I buy $DURINHO?'
-                answer='Click the Buy $DURINHO button, enter your email, choose quantity, then either store in Winter wallet or your ETH wallet. Finally, pay with card.'
+                question={`How do I buy $${currentFto.Atheletes.fanTokenSymbol}?`}
+                answer={`Click the Buy $${currentFto.Atheletes.fanTokenSymbol} button, enter your email, choose quantity, then either store in Winter wallet or your ETH wallet. Finally, pay with card.`}
               />
               <FAQItem
-                question='How do I participate in events?'
-                answer='Once the FTO ends, events will appear. You can join using your fan tokens. They’re not consumed, so you can reuse them.'
+                question="How do I participate in events?"
+                answer="Once the FTO ends, events will appear. You can join using your fan tokens. They’re not consumed, so you can reuse them."
               />
 
-              <FAQItem question='' answer='' />
-              <FAQItem question='' answer='' />
-              <FAQItem question='' answer='' />
+              {/* <FAQItem question="" answer="" />
+              <FAQItem question="" answer="" />
+              <FAQItem question="" answer="" /> */}
             </div>
           </div>
         </div>
@@ -182,18 +216,19 @@ function DurinhoPage () {
       {showSidebar && (
         <>
           <div
-            className='sidebar-overlay'
+            className="sidebar-overlay"
             onClick={() => setShowSidebar(false)}
           />
 
           <RightSidebar
             isOpen={showSidebar}
+            currentFto={currentFto}
             onClose={() => setShowSidebar(false)}
           />
         </>
       )}
     </>
-  )
+  );
 }
 
-export default DurinhoPage
+export default DurinhoPage;

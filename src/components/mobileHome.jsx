@@ -126,7 +126,7 @@ const MobileOnlyPage = ({
   }
 
   const filteredAthletes = athletes.filter(athlete =>
-    athlete.name.toLowerCase().includes(searchTerm.toLowerCase())
+    athlete.firstName.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   return (
@@ -143,15 +143,15 @@ const MobileOnlyPage = ({
         {filteredAthletes.map(athlete => (
           <div style={styles.avatarWrapper} key={athlete.id}>
             <img
-              src={athlete.image_url || 'https://via.placeholder.com/40'}
-              alt={athlete.name}
+              src={athlete.profilePicture || 'https://via.placeholder.com/40'}
+              alt={athlete.firstName}
               style={styles.avatar}
               onClick={() => {
                 onSelectAthlete(athlete)
                 setShowVideo(false)
               }}
             />
-            <div style={styles.nameLabel}>{athlete.name?.split(' ')[0]}</div>
+            <div style={styles.nameLabel}>{athlete.firstName?.split(' ')[0]}</div>
           </div>
         ))}
 
@@ -184,7 +184,7 @@ const MobileOnlyPage = ({
                         selectedAthlete.image_url ||
                         'https://via.placeholder.com/300x240'
                       }
-                      alt={selectedAthlete.name}
+                      alt={selectedAthlete.firstName}
                       style={styles.videoImage}
                     />
                     <div
@@ -220,15 +220,15 @@ const MobileOnlyPage = ({
                   </video>
                 )}
                 <div style={styles.videoOverlay}>
-                  <div>{selectedAthlete.name}</div>
+                  <div>{selectedAthlete.firstName}</div>
                   {/* <div>{selectedAthlete.owners || '2.4m'} Owners</div> */}
-                  <div>{events.length} Events</div>
+                  {/* <div>{events.length} Events</div> */}
                 </div>
               </div>
             </div>
 
             {/* Events List */}
-            {events.map(event => (
+            {/* {events.map(event => (
               <div
                 key={event.id}
                 style={styles.card}
@@ -246,7 +246,7 @@ const MobileOnlyPage = ({
                   </div>
                 </div>
               </div>
-            ))}
+            ))} */}
           </>
         )}
       </div>

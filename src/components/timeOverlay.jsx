@@ -1,28 +1,37 @@
 import React, { useEffect, useState } from 'react'
 
-const TimerOverlay = () => {
-  const saleEndTime = new Date('2025-03-18T23:59:59') // ✅ Make sure it's in the future!
+const TimerOverlay = ({endDate}) => {
   const [timeLeft, setTimeLeft] = useState('')
+  const updateTimeRemaining = () => {
+    const now = new Date();
+    const endDated = new Date(endDate);
+    const diff = endDated - now;
+
+    if (diff <= 0) {
+      setTimeLeft(null);
+      return;
+    }
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+    let formattedTime = "";
+    if (days > 0) {
+      formattedTime += `${days}d `;
+    }
+    formattedTime += `${hours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+
+      setTimeLeft(formattedTime);
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const now = new Date()
-      const diff = saleEndTime - now
-
-      if (diff <= 0) {
-        clearInterval(interval)
-        setTimeLeft('00:00:00')
-      } else {
-        const hours = String(
-          Math.floor((diff / (1000 * 60 * 60)) % 24)
-        ).padStart(2, '0')
-        const minutes = String(Math.floor((diff / (1000 * 60)) % 60)).padStart(
-          2,
-          '0'
-        )
-        const seconds = String(Math.floor((diff / 1000) % 60)).padStart(2, '0')
-        setTimeLeft(`${hours}:${minutes}:${seconds}`)
-      }
+      
+      updateTimeRemaining()
     }, 1000)
 
     return () => clearInterval(interval) // Cleanup

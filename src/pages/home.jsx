@@ -1,101 +1,73 @@
-import { useEffect, useState } from 'react'
-import { supabase } from '../lib/supabase'
-import Navbar from '../components/Navbar'
-import Sidebar from '../components/Sidebar'
-import AthleteDetails from '../components/AthleteDetails'
-import RightSection from '../components/RightSection'
-import StickyBar from '../components/StickyBar'
-import Footer from '../components/Footer'
-import MobileOnlyPage from '../components/mobileHome'
-import MobileStickyBar from '../components/mobileStickyBar'
+import { useEffect, useState } from "react";
+import { supabase } from "../lib/supabase";
+import Navbar from "../components/Navbar";
+import Sidebar from "../components/Sidebar";
+import AthleteDetails from "../components/AthleteDetails";
+import RightSection from "../components/RightSection";
+import StickyBar from "../components/StickyBar";
+import Footer from "../components/Footer";
+import MobileOnlyPage from "../components/mobileHome";
+import MobileStickyBar from "../components/mobileStickyBar";
 
-function Home () {
-  const [athletes, setAthletes] = useState([])
-  const [selectedAthlete, setSelectedAthlete] = useState(null)
-  const [events, setEvents] = useState([])
-  const [selectedEvent, setSelectedEvent] = useState(null)
-  const [isExpanded, setIsExpanded] = useState(false)
+function Home() {
+  const [athletes, setAthletes] = useState([]);
+  const [selectedAthlete, setSelectedAthlete] = useState(null);
+  const [events, setEvents] = useState([]);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth <= 768); // Adjust breakpoint as needed
+    };
 
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
 
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  const [isMobile, setIsMobile] = useState(false)
-
-useEffect(() => {
-  const checkScreenSize = () => {
-    setIsMobile(window.innerWidth <= 768) // Adjust breakpoint as needed
-  }
-
-  checkScreenSize()
-  window.addEventListener('resize', checkScreenSize)
-
-  return () => window.removeEventListener('resize', checkScreenSize)
-}, [])
-
-  
-  
-
-
-
-
-  
   useEffect(() => {
     const fetchAthletes = async () => {
-        const { data, error } = await supabase.from('Athlete').select('*')
-        console.log("data of aheltes",data,error)
-      if (error) console.error('Error fetching athletes:', error)
-      else setAthletes(data)
-    }
+      const { data, error } = await supabase.from("Atheletes").select("*");
+      console.log("data of aheltes", data, error);
+      if (error) console.error("Error fetching athletes:", error);
+      else setAthletes(data);
+    };
 
-    fetchAthletes()
-  }, [])
+    fetchAthletes();
+  }, []);
 
-  const handleSelectAthlete = async athlete => {
-    setSelectedAthlete(athlete)
+  const handleSelectAthlete = async (athlete) => {
+    athlete.video_url = "https://nargvalmcrunehnemvpa.supabase.co/storage/v1/object/sign/Athlete/Villain%20LeBron%20did%20not%20forget.mp4?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJBdGhsZXRlL1ZpbGxhaW4gTGVCcm9uIGRpZCBub3QgZm9yZ2V0Lm1wNCIsImlhdCI6MTc0MTU5ODYyOCwiZXhwIjoxNzQ0MTkwNjI4fQ.LCNqKXp4xqfja0Ga7QdfeQ4Vk-ZEUjj5lq8tXSj5sqM";
 
-    const { data, error } = await supabase
-      .from('Events')
-      .select('*')
-      .eq('athlete_id', athlete.id)
+    setSelectedAthlete(athlete);
 
-    if (error) console.error('Error fetching events:', error)
-    else setEvents(data)
-  }
+    // const { data, error } = await supabase
+    //   .from("Events")
+    //   .select("*")
+    //   .eq("athlete_id", athlete.id);
 
-  const handleEventClick = event => {
-    setSelectedEvent(event)
-    setIsExpanded(true)
-  }
+    // if (error) console.error("Error fetching events:", error);
+    // else setEvents(data);
+  };
+
+  const handleEventClick = (event) => {
+    setSelectedEvent(event);
+    setIsExpanded(true);
+  };
 
   const handleClose = () => {
-    setIsExpanded(false)
-    setSelectedEvent(null)
-  }
+    setIsExpanded(false);
+    setSelectedEvent(null);
+  };
 
   return (
-  <>
-    {isMobile ? (
+    <>
+      {isMobile ? (
         <>
-          
-
-
-           {/* <Navbar />
+          {/* <Navbar />
         <div className='content'>
           <Sidebar
             athletes={athletes}
@@ -117,51 +89,46 @@ useEffect(() => {
         </div> */}
           <Navbar />
 
-        <MobileStickyBar />
-        {/* <Footer />  */}
+          <MobileStickyBar />
+          {/* <Footer />  */}
           <MobileOnlyPage
-  athletes={athletes}
-  selectedAthlete={selectedAthlete}
-  events={events}
-  onSelectAthlete={handleSelectAthlete}
-  onEventClick={handleEventClick}
-          />
-          
-          <Footer />
-
-
-      </>
-       
-      
-    ) : (
-      <>
-        <Navbar />
-        <div className='content'>
-          <Sidebar
             athletes={athletes}
-            onSelect={handleSelectAthlete}
-            isBlurred={isExpanded}
-          />
-          <AthleteDetails
-            key={selectedAthlete?.id}
-            athlete={selectedAthlete}
+            selectedAthlete={selectedAthlete}
             events={events}
+            onSelectAthlete={handleSelectAthlete}
             onEventClick={handleEventClick}
-            isBlurred={isExpanded}
           />
-          <RightSection
-            isExpanded={isExpanded}
-            selectedEvent={selectedEvent}
-            onClose={handleClose}
-          />
-        </div>
-        <StickyBar />
-        <Footer />
-      </>
-    )}
-  </>
-)
 
+          <Footer />
+        </>
+      ) : (
+        <>
+          <Navbar />
+          <div className="content">
+            <Sidebar
+              athletes={athletes}
+              onSelect={handleSelectAthlete}
+              isBlurred={isExpanded}
+            />
+            <AthleteDetails
+              key={selectedAthlete?.id}
+              athlete={selectedAthlete}
+              events={events}
+              onEventClick={handleEventClick}
+              isBlurred={isExpanded}
+            />
+            <RightSection
+              isExpanded={isExpanded}
+              selectedEvent={selectedEvent}
+              onClose={handleClose}
+            />
+          </div>
+          <StickyBar />
+          <Footer />
+        </>
+      )}
+    </>
+  );
 }
 
-export default Home
+export default Home;

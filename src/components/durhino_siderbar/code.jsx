@@ -25,9 +25,9 @@ const sidebarVariants = {
   }
 }
 
-const RightSidebar = ({ isOpen, onClose }) => {
+const RightSidebar = ({ isOpen, currentFto,onClose }) => {
   const [quantity, setQuantity] = useState(0)
-  const pricePerNFT = 5
+  const pricePerNFT = currentFto.Atheletes.fanTokenInitialPrice;
   const total = quantity * pricePerNFT
 
   const handleIncrease = e => {
@@ -36,7 +36,6 @@ const RightSidebar = ({ isOpen, onClose }) => {
   }
 
   const handleDecrease = e => {
-    console.log("bawaja decrease")
     e.preventDefault()
     setQuantity(prev => (prev > 0 ? prev - 1 : 0))
   }
@@ -90,7 +89,7 @@ const RightSidebar = ({ isOpen, onClose }) => {
 
 
   <div className='sidebar-left'>
-                <h1 className='heading'>$DURINHO</h1>
+                <h1 className='heading'>${currentFto.Atheletes.fanTokenSymbol}</h1>
                 
 
 
@@ -106,7 +105,7 @@ const RightSidebar = ({ isOpen, onClose }) => {
     <div className='price-box'>
       <div className='price-row1'>
         <span>NFT price</span>
-        <span>$5</span>
+        <span>${currentFto.Atheletes.fanTokenInitialPrice}</span>
       </div>
       <div className='price-row2'>
         <span>Total</span>

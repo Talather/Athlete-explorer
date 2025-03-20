@@ -7,7 +7,7 @@ function Sidebar ({ athletes, onSelect, isBlurred }) {
   useEffect(() => {
     setFiltered(
       athletes.filter(athlete =>
-        athlete.name.toLowerCase().includes(search.toLowerCase())
+        athlete.firstName.toLowerCase().includes(search.toLowerCase())
       )
     )
   }, [search, athletes])
@@ -31,8 +31,9 @@ function Sidebar ({ athletes, onSelect, isBlurred }) {
       <ul className='athlete-list'>
         {filtered.map((athlete, index) => (
           <li key={index} onClick={() => onSelect(athlete)}>
-            <img src={athlete.image_url} alt={athlete.name} />
-            {athlete.name}
+            <img src={athlete.profilePicture} alt={athlete.firstName} />
+            <p>{athlete.firstName}  {athlete.lastName}</p>
+            
           </li>
         ))}
       </ul>

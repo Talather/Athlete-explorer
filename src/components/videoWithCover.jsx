@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react'
 import '../styles/durhino.css'
 import TimerOverlay from './timeOverlay'
 
-const VideoWithCover = ({ coverImage, videoSrc }) => {
+const VideoWithCover = ({ coverImage, videoSrc , endDate }) => {
   const [playing, setPlaying] = useState(false)
   const videoRef = useRef(null)
 
@@ -15,7 +15,7 @@ const VideoWithCover = ({ coverImage, videoSrc }) => {
     <div className='video-wrapper'>
       {!playing && (
         <div className='video-cover' onClick={handlePlay}>
-          <TimerOverlay />
+          <TimerOverlay  endDate={endDate}/>
 
           <img src={coverImage} alt='cover' className='cover-image' />
           <div className='play-button'>▶</div>
