@@ -1,0 +1,681 @@
+
+
+/* 🌐 Global Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family:'Nexa',sans-serif ;
+  
+  
+}
+
+body {
+  
+  /* font-family: 'Segoe UI', sans-serif; */
+  background-color: #ffffff;
+  color: #1d1d1f;
+  line-height: 1.6;
+  /* font-family: 'Nexa', sans-serif; */
+}
+
+/* 📦 Page Container */
+
+/* === Left === */
+.durinho-left {
+  flex: 1 1 50%;
+  min-width: 220px;
+  position: relative;
+}
+
+
+
+/* .video-wrapper {
+  position: relative;
+  border-radius: 36px;
+  overflow: hidden;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  height: 64vh;
+} */
+
+.video-wrapper iframe {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 16/9;
+  border: none;
+  display: block;
+}
+
+.tokens-left {
+  font-size: 22px;
+  font-style: normal ;
+  font-weight: 400;
+  margin-bottom: 20px;
+  margin-left: 13px;
+  color: #1d1d1f;
+}
+
+/* === Right === */
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  justify-content:space-between;
+  flex-wrap: wrap;
+}
+
+.pMain{
+   display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+
+}
+
+.profile img {
+  width: 81px;
+  height: 81px;
+  border-radius: 50%;
+}
+
+.profile .label {
+  font-size: 20px;
+  font-weight: 500;
+  color: #777;
+   font-family:'Satoshi',sans-serif ;
+}
+
+.publish {
+  /* text-align: right; */
+  display: flex;
+  flex-direction: column;
+  font-size: 17px;
+  color: #777;
+  font-weight: 500;
+  margin-right: 10px;
+}
+
+.publish strong {
+  font-size: 26px;
+  font-weight: 550;
+  color: #000;
+}
+
+.publish span {
+  font-size: 17px;
+  font-weight: 550;
+  /* color: #000; */
+}
+
+
+.name-block{
+  align-items: center;
+ 
+}
+.name-block h3 {
+  text-align: center;
+  margin-bottom: 0px;
+  font-size: 29px;
+  font-weight: 600;
+}
+
+.name-block p {text-align: center;
+  font-size: 19px;
+  font-weight: 500;
+  color: #717071;
+}
+
+
+
+.faq-button:hover {
+    box-shadow: rgba(0, 0, 0, 0.024) 0px 0.353647px 30px 0px;
+}
+
+.token-info {
+  display: flex;
+  justify-content: space-around;
+  /* gap: 10px; */
+  flex-wrap: wrap;
+}
+
+.token-info p{
+  font-size: 27px;
+  /* color: #717071; */
+}
+
+.token-info p{
+  font-size: 17px;
+  color: #717071;
+}
+
+.price {
+  -webkit-text-fill-color: transparent;
+  background-image: linear-gradient(#f1b371, #9853ec);
+  -webkit-background-clip: text;
+  background-clip: text;
+  font-weight: 800;
+  font-family: 'Nexa Heavy';
+}
+
+.buy-durinho {
+  
+  padding: 12px;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  background: linear-gradient(to right, #f1b371, #9853ec) padding-box,
+              linear-gradient(to right,#f1b371, #9853ec) border-box;
+  color: #a75eff;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.buy-durinho:hover {
+  background: linear-gradient(to right, #f7f7f7, #f7f7f7) padding-box,
+              linear-gradient(to right, #e070ff, #a3a1ff) border-box;
+}
+
+/* === Responsive === */
+/* @media (max-width: 768px) {
+  .durinho-container {
+    flex-direction: column;
+    padding: 16px;
+  }
+
+  .token-info {
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+  }
+
+  .profile {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .publish {
+    text-align: left;
+  }
+} */
+
+/* @media (max-width: 480px) {
+  .durinho-right {
+    padding: 20px;
+  }
+
+  .buy-durinho {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .price {
+    font-size: 24px;
+  }
+} */
+
+
+
+.header {
+  background: linear-gradient(to right, #e99289, #9352ee);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.header h1 {
+  font-size: 2.5vw;
+  font-weight:630 ;
+  /* letter-spacing: 0.5px; */
+  font-family:'Nexa',sans-serif ;
+  
+}
+
+
+/* @media (max-width: 768px) {.header h1 {
+  font-size: 5.9vw;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}} */
+
+.header-logo {
+  width: 100%;
+  height: 50px;
+  border-radius: 12px;
+  object-fit: cover;
+  align-items: center;
+  justify-content: center;
+  float: center;
+  text-align: center;
+  justify-items: center;
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+/* Responsive */
+/* @media (max-width: 480px) {
+  .header {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .header h1 {
+    font-size: 22px;
+  }
+} */
+
+
+
+.name-block-p {
+  font-size: 1px;
+  font-family: 'Satoshi', sans-serif;
+}
+
+/* Arrow icon styling */
+
+.fto-button-border-gradient {
+  padding: 2px;
+  border-radius: 60px;
+  background: linear-gradient(to bottom, #f1b371 , #9853ec);
+}
+
+/* Inner button wrapper */
+.fto-button-wrappr {
+  background-color: #ffffff;
+  border-radius: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Main button style */
+
+.button {
+  -webkit-text-fill-color: transparent;
+  background-image: linear-gradient(93deg, #f1b371, #9853ec);
+  -webkit-background-clip: text;
+  background-clip: text;
+  font-weight: 800;
+  font-family: 'Nexa Heavy';
+}
+
+/* Margin top utility */
+.mt-80 {
+  margin-top: 0px;
+}
+
+/* Border radius utility */
+.bdr {
+  border-radius: 3.2vw;
+}
+
+/* Hide on mobile */
+.m-hide {
+  display: block;
+}
+
+
+
+.w-button {
+  /* padding: 0; */
+  background-color: #ffffff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  text-decoration: none;
+}
+
+/* Bold text inside button */
+.bold-text-2 {
+  font-weight: bold;
+  font-size: 24px;
+  /* background-image: linear-gradient(93deg, #ed9585, #8d4df5); */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 
+
+
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  backdrop-filter: blur(60px); 
+  background: rgba(0, 0, 0, 0.3); 
+  z-index: 9998;
+  transition: opacity 0.3s ease;
+
+  
+} */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* .video-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+} */
+
+.video-cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  background-color: #000;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.token-infoo {
+  background-color: #fafafa;
+  padding: 50px 50px !important;
+}
+
+/* === Tablets === */
+@media (max-width: 768px) {
+  .token-infoo {
+    padding: 80px 40px !important;
+  }
+}
+
+/* === Laptops / Small Desktops === */
+@media (max-width: 1054px) {
+  .token-infoo {
+    padding: 15px 5px !important;
+  }
+}
+
+@media (min-width: 1430px) {
+  .token-infoo {
+    padding: 15px 15px !important;
+  }
+}
+
+/* === Desktops & Large Screens === */
+@media (min-width: 1050px) {
+  .token-infoo {
+    padding: 15px 14px !important; 
+    font-size: 10px;
+  }
+}
+
+
+@media (min-width: 1450px) {
+  .token-infoo {
+    padding: 15px 65px !important; /* Optional override */
+    /* font-size: 60px; */
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('../assets/fonts/Satoshi-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Satoshi';
+  src: url('../assets/fonts/Satoshi-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Satoshi';
+  src: url('../assets/fonts/Satoshi-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Nexa';
+  src: url('../assets/fonts/Nexa-Light.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Nexa';
+  src: url('../assets/fonts/Nexa-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Nexa';
+  src: url('../assets/fonts/Nexa-HeavyItalic.woff') format('woff');
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Euclid circular a';
+  src: url('../assets/fonts/Euclid-Circular-A-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Euclid circular a';
+  src: url('../assets/fonts/Euclid-Circular-A-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Euclid circular a';
+  src: url('../assets/fonts/Euclid-Circular-A-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Nexa Heavy';
+  src: url('../assets/fonts/Nexa-Heavy.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
