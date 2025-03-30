@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react'
 import '../styles/durhino.css'
 import TimerOverlay from './timeOverlay'
 
-const VideoWithCover = ({ coverImage, videoSrc, isBeforeStartDate, startDate, endDate }) => {
+const VideoWithCover = ({ coverImage, videoSrc, isBeforeStartDate, startDate, endDate, onTimerEnd }) => {
   const [started, setStarted] = useState(false) 
   const [paused, setPaused] = useState(false) 
   const videoRef = useRef(null)
@@ -25,7 +25,7 @@ const VideoWithCover = ({ coverImage, videoSrc, isBeforeStartDate, startDate, en
     <div className='relative bg-black/40 cursor-pointer h-[220px] xs:h-[450px] 2xl:h-[600px] sm:rounded-[30px] overflow-hidden'>
       
       <div className='absolute -top-[1px] sm:top-[1rem] right-0 sm:right-[1rem] z-10'>
-        <TimerOverlay endDate={endDate} startDate={startDate} isBeforeStartDate={isBeforeStartDate} />
+        <TimerOverlay endDate={endDate} startDate={startDate} isBeforeStartDate={isBeforeStartDate} onTimerEnd={onTimerEnd} />
       </div>
 
       {/* Show cover image only before the video starts */}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-const TimerOverlay = ({endDate , startDate , isBeforeStartDate}) => {
+const TimerOverlay = ({endDate, startDate, isBeforeStartDate, onTimerEnd}) => {
   const [timeLeft, setTimeLeft] = useState('')
 
 
@@ -12,6 +12,10 @@ const TimerOverlay = ({endDate , startDate , isBeforeStartDate}) => {
 
     if (diff <= 0) {
       setTimeLeft(null);
+      // Call the callback function when the timer ends
+      if (onTimerEnd && typeof onTimerEnd === 'function') {
+        onTimerEnd();
+      }
       return;
     }
 
@@ -32,13 +36,15 @@ const TimerOverlay = ({endDate , startDate , isBeforeStartDate}) => {
   };
 
   useEffect(() => {
+    // Initial check without waiting for the first interval
+    updateTimeRemaining();
+    
     const interval = setInterval(() => {
-      
-      updateTimeRemaining()
+      updateTimeRemaining();
     }, 1000)
 
     return () => clearInterval(interval) // Cleanup
-  }, [])
+  }, [endDate, startDate, isBeforeStartDate, onTimerEnd])
 
   return (
     <div

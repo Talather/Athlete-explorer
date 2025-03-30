@@ -12,7 +12,15 @@ function DurinhoPage() {
   const [showSidebar, setShowSidebar] = useState(false);
   const [currentFto, setCurrentFto] = useState(null);
   const [loading,setLoading] = useState(true);
+  const [tokensLeft , setTokensLeft]= useState(100);
+  const [startDate, setStartDate] = useState(new Date(currentFto?.startDate))
+  const [endDate, setEndDate] = useState(new Date(currentFto?.endDate))
+ const [now, setNow] = useState(new Date());
+ const [isBeforeStartDate , setIsBeforeStartDate] = useState(now < startDate);
+ const [isAfterEndDate , setIsAfterEndDate] = useState(now > endDate);
+  
   useEffect(() => {
+    setNow(new Date());
     fetchCurrentFto();
   }, []);
 
@@ -28,8 +36,10 @@ function DurinhoPage() {
       .eq('active', true)
       .single();
     
-    console.log(data);
-
+    setStartDate(data?.startDate)
+    setEndDate(data?.endDate)
+    setIsBeforeStartDate(now < data?.startDate);
+    setIsAfterEndDate(now > data?.endDate);
     if (error) {
       console.error('Error fetching FTO:', error);
       return;
@@ -101,12 +111,9 @@ function DurinhoPage() {
     );
   }
 
-  const tokensLeft =100;
-  const now = new Date();
-  const startDate = new Date(currentFto.startDate);
-  const endDate = new Date(currentFto.endDate);
-  const isBeforeStartDate = now < startDate;
-  const isAfterEndDate = now > endDate;
+
+  // const isBeforeStartDate = now < startDate;
+  // const isAfterEndDate = now > endDate;
 
   return (
     <>
@@ -141,6 +148,9 @@ function DurinhoPage() {
                 isBeforeStartDate={isBeforeStartDate}
                 startDate={currentFto.startDate}
                 endDate={currentFto.endDate}
+                onTimerEnd={() => {
+                  fetchCurrentFto();
+                }}
               />
             </div>
 

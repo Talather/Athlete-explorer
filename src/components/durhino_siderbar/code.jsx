@@ -84,8 +84,8 @@ const RightSidebar = ({ isOpen, currentFto, onClose }) => {
           <htmlForm className='text-[#1D1D1F] h-full flex flex-col justify-between gap-[10px]'>
 
             <div className='flex flex-col w-full gap-1'>
-              <label htmlFor="field-2" class="text-base font-bold">Email address</label>
-              <input class="py-2 px-3 rounded outline-none custom-shadow
+              <label htmlFor="field-2" className="text-base font-bold">Email address</label>
+              <input className="py-2 px-3 rounded outline-none custom-shadow
                   border-[1px] border-[#ccc] focus:border-blue-400 font-[600]"
                 maxLength="256" name="field-2"
                 data-name="Field 2" placeholder="Email address"
@@ -96,56 +96,56 @@ const RightSidebar = ({ isOpen, currentFto, onClose }) => {
             <div id="myList" className='flex flex-col gap-[10px]'>
               
               <div className="flex flex-col gap-1">
-                <label htmlFor="field-2" class="text-base font-bold">NFT delivery</label>
-                <div class="border-[1px] border-[#ccc] rounded-[10px] px-[20px] py-[16px]">
+                <label htmlFor="field-2" className="text-base font-bold">NFT delivery</label>
+                <div className="border-[1px] border-[#ccc] rounded-[10px] px-[20px] py-[16px]">
                   
-                  <div class="flex items-center gap-[10px]">
+                  <div className="flex items-center gap-[10px]">
                     <img src="/winterLogo.png" loading="lazy" alt="cold" className='w-[25px] shrink-0' />
-                    <h6 class="text-base font-bold">Winter wallet</h6>
+                    <h6 className="text-base font-bold">Winter wallet</h6>
                   </div>
 
-                  <div class="text-sm leading-snug text-[#00000099]">
+                  <div className="text-sm leading-snug text-[#00000099]">
                     No Ethereum wallet? No worries, Winter will store and manage your NFT htmlFor you.
                   </div>
 
                 </div>
               </div>
 
-              <div class={`border-[1px] flex flex-col cursor-pointer transition-all duration-300 gap-2 border-[#ccc] rounded-[10px] px-[20px] py-[16px]
+              <div className={`border-[1px] flex flex-col cursor-pointer transition-all duration-300 gap-2 border-[#ccc] rounded-[10px] px-[20px] py-[16px]
                   ${open ? 'bg-[#f1f1f1]': ''}
                 `}>
                 
                 <div onClick={() => setOpen(!open)} className='flex flex-col gap-1'>
-                  <div class="flex items-start gap-[10px]">
-                    <img src='/ethLogo.png' alt='ETH' loading="lazy" class="w-[25px] shrink-0" />
-                    <h6 class="text-base font-bold">
+                  <div className="flex items-start gap-[10px]">
+                    <img src='/ethLogo.png' alt='ETH' loading="lazy" className="w-[25px] shrink-0" />
+                    <h6 className="text-base font-bold">
                       Ethereum-supported Wallet Address
                     </h6>
                   </div>
-                  <div class="text-sm leading-snug text-[#00000099] w-full text-left">
+                  <div className="text-sm leading-snug text-[#00000099] w-full text-left">
                     Buy this NFT to a Ethereum wallet.<br />
                   </div>
                 </div>
 
                 <div ref={contentRef}
-                  class="flex items-center flex-col collapse-item gap-2 overflow-hidden transition-all duration-300"
+                  className="flex items-center flex-col collapse-item gap-2 overflow-hidden transition-all duration-300"
                   style={{
                     maxHeight: open ? `${contentRef.current?.scrollHeight}px` : '0px'
                   }}
                 >
-                  <input class="py-2 px-3 rounded outline-none custom-shadow
+                  <input className="py-2 px-3 rounded outline-none custom-shadow
                     border-[1px] border-[#ccc] w-full focus:border-blue-400 font-[600]"
                     maxLength="256" name="field-3"
                     data-name="Field 2" placeholder="e.g. 0xe0CB5... or joe.crypto, joe.eth, ..."
                     type="text" id="field-3" required=""
                   />
-                  <div class="text-sm text-[#00000099] text-center">or</div>
+                  <div className="text-sm text-[#00000099] text-center">or</div>
                   
                   <input type="submit" data-wait="Please wait..." 
-                    class="text-center bg-[#0e76fd] font-bold rounded-[5px] px-[15px] py-[9px] text-white" 
+                    className="text-center bg-[#0e76fd] font-bold rounded-[5px] px-[15px] py-[9px] text-white" 
                     value="Connect your ETH wallet" 
                   />
-                  <div class="text-[#00000099] text-center text-sm font-bold leading-tight">
+                  <div className="text-[#00000099] text-center text-sm font-bold leading-tight">
                     🚨 WARNING! Do NOT enter in a Coinbase address. Only enter in a wallet you have the private keys to. We can't help in case of a mistake.
                   </div>
                 </div>
@@ -154,8 +154,8 @@ const RightSidebar = ({ isOpen, currentFto, onClose }) => {
             </div>
 
             <div className='flex flex-col w-full gap-1'>
-              <label htmlFor="card-number" class="text-base font-bold">Card number</label>
-              <input class="py-2 px-3 rounded outline-none custom-shadow
+              <label htmlFor="card-number" className="text-base font-bold">Card number</label>
+              <input className="py-2 px-3 rounded outline-none custom-shadow
                   border-[1px] border-[#ccc] focus:border-blue-400 font-[600]"
                 maxLength="256" name="card-number"
                 data-name="card-number" placeholder="1234 1234 1234 1234"
@@ -166,8 +166,8 @@ const RightSidebar = ({ isOpen, currentFto, onClose }) => {
             <div className='grid grid-cols-2 items-center gap-3'>
 
               <div className='flex flex-col w-full gap-1'>
-                <label htmlFor="expiration" class="text-base font-bold">Expiration</label>
-                <input class="py-2 px-3 rounded outline-none custom-shadow
+                <label htmlFor="expiration" className="text-base font-bold">Expiration</label>
+                <input className="py-2 px-3 rounded outline-none custom-shadow
                     border-[1px] border-[#ccc] focus:border-blue-400 font-[600]"
                   maxLength="256" name="expiration"
                   data-name="expiration" placeholder="MM / YY"
@@ -176,8 +176,8 @@ const RightSidebar = ({ isOpen, currentFto, onClose }) => {
               </div>
 
               <div className='flex flex-col w-full gap-1'>
-                <label htmlFor="cvc" class="text-base font-bold">CVC</label>
-                <input class="py-2 px-3 rounded outline-none custom-shadow
+                <label htmlFor="cvc" className="text-base font-bold">CVC</label>
+                <input className="py-2 px-3 rounded outline-none custom-shadow
                     border-[1px] border-[#ccc] focus:border-blue-400 font-[600]"
                   maxLength="256" name="cvc"
                   data-name="cvc" placeholder="CVC"
