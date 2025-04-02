@@ -1,0 +1,352 @@
+
+/* === CLOSE BUTTON === */
+.button-cancel {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 26px;
+  height: 26px;
+  cursor: pointer;
+}
+
+/* === HEADER === */
+.heading-7 {
+  font-size: 40px;
+  font-weight: 300;
+  margin-bottom: 30px;
+}
+
+/* === TOKEN BOX === */
+.div-block-18 {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.btn-minus,
+.btn-plus {
+  background: linear-gradient(to right, #f2b371 20%, #e28cc4 80%);
+}
+
+.input-number {
+  width: 60px;
+  font-size: 20px;
+  font-weight: 600;
+  border: none;
+  background: transparent;
+  text-align: center;
+  outline: none;
+}
+
+/* === PRICE INFO === */
+.columns-4,
+.columns-3 {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.heading-8 {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.total-price {
+  font-weight: 700;
+  color: #333;
+}
+
+/* === FORM SECTION === */
+
+.checkbox-label {
+  font-size: 13px;
+  margin-left: 6px;
+  color: #1d1d1f;
+}
+
+.submit-button,
+._w-100 {
+  width: 100%;
+  background-color: #222;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  margin-top: 15px;
+  margin-bottom: 16px;
+  cursor: pointer; 
+   transition: background 0.3s;
+}
+
+.submit-button:hover {
+  background-color: #222;
+}
+
+.w-form-done,
+.w-form-fail {
+  font-size: 14px;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.w-form-fail {
+  color: red;
+}
+
+/* === OVERLAY BLUR === */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  backdrop-filter: blur(60px);
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 9900;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+  .right-sidebar {
+    width: 100vw;
+    padding: 25px;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media (max-width: 768px) {
+  .black-section {
+    padding-left: 80px;
+    padding-right: 80px;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Two-section sidebar layout */
+
+/* === LEFT SECTION === */
+
+
+.custom-shadow{
+  box-shadow: 0 2px 5px #0003
+}
+
+.sidebar-shadow {
+  box-shadow: 0 14px 20px #2c2c2cb0;
+}
+
+
+
+
+.qty {
+  font-size: 20px;
+  font-weight: bold;
+
+}
+
+.price-row1 {
+  display: flex;
+  justify-content: space-between;
+  font-size: 20px;
+  padding: 12px 5px;
+  font-weight: 530;
+ border-top: 2px solid #ccc;     
+  
+}
+
+.price-row2 {
+  display: flex;
+  justify-content: space-between;
+  font-size: 20px;
+  padding: 12px 5px;
+  font-weight: 530;
+  border-top: 2px solid #ccc; 
+  padding-bottom: 20px;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+/* === RIGHT SECTION === */
+
+
+/* === RIGHT SECTION === */
+
+/* Expiration + CVC row */
+
+/* Checkbox styling */
+.checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #444;
+}
+
+.checkbox-wrapper input[type="checkbox"] {
+  accent-color: #000;
+  width: 16px;
+  height: 16px;
+}
+
+/* Pay button */
+.pay-button {
+  background: linear-gradient(to right, #222, #000);
+  color: #fff;
+  padding: 14px;
+  font-weight: 700;
+  font-size: 15px;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  margin-top: 20px;
+  cursor: pointer;
+}
+
+.pay-button:hover {
+  background: linear-gradient(to right, #000, #111);
+  transform: translateY(-1px);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media (max-width: 768px) {
+  .right-sidebar {
+    width: 100vw;
+    height: 100vh;
+    padding: 16px;
+    overflow-y: auto;
+    flex-direction: column;
+  }
+
+  .sidebar-content {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .sidebar-left,
+  .sidebar-right {
+    width: 100%;
+    border-radius: 12px;
+    padding: 16px;
+  }
+
+  .quantity-box {
+    flex-direction: row;
+    justify-content: space-around;
+    margin: 10px 0;
+  }
+
+  .price-row1,
+  .price-row2 {
+    font-size: 16px;
+    padding: 10px 8px;
+  }
+
+  .wallet-option {
+    flex-direction: row;
+    padding: 12px;
+  }
+
+  .wallet-option img {
+    width: 28px;
+    height: 28px;
+  }
+
+  .wallet-option strong {
+    font-size: 14px;
+  }
+
+  .wallet-option p {
+    font-size: 12px;
+  }
+
+  .pay-button {
+    font-size: 14px;
+    padding: 12px;
+  }
+}

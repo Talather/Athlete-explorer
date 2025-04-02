@@ -1,0 +1,138 @@
+.social-link.dark-border:hover {
+  box-shadow: inset 0 0 0 1px #1d1d1f;
+}
+
+.footer-bottom {
+  justify-content: center;
+  display: flex;
+}
+
+.footer-link.normal.ml-2 {
+  padding-left: 3.5vw;
+  padding-right: 0;
+}
+
+.social-links-grid {
+  grid-column-gap: 1.6vw;
+  grid-row-gap: 1.6vw;
+  grid-template-rows: auto;
+  grid-template-columns: auto auto auto;
+  grid-auto-columns: 1fr;
+  display: grid;
+}
+
+.footer-grid {
+  grid-column-gap: 1.6vw;
+  grid-row-gap: 1.5vw;
+  grid-template-rows: auto;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-auto-columns: 1fr;
+  display: grid;
+}
+
+.footer-link:hover {
+  color: #9853ec;
+}
+
+.social-link:hover {
+  box-shadow: inset 0 0 0 1px #1d1d1f;
+}
+
+.footer-grid.hide {
+  grid-column-gap: 1.6vw;
+  grid-row-gap: 1.5vw;
+  grid-template-rows: auto;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-auto-columns: 1fr;
+  display: none;
+}
+
+.social-link.dark-border {
+  box-shadow: inset 0 0 0 1px rgba(29, 29, 31, .06);
+}
+
+.social-link.white:hover {
+  box-shadow: inset 0 0 0 1px #fff;
+}
+
+.footer-link {
+  color: #1d1d1f;
+  margin-top: .4vw;
+  margin-bottom: .4vw;
+  font-weight: 700;
+  transition: color .3s ease-out;
+}
+
+.social-links-grid._5vw-margin {
+  display: flex;
+}
+
+
+.social-link {
+  width: 3.2vw;
+  height: 3.2vw;
+  min-height: 35px;
+  min-width: 35px;
+  border-radius: 100%;
+  justify-content: center;
+  align-items: center;
+  padding: 1vw;
+  transition: box-shadow .3s ease-out;
+  display: flex;
+  box-shadow: inset 0 0 0 1px rgba(29, 29, 31, .06);
+}
+
+.social-link.white {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .4);
+}
+
+.footer-column {
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  display: flex;
+}
+
+.footer-title {
+  color: #3f4349;
+  margin-bottom: .8vw;
+  display: none;
+}
+
+.footer-area {
+  grid-column-gap: 16px;
+  grid-row-gap: 16px;
+  grid-template: "Area-3 Area-2 Area"
+  / 1fr 1fr 1fr;
+  grid-auto-columns: 1fr;
+  margin-bottom: 0;
+  padding-bottom: 50px;
+  display: grid;
+}
+
+.footer-link.normal {
+  padding-left: 0;
+  font-weight: 400;
+}
+
+.footer {
+    flex-direction: column;
+    display: flex;
+  }
+
+.footer-credits {
+  color: #1d1d1f;
+  text-align: center;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: .8vw;
+  font-weight: 400;
+  line-height: 1.25;
+  text-decoration: none;
+}
+
+.social-links-grid._1-6vw-margin {
+  grid-template-columns: auto minmax(auto, 1fr);
+  grid-auto-flow: row;
+}

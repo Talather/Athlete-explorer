@@ -1,0 +1,87 @@
+/* === Higher Jump Font === */
+@font-face {
+  font-family: 'Higher Jump';
+  src: url('../assets/fonts/Euclid-Circular-A-Bold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* === Euclid Medium === */
+@font-face {
+  font-family: 'Euclid Medium';
+  src: url('../assets/fonts/Euclid-Circular-A-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+/* === Euclid Regular === */
+@font-face {
+  font-family: 'Euclid Regular';
+  src: url('../assets/fonts/Euclid-Circular-A-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* === Nexa Bold === */
+@font-face {
+  font-family: 'Nexa Bold';
+  src: url('../assets/fonts/Nexa-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+}
+
+/* === Nexa Heavy === */
+/* @font-face {
+  font-family: 'Nexa Heavy';
+  src: url('../assets/fonts/Nexa\ Bold.otf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+} */
+
+
+@font-face {
+  font-family: 'Nexa Heavy';
+  src: url('../assets/fonts/Nexa Bold.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
+}
+
+/* === Nexa Heavy Italic === */
+@font-face {
+  font-family: 'Nexa Heavy Italic';
+  src: url('../assets/fonts/Nexa-HeavyItalic.woff') format('woff');
+  font-weight: 800;
+  font-style: italic;
+}
+
+/* === Nexa Light === */
+@font-face {
+  font-family: 'Nexa Light';
+  src: url('../assets/fonts/Nexa-Light.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+}
+
+/* === Satoshi Bold === */
+@font-face {
+  font-family: 'Satoshi Bold';
+  src: url('../assets/fonts/Satoshi-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+}
+
+/* === Satoshi Medium === */
+@font-face {
+  font-family: 'Satoshi Medium';
+  src: url('../assets/fonts/Satoshi-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+}
+
+/* === Satoshi Regular === */
+@font-face {
+  font-family: 'Satoshi Regular';
+  src: url('../assets/fonts/Satoshi-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
