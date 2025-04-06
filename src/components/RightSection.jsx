@@ -9,16 +9,16 @@ function RightSection ({ isExpanded, selectedEvent, onClose }) {
             ×
           </div>
           <div>
-            <h2 style={{ fontFamily: 'Arial, sans-serif' }}>{selectedEvent?.title}</h2>
-            <p style={{ fontFamily: 'Arial, sans-serif' }}>{selectedEvent?.description}</p>
+            <h2>{selectedEvent?.title}</h2>
+            <p>{selectedEvent?.description}</p>
           </div>
         </>
       ) : (
-        <div className="w-full flex flex-col items-center justify-center h-full">
-          <h2 className="text-center text-[#C9C8C8] text-2xl font-bold" style={{ fontFamily: 'Arial, sans-serif' }}>
+        <div className="w-full flex flex-col items-center justify-center h-full space-y-1">
+          <h2 className="text-center text-[#C9C8C8] text-[28px] font-bold leading-tight">
             Select an Athlete and an Event.
           </h2>
-          <p className="text-center text-[#C9C8C8] text-lg" style={{ fontFamily: 'Arial, sans-serif' }}>
+          <p className="text-center text-[#C9C8C8] text-lg leading-tight">
             To see more information, select an athlete and an event first.
           </p>
         </div>

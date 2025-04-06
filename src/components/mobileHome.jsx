@@ -132,7 +132,7 @@ const MobileOnlyPage = ({
   return (
     <div className='w-full mt-[27px] flex gap-[10px] h-[calc(100vh-165px)] 
       min-[382px]:h-[calc(100vh-193px)] min-[640px]:h-[calc(100vh-223px)]
-      relative overflow-x-auto pr-[10px]'
+      relative overflow-x-hidden pr-[10px]'
     >
       {/* Sidebar */}
       <div className='h-[calc(100%-20px)] shrink-0 w-[90px] min-[400px]:w-[115px] sticky z-30 left-0 top-0 rounded-r-[24px]
@@ -169,9 +169,9 @@ const MobileOnlyPage = ({
       </div>
 
       {/* Main Content */}
-      <div className='w-[195px] min-[350px]:w-[225px] min-[500px]:w-[320px] sm:w-[55%] h-[calc(100%-20px)] rounded-[24px] overflow-hidden shrink-0'>
+      <div className='relative w-[62%] min-[360px]:w-[68%] min-[400px]:w-[65%] min-[465px]:w-[70%] h-[calc(100%-20px)] rounded-[24px] overflow-hidden shrink-0'>
         {searchVisible && (
-          <div style={styles.searchBarContainer}>
+          <div className='absolute w-full px-3 top-3'>
             <input
               type='text'
               placeholder='Search athlete...'
@@ -267,12 +267,13 @@ const MobileOnlyPage = ({
           </div>
         ) }
       </div>
-      <div className='w-[195px] min-[350px]:w-[225px] min-[500px]:w-[244px] sm:w-[26%] h-[calc(100%-20px)] rounded-[24px] 
+
+      <div className='w-[244px] h-[calc(100%-20px)] rounded-[24px] 
         overflow-hidden shrink-0 px-5 py-6
         bg-[#FAFAFB] border border-[#EBEBEB]'
       >
         <div className='text-start text-xl font-bold'>Right Section</div>
-        <div className='text-start'>Additional content goes here.</div>
+        <div className='text-start text-[#969494]'>Additional content goes here.</div>
       </div>
 
     </div>

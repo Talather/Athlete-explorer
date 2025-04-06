@@ -48,8 +48,8 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred }) {
                   </video>
                 </div>
               )}
-              <h3 style={{ fontFamily: "Arial, sans-serif" }}>{event.title}</h3>
-              <p style={{ fontFamily: "Arial, sans-serif" }}>
+              <h3>{event.title}</h3>
+              <p>
                 {event.description}
               </p>
             </div>
@@ -69,10 +69,10 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred }) {
           rounded-3xl w-full flex items-center justify-center p-6 overflow-y-auto"
         >
           <div className="text-[#C9C8C8]">
-            <h2 className="text-center font-bold text-lg" style={{ fontFamily: "Arial, sans-serif" }}>
+            <h2 className="text-center font-bold text-[28px]">
               Select an Athlete.
             </h2>
-            <p className="text-center text-sm" style={{ fontFamily: "Arial, sans-serif" }}>
+            <p className="text-center text-lg">
               To see more information, select an athlete first.
             </p>
           </div>

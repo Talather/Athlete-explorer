@@ -7,6 +7,7 @@ import VideoWithCover from "./videoWithCover";
 import { supabase } from "./../lib/supabase";
 import { getCountryFlagFromName } from "../utils/countries";
 import ReactCountryFlag from "react-country-flag"
+import Navbar from "./Navbar";
 
 function DurinhoPage() {
   const [showSidebar, setShowSidebar] = useState(false);
@@ -117,12 +118,7 @@ function DurinhoPage() {
 
   return (
     <>
-      <div className="sm:p-[10px] flex justify-center">
-        <img src="/sixer.gif" sizes="auto" alt="Logo" 
-          className="w-[75px] h-[70px] px-[10px] py-[7.5px] 
-            sm:w-[80px] sm:h-[80px] sm:px-0 sm:py-0"
-        />
-      </div>
+      <Navbar/>
       
       <div className="bg-gradient-to-r from-[#e99289] to-[#9352ee]
         text-white flex items-center justify-center 
