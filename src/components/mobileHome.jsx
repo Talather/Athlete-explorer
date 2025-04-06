@@ -130,36 +130,46 @@ const MobileOnlyPage = ({
   )
 
   return (
-    <div style={styles.appWrapper}>
+    <div className='w-full mt-[27px] flex gap-[10px] h-[calc(100vh-165px)] 
+      min-[382px]:h-[calc(100vh-193px)] min-[640px]:h-[calc(100vh-223px)]
+      relative overflow-x-auto pr-[10px]'
+    >
       {/* Sidebar */}
-      <div style={styles.sidebar}>
-        <div
-          style={styles.searchIcon}
-          onClick={() => setSearchVisible(!searchVisible)}
-        >
-          <FiSearch size={20} />
-        </div>
+      <div className='h-[calc(100%-20px)] shrink-0 w-[90px] min-[400px]:w-[115px] sticky z-30 left-0 top-0 rounded-r-[24px]
+        bg-[#FAFAFB] border-l-0 border border-[#EBEBEB] overflow-x-hidden'
+      >
+        <div className='h-full w-full relative overflow-y-auto'>
+          <div className='w-full primary-gradient h-2 sticky top-0'></div>
 
-        {filteredAthletes.map(athlete => (
-          <div style={styles.avatarWrapper} key={athlete.id}>
-            <img
-              src={athlete.profilePicture || 'https://via.placeholder.com/40'}
-              alt={athlete.firstName}
-              style={styles.avatar}
-              onClick={() => {
-                onSelectAthlete(athlete)
-                setShowVideo(false)
-              }}
-            />
-            <div style={styles.nameLabel}>{athlete.firstName?.split(' ')[0]}</div>
+          <div className='divide-y-2 divide-[#EBEBEB]'>
+            <button
+              className='w-full p-[12px] flex items-center gap-1'
+              onClick={() => setSearchVisible(!searchVisible)}
+            >
+              <FiSearch size={20} />
+              <span className='text-black font-bold'>Search</span>
+            </button>
+
+            {filteredAthletes.map(athlete => (
+              <div className='flex flex-col bg-white items-center gap-[6px] px-2 py-[10px]' key={athlete.id}>
+                <img
+                  src={athlete.profilePicture || 'https://via.placeholder.com/40'}
+                  alt={athlete.firstName}
+                  className='size-[55px] object-cover rounded-full shrink-0'
+                  onClick={() => {
+                    onSelectAthlete(athlete)
+                    setShowVideo(false)
+                  }}
+                />
+                <div className='text-sm font-bold'>{athlete.firstName?.split(' ')[0]}</div>
+              </div>
+            ))}
           </div>
-        ))}
-
-        <div style={styles.seeAll}>SEE ALL</div>
+        </div>
       </div>
 
       {/* Main Content */}
-      <div style={styles.mainContentWrapper}>
+      <div className='w-[195px] min-[350px]:w-[225px] min-[500px]:w-[320px] sm:w-[55%] h-[calc(100%-20px)] rounded-[24px] overflow-hidden shrink-0'>
         {searchVisible && (
           <div style={styles.searchBarContainer}>
             <input
@@ -172,7 +182,7 @@ const MobileOnlyPage = ({
           </div>
         )}
 
-        {selectedAthlete && (
+        {selectedAthlete ? (
           <>
             {/* Athlete Card with Image or Video */}
             <div style={styles.card} key={selectedAthlete.id}>
@@ -248,8 +258,23 @@ const MobileOnlyPage = ({
               </div>
             ))} */}
           </>
-        )}
+        ) : (
+          <div className='w-full h-full bg-[#FAFAFB] rounded-[24px] border border-[#EBEBEB]
+            text-[#C9C8C8] flex flex-col items-center justify-center px-5 py-6'
+          >
+              <div className='text-center text-xl font-bold'>Select an Athlete</div>
+              <div className='text-center'>To see more information, select athlete first.</div>
+          </div>
+        ) }
       </div>
+      <div className='w-[195px] min-[350px]:w-[225px] min-[500px]:w-[244px] sm:w-[26%] h-[calc(100%-20px)] rounded-[24px] 
+        overflow-hidden shrink-0 px-5 py-6
+        bg-[#FAFAFB] border border-[#EBEBEB]'
+      >
+        <div className='text-start text-xl font-bold'>Right Section</div>
+        <div className='text-start'>Additional content goes here.</div>
+      </div>
+
     </div>
   )
 }

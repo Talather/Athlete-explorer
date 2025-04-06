@@ -13,10 +13,10 @@ function Sidebar ({ athletes, onSelect, isBlurred }) {
   }, [search, athletes])
 
   return (
-    <div className="max-w-[300px] w-full bg-[#FAFAFB] h-full overflow-y-auto overflow-x-hidden border border-[#EBEBEB] shadow-sm rounded-3xl">
-      <div className='w-full primary-gradient h-2 rounded-t-3xl'></div>
+    <div className="max-w-[300px] w-full bg-[#FAFAFB] h-full relative overflow-hidden border border-[#EBEBEB] shadow-sm rounded-3xl">
+      <div className='w-full primary-gradient h-2 rounded-t-3xl sticky top-0'></div>
       
-      <div className='p-6 space-y-4'>
+      <div className='p-6 space-y-4 h-full overflow-y-auto'>
         <h2 className='text-3xl font-bold'>Athletes</h2>
         
         <div className='border rounded-[16px] border-[#E7E7E7] py-3 px-5'>
@@ -34,7 +34,7 @@ function Sidebar ({ athletes, onSelect, isBlurred }) {
           )}
         </div>
 
-        <ul className='flex flex-col items-center w-full gap-4'>
+        <ul className='flex flex-col items-center w-full gap-3'>
           {filtered.map((athlete, index) => (
             <li key={index} onClick={() => onSelect(athlete)}
               className='w-full h-[73px] primary-gradient overflow-hidden p-px rounded-3xl shadow-md cursor-pointer'

@@ -1,6 +1,6 @@
 function RightSection ({ isExpanded, selectedEvent, onClose }) {
   return (
-    <div className={`shrink-0 w-[300px] border border-[#E7E7E7] bg-white rounded-3xl 
+    <div className={`shrink-0 md:w-[200px] lg:w-[220px] xl:w-[300px] border border-[#E7E7E7] bg-white rounded-3xl 
       overflow-x-hidden overflow-y-auto py-5 px-6 ${isExpanded ? 'expanded' : ''}`}
     >
       {isExpanded ? (
@@ -14,13 +14,14 @@ function RightSection ({ isExpanded, selectedEvent, onClose }) {
           </div>
         </>
       ) : (
-        <>
-          <h2 style={{ fontFamily: 'Arial, sans-serif' }}>Select an Athlete and an Event.</h2>
-          <p style={{ fontFamily: 'Arial, sans-serif' }}>Click on an event to participate.</p>
-          <div className="absolute top-[50%]">
-            <p style={{ fontFamily: 'Arial, sans-serif' }}>This event will be available soon.</p>
-          </div>
-        </>
+        <div className="w-full flex flex-col items-center justify-center h-full">
+          <h2 className="text-center text-[#C9C8C8] text-2xl font-bold" style={{ fontFamily: 'Arial, sans-serif' }}>
+            Select an Athlete and an Event.
+          </h2>
+          <p className="text-center text-[#C9C8C8] text-lg" style={{ fontFamily: 'Arial, sans-serif' }}>
+            To see more information, select an athlete and an event first.
+          </p>
+        </div>
       )}
     </div>
   )

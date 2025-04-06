@@ -76,7 +76,9 @@ button:focus-visible {
 }
 
 .stickyBarLink {
-  @apply pl-[8px] pr-[11px] py-[33px] text-lg flex items-center gap-2 text-[#C9C8C8] transition-all duration-300 relative hover:text-black;
+  @apply pl-[8px] pr-[11px] py-[14px] min-[382px]:py-[20px] md:py-[33px] text-sm min-[382px]:text-lg 
+  flex flex-col md:flex-row
+  items-center gap-1 min-[382px]:gap-2 text-[#C9C8C8] transition-all duration-300 relative hover:text-black;
 }
 
 .stickyBarLink::after {
@@ -97,7 +99,9 @@ button:focus-visible {
 }
 
 .stickyBarActiveLink {
-  @apply pl-[8px] pr-[11px] py-[33px] text-lg flex items-center gap-2 text-black transition-all duration-300 relative;
+  @apply pl-[8px] pr-[11px] min-[382px]:py-[20px] md:py-[33px] text-sm min-[382px]:text-lg  
+    flex flex-col md:flex-row 
+    items-center gap-1 min-[382px]:gap-2 text-black transition-all duration-300 relative;
 }
 
 .stickyBarActiveLink::after {

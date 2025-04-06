@@ -40,7 +40,7 @@ function Footer () {
             </li>
           </ul>
         </div>
-        <div className='social-links'>
+        <div className='social-links flex flex-col items-center'>
           <h3>Follow Us</h3>
           {/* <div className='social-icons'>
             <a href='#'>

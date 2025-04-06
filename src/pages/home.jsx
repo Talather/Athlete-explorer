@@ -87,9 +87,7 @@ function Home() {
           />
         </div> */}
           <Navbar />
-
-          <MobileStickyBar />
-          {/* <Footer />  */}
+          
           <MobileOnlyPage
             athletes={athletes}
             selectedAthlete={selectedAthlete}
@@ -98,12 +96,14 @@ function Home() {
             onEventClick={handleEventClick}
           />
 
+          <StickyBar />
+
           <Footer />
         </>
       ) : (
         <>
           <Navbar />
-          <div className="flex h-[calc(100vh-196px)] gap-10 justify-between pt-10 pb-6 px-10">
+          <div className="flex h-[calc(100vh-196px)] gap-5 lg:gap-10 justify-between pt-10 pb-6 px-10">
             <Sidebar
               athletes={athletes}
               onSelect={handleSelectAthlete}
