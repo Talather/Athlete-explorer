@@ -103,7 +103,7 @@ function Home() {
       ) : (
         <>
           <Navbar />
-          <div className="content">
+          <div className="flex h-[calc(100vh-196px)] gap-10 justify-between pt-10 pb-6 px-10">
             <Sidebar
               athletes={athletes}
               onSelect={handleSelectAthlete}

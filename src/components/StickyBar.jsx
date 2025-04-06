@@ -1,33 +1,56 @@
-import { Routes, Route, Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 
 function StickyBar() {
   return (
-    <div className='bottom-bar-wrapper'>
-    <div className='sticky-bar'>
-        <div className='menu-item'>
-          <Link to = '/'>
-        <i className='fas fa-house'></i> Home
-        </Link>
+    <div className='w-full flex items-center justify-center'>
+      <div className='stickyBarWrapper max-w-[698px] w-full bg-[#E7E7E7] rounded-t-[30px] flex items-center justify-center gap-[18px]'>
+        <NavLink
+          to='/'
+          end
+          className={({ isActive }) =>
+            `stickyBarLink ${isActive ? 'stickyBarActiveLink' : ''}`
+          }
+        >
+          <i className='fas fa-house'></i> <span> Home </span>
+        </NavLink>
+
+        <NavLink
+          to='/page'
+          className={({ isActive }) =>
+            `stickyBarLink ${isActive ? 'stickyBarActiveLink' : ''}`
+          }
+        >
+          <i className='fas fa-coins'></i> <span> FTO </span>
+        </NavLink>
+
+        <NavLink
+          to='/wallet'
+          className={({ isActive }) =>
+            `stickyBarLink ${isActive ? 'stickyBarActiveLink' : ''}`
+          }
+        >
+          <i className='fa fa-wallet'></i> <span> Wallet </span>
+        </NavLink>
+
+        <NavLink
+          to='/settings'
+          className={({ isActive }) =>
+            `stickyBarLink ${isActive ? 'stickyBarActiveLink' : ''}`
+          }
+        >
+          <i className='fa fa-user'></i> <span> Settings </span>
+        </NavLink>
+
+        <NavLink
+          to='/help'
+          className={({ isActive }) =>
+            `stickyBarLink ${isActive ? 'stickyBarActiveLink' : ''}`
+          }
+        >
+          <i className='fa fa-question-circle'></i> <span> Help </span>
+        </NavLink>
       </div>
-      <div className='separator'></div>
-      <div className='menu-item'>
-         <Link to='/page'>
-          <i className='fas fa-coins'></i> FTO
-          </Link>
-      </div>
-      <div className='separator'></div>
-      <div className='menu-item'>
-        <i className='fa fa-wallet'></i> Wallet
-      </div>
-      <div className='separator'></div>
-      <div className='menu-item'>
-        <i className='fa fa-user'></i> Settings
-      </div>
-      <div className='separator'></div>
-      <div className='menu-item'>
-        <i className='fa fa-question-circle'></i> Help
-      </div>
-    </div></div>
+    </div>
   )
 }
 

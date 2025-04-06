@@ -69,3 +69,52 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 } */
+
+
+.primary-gradient {
+  background-image: linear-gradient(65deg, #EB9486, #8F4FF3);
+}
+
+.stickyBarLink {
+  @apply pl-[8px] pr-[11px] py-[33px] text-lg flex items-center gap-2 text-[#C9C8C8] transition-all duration-300 relative hover:text-black;
+}
+
+.stickyBarLink::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 0;
+  width: 100%;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  background-image: linear-gradient(65deg, #EB9486, #8F4FF3);
+  transition: height 0.3s ease;
+}
+
+.stickyBarLink:hover::after {
+  height: 8px;
+}
+
+.stickyBarActiveLink {
+  @apply pl-[8px] pr-[11px] py-[33px] text-lg flex items-center gap-2 text-black transition-all duration-300 relative;
+}
+
+.stickyBarActiveLink::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 8px;
+  width: 100%;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  background-image: linear-gradient(65deg, #EB9486, #8F4FF3);
+  transition: height 0.3s ease;
+}
+
+@layer utilities {
+  .stickyBarWrapper {
+    box-shadow: -4px -8px 12px -8px rgba(0,0,0,0.25);
+  }
+}
