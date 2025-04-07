@@ -30,16 +30,29 @@ function Home() {
 
   useEffect(() => {
     const fetchAthletes = async () => {
-      const { data, error } = await supabase.from("Atheletes").select("*").order('created_at', { ascending: false });
+      const { data, error } = await supabase
+        .from("Atheletes")
+        .select("*")
+        .order("created_at", { ascending: false });
       if (error) console.error("Error fetching athletes:", error);
       else setAthletes(data);
     };
+
+    setEvents([
+      {
+        title: "sad",
+        video_url:
+          "https://videos.pexels.com/video-files/8439147/8439147-uhd_2560_1440_25fps.mp4",
+        description: "this is an event",
+      },
+    ]);
 
     fetchAthletes();
   }, []);
 
   const handleSelectAthlete = async (athlete) => {
-    athlete.video_url = "https://nargvalmcrunehnemvpa.supabase.co/storage/v1/object/sign/Athlete/Villain%20LeBron%20did%20not%20forget.mp4?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJBdGhsZXRlL1ZpbGxhaW4gTGVCcm9uIGRpZCBub3QgZm9yZ2V0Lm1wNCIsImlhdCI6MTc0MTU5ODYyOCwiZXhwIjoxNzQ0MTkwNjI4fQ.LCNqKXp4xqfja0Ga7QdfeQ4Vk-ZEUjj5lq8tXSj5sqM";
+    athlete.video_url =
+      "https://nargvalmcrunehnemvpa.supabase.co/storage/v1/object/sign/Athlete/Villain%20LeBron%20did%20not%20forget.mp4?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJBdGhsZXRlL1ZpbGxhaW4gTGVCcm9uIGRpZCBub3QgZm9yZ2V0Lm1wNCIsImlhdCI6MTc0MTU5ODYyOCwiZXhwIjoxNzQ0MTkwNjI4fQ.LCNqKXp4xqfja0Ga7QdfeQ4Vk-ZEUjj5lq8tXSj5sqM";
 
     setSelectedAthlete(athlete);
 
@@ -87,7 +100,7 @@ function Home() {
           />
         </div> */}
           <Navbar />
-          
+
           <MobileOnlyPage
             athletes={athletes}
             selectedAthlete={selectedAthlete}
