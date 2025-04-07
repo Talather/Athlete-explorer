@@ -79,26 +79,6 @@ function Home() {
     <>
       {isMobile ? (
         <>
-          {/* <Navbar />
-        <div className='content'>
-          <Sidebar
-            athletes={athletes}
-            onSelect={handleSelectAthlete}
-            isBlurred={isExpanded}
-          />
-          <AthleteDetails
-            key={selectedAthlete?.id}
-            athlete={selectedAthlete}
-            events={events}
-            onEventClick={handleEventClick}
-            isBlurred={isExpanded}
-          />
-          <RightSection
-            isExpanded={isExpanded}
-            selectedEvent={selectedEvent}
-            onClose={handleClose}
-          />
-        </div> */}
           <Navbar />
 
           <MobileOnlyPage
@@ -107,6 +87,8 @@ function Home() {
             events={events}
             onSelectAthlete={handleSelectAthlete}
             onEventClick={handleEventClick}
+            isExpanded={isExpanded}
+            onClose={handleClose}
           />
 
           <StickyBar />

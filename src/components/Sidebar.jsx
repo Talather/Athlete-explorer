@@ -13,7 +13,9 @@ function Sidebar ({ athletes, onSelect, isBlurred }) {
   }, [search, athletes])
 
   return (
-    <div className="max-w-[300px] w-full bg-[#FAFAFB] h-full relative overflow-hidden border border-[#EBEBEB] shadow-sm rounded-3xl">
+    <div className={`max-w-[300px] w-full bg-[#FAFAFB] h-full relative overflow-hidden border border-[#EBEBEB] shadow-sm rounded-3xl
+      ${isBlurred ? "blur-md" : ""}`}
+    >
       <div className='w-full primary-gradient h-2 rounded-t-3xl sticky top-0'></div>
       
       <div className='p-6 space-y-4 h-full overflow-y-auto'>
