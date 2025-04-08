@@ -38,15 +38,6 @@ function Home() {
       else setAthletes(data);
     };
 
-    setEvents([
-      {
-        title: "sad",
-        video_url:
-          "https://videos.pexels.com/video-files/8439147/8439147-uhd_2560_1440_25fps.mp4",
-        description: "this is an event",
-      },
-    ]);
-
     fetchAthletes();
   }, []);
 
@@ -56,13 +47,19 @@ function Home() {
 
     setSelectedAthlete(athlete);
 
-    // const { data, error } = await supabase
-    //   .from("Events")
-    //   .select("*")
-    //   .eq("athlete_id", athlete.id);
+    // Fetch events for the selected athlete from the Events table
+    const { data, error } = await supabase
+      .from("Events")
+      .select("*")
+      .eq("athelete_token_id", athlete.id);
 
-    // if (error) console.error("Error fetching events:", error);
-    // else setEvents(data);
+    if (error) {
+      console.error("Error fetching events:", error);
+      setEvents([]);
+    } else {
+      console.log("Fetched events:", data);
+      setEvents(data || []);
+    }
   };
 
   const handleEventClick = (event) => {
