@@ -47,11 +47,20 @@ function Home() {
 
     setSelectedAthlete(athlete);
 
+    // Get current day of the week
+    const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const today = new Date();
+    const currentDay = daysOfWeek[today.getDay()];
+    
+    console.log("Current day:", currentDay);
+
     // Fetch events for the selected athlete from the Events table
+    // Filter by both athlete ID and current day of the week
     const { data, error } = await supabase
       .from("Events")
       .select("*")
-      .eq("athelete_token_id", athlete.id);
+      .eq("athelete_token_id", athlete.id)
+      .eq("day", currentDay);
 
     if (error) {
       console.error("Error fetching events:", error);
