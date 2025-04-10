@@ -49,12 +49,21 @@ function Home() {
     // Set the athlete and their video URL
     athlete.video_url ="https://nargvalmcrunehnemvpa.supabase.co/storage/v1/object/sign/Athlete/Villain%20LeBron%20did%20not%20forget.mp4?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJBdGhsZXRlL1ZpbGxhaW4gTGVCcm9uIGRpZCBub3QgZm9yZ2V0Lm1wNCIsImlhdCI6MTc0MTU5ODYyOCwiZXhwIjoxNzQ0MTkwNjI4fQ.LCNqKXp4xqfja0Ga7QdfeQ4Vk-ZEUjj5lq8tXSj5sqM";
     setSelectedAthlete(athlete);
-  
-    // Fetch events for the selected athlete
+
+    // Get current day of the week
+    const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const today = new Date();
+    const currentDay = daysOfWeek[today.getDay()];
+    
+    console.log("Current day:", currentDay);
+
+    // Fetch events for the selected athlete from the Events table
+    // Filter by both athlete ID and current day of the week
     const { data, error } = await supabase
       .from("Events")
       .select("*")
-      .eq("athelete_token_id", athlete.id);
+      .eq("athelete_token_id", athlete.id)
+      .eq("day", currentDay);
   
     if (error) {
       console.error("Error fetching events:", error);
