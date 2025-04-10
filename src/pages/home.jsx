@@ -42,17 +42,20 @@ function Home() {
   }, []);
 
   const handleSelectAthlete = async (athlete) => {
-    athlete.video_url =
-      "https://nargvalmcrunehnemvpa.supabase.co/storage/v1/object/sign/Athlete/Villain%20LeBron%20did%20not%20forget.mp4?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJBdGhsZXRlL1ZpbGxhaW4gTGVCcm9uIGRpZCBub3QgZm9yZ2V0Lm1wNCIsImlhdCI6MTc0MTU5ODYyOCwiZXhwIjoxNzQ0MTkwNjI4fQ.LCNqKXp4xqfja0Ga7QdfeQ4Vk-ZEUjj5lq8tXSj5sqM";
-
+    // Clear events and set the athlete first
+    setEvents([]);
+    setSelectedAthlete(null);  // Optionally clear the selected athlete before setting the new one
+  
+    // Set the athlete and their video URL
+    athlete.video_url ="https://nargvalmcrunehnemvpa.supabase.co/storage/v1/object/sign/Athlete/Villain%20LeBron%20did%20not%20forget.mp4?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJBdGhsZXRlL1ZpbGxhaW4gTGVCcm9uIGRpZCBub3QgZm9yZ2V0Lm1wNCIsImlhdCI6MTc0MTU5ODYyOCwiZXhwIjoxNzQ0MTkwNjI4fQ.LCNqKXp4xqfja0Ga7QdfeQ4Vk-ZEUjj5lq8tXSj5sqM";
     setSelectedAthlete(athlete);
-
-    // Fetch events for the selected athlete from the Events table
+  
+    // Fetch events for the selected athlete
     const { data, error } = await supabase
       .from("Events")
       .select("*")
       .eq("athelete_token_id", athlete.id);
-
+  
     if (error) {
       console.error("Error fetching events:", error);
       setEvents([]);
@@ -61,6 +64,7 @@ function Home() {
       setEvents(data || []);
     }
   };
+  
 
   const handleEventClick = (event) => {
     setSelectedEvent(event);

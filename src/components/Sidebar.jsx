@@ -14,7 +14,7 @@ function Sidebar ({ athletes, onSelect, isBlurred }) {
 
   return (
     <div className={`max-w-[300px] w-full bg-[#FAFAFB] h-full relative overflow-hidden border border-[#EBEBEB] shadow-sm rounded-3xl
-      ${isBlurred ? "blur-md" : ""}`}
+      ${isBlurred ? "blur-lg pointer-events-none" : ""}`}
     >
       <div className='w-full primary-gradient h-2 rounded-t-3xl sticky top-0'></div>
       
