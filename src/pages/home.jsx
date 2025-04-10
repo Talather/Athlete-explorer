@@ -7,7 +7,6 @@ import RightSection from "../components/RightSection";
 import StickyBar from "../components/StickyBar";
 import Footer from "../components/Footer";
 import MobileOnlyPage from "../components/mobileHome";
-import MobileStickyBar from "../components/mobileStickyBar";
 
 function Home() {
   const [athletes, setAthletes] = useState([]);
@@ -42,29 +41,17 @@ function Home() {
   }, []);
 
   const handleSelectAthlete = async (athlete) => {
-    // Clear events and set the athlete first
-    setEvents([]);
-    setSelectedAthlete(null);  // Optionally clear the selected athlete before setting the new one
-  
-    // Set the athlete and their video URL
-    athlete.video_url ="https://nargvalmcrunehnemvpa.supabase.co/storage/v1/object/sign/Athlete/Villain%20LeBron%20did%20not%20forget.mp4?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJBdGhsZXRlL1ZpbGxhaW4gTGVCcm9uIGRpZCBub3QgZm9yZ2V0Lm1wNCIsImlhdCI6MTc0MTU5ODYyOCwiZXhwIjoxNzQ0MTkwNjI4fQ.LCNqKXp4xqfja0Ga7QdfeQ4Vk-ZEUjj5lq8tXSj5sqM";
+    athlete.video_url =
+      "https://nargvalmcrunehnemvpa.supabase.co/storage/v1/object/sign/Athlete/Villain%20LeBron%20did%20not%20forget.mp4?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJBdGhsZXRlL1ZpbGxhaW4gTGVCcm9uIGRpZCBub3QgZm9yZ2V0Lm1wNCIsImlhdCI6MTc0MTU5ODYyOCwiZXhwIjoxNzQ0MTkwNjI4fQ.LCNqKXp4xqfja0Ga7QdfeQ4Vk-ZEUjj5lq8tXSj5sqM";
+
     setSelectedAthlete(athlete);
 
-    // Get current day of the week
-    const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const today = new Date();
-    const currentDay = daysOfWeek[today.getDay()];
-    
-    console.log("Current day:", currentDay);
-
     // Fetch events for the selected athlete from the Events table
-    // Filter by both athlete ID and current day of the week
     const { data, error } = await supabase
       .from("Events")
       .select("*")
-      .eq("athelete_token_id", athlete.id)
-      .eq("day", currentDay);
-  
+      .eq("athelete_token_id", athlete.id);
+
     if (error) {
       console.error("Error fetching events:", error);
       setEvents([]);
@@ -73,7 +60,6 @@ function Home() {
       setEvents(data || []);
     }
   };
-  
 
   const handleEventClick = (event) => {
     setSelectedEvent(event);

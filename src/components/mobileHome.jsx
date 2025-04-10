@@ -172,12 +172,7 @@ const MobileOnlyPage = ({
       </div>
 
       {/* Main Content */}
-        <motion.div
-          initial={{ opacity: 0, y: -50 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -50 }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
-
+        <div
           className='relative w-[calc(100%-120px)] 
             min-[400px]:w-[calc(100%-146px)] h-[calc(100%-20px)] 
             rounded-[24px] overflow-hidden'
@@ -197,11 +192,7 @@ const MobileOnlyPage = ({
           {selectedAthlete ? (
             <>
               {/* Athlete Card with Image or Video */}
-              <motion.div
-                initial={{ opacity: 0, y: -50 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -50 }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
+              <div
                 style={styles.card} key={selectedAthlete.id}
                 className='relative z-20'
               >
@@ -255,16 +246,11 @@ const MobileOnlyPage = ({
                     {/* <div>{events.length} Events</div> */}
                   </div>
                 </div>
-              </motion.div>
+              </div>
 
               {/* Events List */}
               {events.map(event => (
-                <motion.div
-                  initial={{ opacity: 0, y: -50 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -50 }}
-                  transition={{ duration: 0.4, ease: "easeOut" }}
-                  key={event.id}
+                <div
                   style={styles.card}
                   onClick={() => onEventClick(event)}
                 >
@@ -276,7 +262,7 @@ const MobileOnlyPage = ({
                       Description: {event.description || 'N/A'}
                     </div>
                   </div>
-                </motion.div>
+                </div>
               ))}
             </>
           ) : (
@@ -287,7 +273,7 @@ const MobileOnlyPage = ({
                 <div className='text-center'>To see more information, select athlete first.</div>
             </div>
           ) }
-        </motion.div>
+        </div>
 
       <div className={`h-[calc(100%-20px)] rounded-[24px] 
         overflow-x-hidden overflow-y-auto shrink-0 bg-[#FAFAFB] 

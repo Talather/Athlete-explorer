@@ -192,7 +192,7 @@ function DurinhoPage() {
                   {new Date(currentFto.startDate).toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase()}
                 </div>
                 <div className="text-sm sm:text-lg text-end text-[#717071] leading-normal font-[600]">
-                  Publication time
+                  Publication day
                 </div>
               </div>
 
@@ -227,7 +227,7 @@ function DurinhoPage() {
                   {new Date(currentFto.startDate).toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' })}
                 </strong>
                 <p className="text-sm sm:text-lg text-center text-[#717071] leading-normal font-[600]">
-                  Token sale start date
+                  Start date
                 </p>
               </div>
             </div>
