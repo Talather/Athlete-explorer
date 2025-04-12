@@ -10,11 +10,12 @@ const MobileOnlyPage = ({
   onSelectAthlete,
   isExpanded,
   onClose,
-  onEventClick
+  onEventClick,
 }) => {
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [showVideo, setShowVideo] = useState(false);
+  const [selectedEvent,setSelectedEvent]= useState(null);
 
   const styles = {
     appWrapper: {
@@ -128,9 +129,90 @@ const MobileOnlyPage = ({
     }
   }
 
-  const filteredAthletes = athletes.filter(athlete =>
-    athlete.firstName.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  const filteredAthletes = athletes.filter(athlete => {
+    const searchTermLower = searchTerm.toLowerCase();
+    return (
+      (athlete.firstName?.toLowerCase() || '').includes(searchTermLower) || 
+      (athlete.lastName?.toLowerCase() || '').includes(searchTermLower) ||
+      (athlete.fanTokenSymbol?.toLowerCase() || '').includes(searchTermLower) ||
+      (athlete.sport?.toLowerCase() || '').includes(searchTermLower)
+    );
+  });
+
+  // Event content rendering function for the right sidebar when expanded
+  const renderEventDetailContent = () => {
+    if (!selectedEvent) return null;
+    
+    switch(selectedEvent.type) {
+      case 'video':
+        return (
+          selectedEvent?.video_url && (
+            <div className="mt-6 rounded-xl overflow-hidden border border-[#EEEEEE]">
+              <video
+                controls
+                width="100%"
+                height="auto"
+                className="w-full object-cover"
+              >
+                <source src={selectedEvent.video_url} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          )
+        );
+      
+      case 'live_stream':
+        return (
+          selectedEvent?.live_stream_url && (
+            <div className="mt-6 rounded-xl overflow-hidden relative">
+              <div className="aspect-video">
+                <iframe
+                  width="100%"
+                  height="100%"
+                  src={selectedEvent.live_stream_url}
+                  title="Livestream"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full"
+                ></iframe>
+              </div>
+              <div className="bg-red-500 text-white px-3 py-1 rounded-full absolute top-2 right-2 z-30 text-sm font-medium">
+                LIVE
+              </div>
+            </div>
+          )
+        );
+      
+      case 'contest':
+        return (
+          <div className="mt-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6">
+            <div className="text-center mb-4">
+              <h3 className="font-bold text-lg mb-2">Upload Your Submission</h3>
+              <p className="text-gray-600 mb-4">Participate in this contest by uploading your content below</p>
+              
+              <div className="bg-white rounded-lg p-4 border border-indigo-100 mb-4">
+                <div className="flex flex-col items-center justify-center cursor-pointer p-6 border-2 border-dashed border-indigo-200 rounded-lg hover:bg-indigo-50 transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-10 h-10 text-indigo-400 mb-2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                  </svg>
+                  <p className="text-indigo-600 font-medium">Click to upload</p>
+                  <p className="text-gray-500 text-sm">or drag and drop</p>
+                  <p className="text-gray-500 text-xs mt-1">Image or Video files only</p>
+                </div>
+              </div>
+              
+              <button className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-full transition-all">
+                Submit Entry
+              </button>
+            </div>
+          </div>
+        );
+      
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className='w-full mt-[27px] flex gap-[10px] h-[calc(100vh-165px)] 
@@ -164,7 +246,7 @@ const MobileOnlyPage = ({
                     setShowVideo(false)
                   }}
                 />
-                <div className='text-sm font-bold'>{athlete.firstName?.split(' ')[0]}</div>
+                <div className='text-sm font-bold'>${athlete.fanTokenSymbol}</div>
               </div>
             ))}
           </div>
@@ -191,7 +273,6 @@ const MobileOnlyPage = ({
 
           {selectedAthlete ? (
             <>
-              {/* Athlete Card with Image or Video */}
               <div
                 style={styles.card} key={selectedAthlete.id}
                 className='relative z-20'
@@ -201,7 +282,7 @@ const MobileOnlyPage = ({
                     <>
                       <img
                         src={
-                          selectedAthlete.image_url ||
+                          selectedAthlete.profilePicture ||
                           'https://via.placeholder.com/300x240'
                         }
                         alt={selectedAthlete.firstName}
@@ -243,7 +324,7 @@ const MobileOnlyPage = ({
                   <div style={styles.videoOverlay}>
                     <div>{selectedAthlete.firstName}</div>
                     {/* <div>{selectedAthlete.owners || '2.4m'} Owners</div> */}
-                    {/* <div>{events.length} Events</div> */}
+                    <div>{events.length} Events</div>
                   </div>
                 </div>
               </div>
@@ -252,11 +333,14 @@ const MobileOnlyPage = ({
               {events.map(event => (
                 <div
                   style={styles.card}
-                  onClick={() => onEventClick(event)}
+                  onClick={() => {
+                    onEventClick(event)
+                    setSelectedEvent(event);
+                  }}
                 >
                   <div style={styles.cardContent}>
                     <div style={styles.cardText}>
-                      {event.title || 'Untitled Event'}
+                      {event.name || 'Untitled Event'}
                     </div>
                     <div style={styles.cardMeta}>
                       Description: {event.description || 'N/A'}
@@ -282,7 +366,6 @@ const MobileOnlyPage = ({
         >
         <div className='px-6 py-7 relative z-50'>
           
-
           {/* cross button */}
             <button className='close-btn absolute top-2.5 right-2.5' onClick={onClose}>
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -299,10 +382,19 @@ const MobileOnlyPage = ({
               </svg>
             </button>
 
-          <div className='w-full'>
-            <div className='text-start text-xl font-bold'>Right Section</div>
-            <div className='text-start text-[#969494]'>Additional content goes here.</div>
-          </div>
+          {isExpanded && selectedEvent ? (
+            <div className='w-full'>
+              <h2 className="text-2xl text-black font-bold">{selectedEvent?.name}</h2>
+              <p className="text-lg text-[#969494] mb-2">{selectedEvent?.description}</p>
+              
+              {renderEventDetailContent()}
+            </div>
+          ) : (
+            <div className='w-full'>
+              <div className='text-start text-xl font-bold'>Right Section</div>
+              <div className='text-start text-[#969494]'>Additional content goes here.</div>
+            </div>
+          )}
         </div>
       </div>
 

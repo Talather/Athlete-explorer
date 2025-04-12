@@ -46,17 +46,19 @@ function Home() {
 
     setSelectedAthlete(athlete);
 
-    // Fetch events for the selected athlete from the Events table
+    const today = new Date();
+    const formattedDate = today.toISOString().split('T')[0];
+
     const { data, error } = await supabase
       .from("Events")
       .select("*")
-      .eq("athelete_token_id", athlete.id);
+      .eq("athelete_token_id", athlete.id)
+      .eq("day", formattedDate);
 
     if (error) {
       console.error("Error fetching events:", error);
       setEvents([]);
     } else {
-      console.log("Fetched events:", data);
       setEvents(data || []);
     }
   };

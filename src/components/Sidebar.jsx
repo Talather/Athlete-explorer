@@ -6,9 +6,15 @@ function Sidebar ({ athletes, onSelect, isBlurred }) {
 
   useEffect(() => {
     setFiltered(
-      athletes.filter(athlete =>
-        athlete.firstName.toLowerCase().includes(search.toLowerCase())
-      )
+      athletes.filter(athlete => {
+        const searchLower = search.toLowerCase();
+        return (
+          (athlete.firstName?.toLowerCase() || '').includes(searchLower) || 
+          (athlete.lastName?.toLowerCase() || '').includes(searchLower) ||
+          (athlete.fanTokenSymbol?.toLowerCase() || '').includes(searchLower) ||
+          (athlete.sport?.toLowerCase() || '').includes(searchLower)
+        );
+      })
     )
   }, [search, athletes])
 
@@ -48,9 +54,9 @@ function Sidebar ({ athletes, onSelect, isBlurred }) {
                   <img src={athlete.profilePicture} alt={athlete.firstName} className='size-full object-cover'/>
                 </div>
                 <div>
-                  <p className='font-bold text-base'>{athlete.firstName}  {athlete.lastName}</p>
+                  <p className='font-bold text-base'>${athlete.fanTokenSymbol}</p>
                   <div className='text-[#969494] text-sm'>
-                    Athlete
+                    {athlete.sport}
                   </div>
                 </div>
               </div>

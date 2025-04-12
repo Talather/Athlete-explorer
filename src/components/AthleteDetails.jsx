@@ -4,56 +4,7 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred }) {
   
   const renderEventContent = (event) => {
     switch(event.type) {
-      // case 'video':
-      //   return (
-         
-      //   );
-      
-      // case 'live_stream':
-      //   return (
-      //     event?.live_stream_url && (
-      //       <div 
-      //         key={athlete.id || event?.live_stream_url}
-      //         className="rounded-3xl overflow-hidden h-[240px] relative border border-[#EEEEEE]"
-      //       >
-      //         <div className="h-2 primary-gradient z-20 rounded-t-3xl sticky top-0"></div>
-      //         <iframe
-      //           width="100%"
-      //           height="100%"
-      //           src={event.live_stream_url}
-      //           title={`${athlete?.name || 'Athlete'} Livestream`}
-      //           frameBorder="0"
-      //           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      //           allowFullScreen
-      //           className="w-full h-full object-cover"
-      //         ></iframe>
-      //         <div className="bg-red-500 text-white px-3 py-1 rounded-full absolute top-2 right-2 z-30 text-sm font-medium">
-      //           LIVE
-      //         </div>
-      //       </div>
-      //     )
-      //   );
-      
-      // case 'contest':
-      //   return (
-      //     <div
-      //       className="rounded-3xl overflow-hidden h-[240px] relative border border-[#EEEEEE] bg-gradient-to-r from-blue-50 to-indigo-50"
-      //     >
-      //       <div className="h-2 primary-gradient z-20 rounded-t-3xl sticky top-0"></div>
-      //       <div className="w-full h-full flex flex-col items-center justify-center px-4 py-6">
-      //         <div className="text-center mb-4">
-      //           <h3 className="font-bold text-xl mb-2">{event.name || "Contest Event"}</h3>
-      //           <p className="text-gray-600">{event.description || "Participate in this special contest event!"}</p>
-      //         </div>
-      //         <button
-      //           className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-full transition-all"
-      //           onClick={() => onEventClick(event)}
-      //         >
-      //           Participate Now
-      //         </button>
-      //       </div>
-      //     </div>
-      //   );
+    
       
       default:
         return null;
@@ -133,7 +84,7 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred }) {
                 className="space-y-10 mb-5 @container"
                 key={event.id || i}
               >
-                {renderEventContent(event)}
+                {/* {renderEventContent(event)} */}
                 
                 <button onClick={() => onEventClick(event)}
                   className="w-full bg-[#FCFCFC] border border-[#EEEEEE] 

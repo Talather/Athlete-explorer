@@ -77,19 +77,19 @@ function DurinhoPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-[#f8e3e0] to-[#e9d5f7]">
-        <img src="/sixer.gif" sizes="auto" alt="Logo" className="w-[120px] h-[120px] mb-4" />
+        {/* <img src="/sixer.gif" sizes="auto" alt="Logo" className="w-[120px] h-[120px] mb-4" />
         <div className="text-center">
           <div className="bg-white p-6 rounded-xl shadow-md">
             <div className="w-16 h-16 border-4 border-t-[#9352ee] border-r-[#e99289] border-b-[#9352ee] border-l-[#e99289] rounded-full animate-spin mx-auto mb-4"></div>
             <h2 className="text-xl font-bold text-[#1D1D1D] mb-2">Loading Fan Token Offering</h2>
             <p className="text-[#717071]">Please wait while we fetch the latest FTO data...</p>
           </div>
-        </div>
+        </div> */}
       </div>
     );
   }
   
-  if (!currentFto) {
+  if (!currentFto ) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-[#f8e3e0] to-[#e9d5f7]">
         <img src="/sixer.gif" sizes="auto" alt="Logo" className="w-[120px] h-[120px] mb-4" />
@@ -165,8 +165,6 @@ function DurinhoPage() {
                   ></div>
                 </div>
               </div>
-              
-
             </div>
           </div>
 
