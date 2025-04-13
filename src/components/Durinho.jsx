@@ -198,7 +198,7 @@ function DurinhoPage() {
 
             <div className="flex flex-col justify-center items-center py-[20px]">
               <h3 className="text-center text-[22px] sm:text-[33px] leading-normal font-bold text-[#1D1D1F]">
-                {currentFto.Atheletes.firstName} "{currentFto.Atheletes.nickName}" {currentFto.Atheletes.lastName}
+                {currentFto.Atheletes.firstName} {currentFto.Atheletes.nickName ? `"${currentFto.Atheletes.nickName}"`:""} {currentFto.Atheletes.lastName}
               </h3>
               <p className="text-center text-[15px] sm:text-[18px] leading-normal font-bold text-[#717071]">
                 {currentFto.Atheletes.description}
