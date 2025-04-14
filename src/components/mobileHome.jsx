@@ -185,26 +185,44 @@ const MobileOnlyPage = ({
         );
       
       case 'contest':
+        const currentDate = new Date();
+        const contestEndDate = selectedEvent.contest_end_date ? new Date(selectedEvent.contest_end_date) : null;
+        const isContestEnded = contestEndDate ? currentDate > contestEndDate : false;
+        
         return (
           <div className="mt-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6">
             <div className="text-center mb-4">
-              <h3 className="font-bold text-lg mb-2">Upload Your Submission</h3>
-              <p className="text-gray-600 mb-4">Participate in this contest by uploading your content below</p>
+              <h3 className="font-bold text-lg mb-2">
+                {isContestEnded ? "Contest has ended" : "Upload Your Submission"}
+              </h3>
               
-              <div className="bg-white rounded-lg p-4 border border-indigo-100 mb-4">
-                <div className="flex flex-col items-center justify-center cursor-pointer p-6 border-2 border-dashed border-indigo-200 rounded-lg hover:bg-indigo-50 transition-colors">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-10 h-10 text-indigo-400 mb-2">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-                  </svg>
-                  <p className="text-indigo-600 font-medium">Click to upload</p>
-                  <p className="text-gray-500 text-sm">or drag and drop</p>
-                  <p className="text-gray-500 text-xs mt-1">Image or Video files only</p>
-                </div>
-              </div>
-              
-              <button className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-full transition-all">
-                Submit Entry
-              </button>
+              {!isContestEnded ? (
+                <>
+                  <p className="text-gray-600 mb-2">Participate in this contest by uploading your content below</p>
+                  <p className="text-indigo-600 font-medium mb-4">
+                    {contestEndDate ? `Contest ends on: ${contestEndDate.toLocaleDateString()}` : 'No end date specified'}
+                  </p>
+                  
+                  <div className="bg-white rounded-lg p-4 border border-indigo-100 mb-4">
+                    <div className="flex flex-col items-center justify-center cursor-pointer p-6 border-2 border-dashed border-indigo-200 rounded-lg hover:bg-indigo-50 transition-colors">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-10 h-10 text-indigo-400 mb-2">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                      </svg>
+                      <p className="text-indigo-600 font-medium">Click to upload</p>
+                      <p className="text-gray-500 text-sm">or drag and drop</p>
+                      <p className="text-gray-500 text-xs mt-1">Image or Video files only</p>
+                    </div>
+                  </div>
+                  
+                  <button className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-full transition-all">
+                    Submit Entry
+                  </button>
+                </>
+              ) : (
+                <p className="text-red-500 font-medium">
+                  This contest has ended. Submissions are no longer accepted.
+                </p>
+              )}
             </div>
           </div>
         );

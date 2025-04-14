@@ -1,15 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 function AthleteDetails({ athlete, events, onEventClick, isBlurred }) {
   
-  const renderEventContent = (event) => {
-    switch(event.type) {
-    
-      
-      default:
-        return null;
-    }
-  };
+
 
   return (
     <div className={`w-full h-full rounded-3xl overflow-y-auto
@@ -84,7 +77,6 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred }) {
                 className="space-y-10 mb-5 @container"
                 key={event.id || i}
               >
-                {/* {renderEventContent(event)} */}
                 
                 <button onClick={() => onEventClick(event)}
                   className="w-full bg-[#FCFCFC] border border-[#EEEEEE] 

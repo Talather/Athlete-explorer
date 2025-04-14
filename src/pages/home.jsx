@@ -53,13 +53,14 @@ function Home() {
       .from("Events")
       .select("*")
       .eq("athelete_token_id", athlete.id)
-      .eq("day", formattedDate);
+      .lte("day", formattedDate)
+      .order("day", { ascending: false });
 
     if (error) {
       console.error("Error fetching events:", error);
       setEvents([]);
     } else {
-      setEvents(data || []);
+      setEvents(data.reverse() || []);
     }
   };
 
