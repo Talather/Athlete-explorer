@@ -9,10 +9,7 @@ function Sidebar ({ athletes, onSelect, isBlurred }) {
       athletes.filter(athlete => {
         const searchLower = search.toLowerCase();
         return (
-          (athlete.firstName?.toLowerCase() || '').includes(searchLower) || 
-          (athlete.lastName?.toLowerCase() || '').includes(searchLower) ||
-          (athlete.fanTokenSymbol?.toLowerCase() || '').includes(searchLower) ||
-          (athlete.sport?.toLowerCase() || '').includes(searchLower)
+          (athlete.fanTokenSymbol?.toLowerCase() || '').includes(searchLower) 
         );
       })
     )
