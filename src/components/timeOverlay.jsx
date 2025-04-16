@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-const TimerOverlay = ({endDate, startDate, isBeforeStartDate, onTimerEnd}) => {
+const TimerOverlay = ({endDate, startDate, isBeforeStartDate, onTimerEnd , isContest=false}) => {
   const [timeLeft, setTimeLeft] = useState('')
 
 
@@ -36,16 +36,15 @@ const TimerOverlay = ({endDate, startDate, isBeforeStartDate, onTimerEnd}) => {
   };
 
   useEffect(() => {
-    // Initial check without waiting for the first interval
     updateTimeRemaining();
     
     const interval = setInterval(() => {
       updateTimeRemaining();
     }, 1000)
 
-    return () => clearInterval(interval) // Cleanup
+    return () => clearInterval(interval) 
   }, [endDate, startDate, isBeforeStartDate, onTimerEnd])
-
+console.log(isContest);
   return (
     <div
       className='text-white bg-[#565353a8] inline-block 
@@ -54,7 +53,17 @@ const TimerOverlay = ({endDate, startDate, isBeforeStartDate, onTimerEnd}) => {
        pl-1 pr-2 sm:px-[10px] py-1 
        text-[13px] sm:text-[20px] leading-normal font-[300]'
     >
-      {isBeforeStartDate ? 'The sale will start in' : 'The sale will end in'} <strong className='font-bold'>{timeLeft}</strong>
+      {(isContest )?"":"" }
+      {isContest?
+      <>
+      The contest will end in&nbsp;
+      <strong className='font-bold'>{timeLeft}</strong>
+      </>
+      :
+      <>
+      { isBeforeStartDate ? 'The sale will start in' : 'The sale will end in'} <strong className='font-bold'>{timeLeft}</strong>
+      </>
+       }
     </div>
   )
 }

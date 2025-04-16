@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { supabase } from '../lib/supabase';
+import TimerOverlay from './timeOverlay';
 
 function RightSection ({ isExpanded, selectedEvent, onClose }) {
   const [uploadFile, setUploadFile] = useState(null);
@@ -132,6 +133,17 @@ function RightSection ({ isExpanded, selectedEvent, onClose }) {
                       <div className="text-sm text-gray-600">
                         {contestEndDate ? `Ends on: ${contestEndDate.toLocaleDateString()}` : 'No end date specified'}
                       </div>
+                      {contestEndDate && (
+                        <div className="mt-2 flex justify-center">
+                          <TimerOverlay 
+                            endDate={contestEndDate} 
+                            startDate={null} 
+                            isBeforeStartDate={false}
+                            onTimerEnd={() => window.location.reload()}
+                            isContest={true}
+                          />
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <div className="text-center text-red-500 font-bold">

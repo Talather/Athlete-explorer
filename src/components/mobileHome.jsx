@@ -3,6 +3,7 @@ import { FiSearch } from 'react-icons/fi'
 import { FaPlay } from 'react-icons/fa'
 import { motion } from "framer-motion";
 import { supabase } from '../lib/supabase';
+import TimerOverlay from './timeOverlay';
 
 const MobileOnlyPage = ({
   athletes,
@@ -266,6 +267,18 @@ const MobileOnlyPage = ({
               {!isContestEnded ? (
                 <>
                   <p className="text-gray-600 mb-2">Participate in this contest by uploading your content below</p>
+                  
+                  {contestEndDate && (
+                    <div className="mb-4 flex justify-center">
+                      <TimerOverlay 
+                        endDate={contestEndDate} 
+                        startDate={null} 
+                        isBeforeStartDate={false}
+                        onTimerEnd={() => window.location.reload()}
+                        isContest={true}
+                      />
+                    </div>
+                  )}
                   
                   {uploadSuccess && (
                     <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-lg">
