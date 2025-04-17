@@ -8,6 +8,9 @@ import { supabase } from "./../lib/supabase";
 import { getCountryFlagFromName } from "../utils/countries";
 import ReactCountryFlag from "react-country-flag"
 import Navbar from "./Navbar";
+import { useProfiles } from "thirdweb/react";
+import { client } from "../client";
+
 
 function DurinhoPage() {
   const [showSidebar, setShowSidebar] = useState(false);
@@ -19,7 +22,14 @@ function DurinhoPage() {
  const [now, setNow] = useState(new Date());
  const [isBeforeStartDate , setIsBeforeStartDate] = useState(now < startDate);
  const [isAfterEndDate , setIsAfterEndDate] = useState(now > endDate);
-  
+ const { data: profiles } = useProfiles({
+  client,
+});
+ console.log(profiles);
+// console.log("Type:", profiles[0].type); // "discord"
+// console.log("Email:", profiles[0].details.email); // "john.doe@example.com"
+
+
   useEffect(() => {
     setNow(new Date());
     fetchCurrentFto();
