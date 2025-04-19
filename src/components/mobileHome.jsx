@@ -4,6 +4,8 @@ import { FaPlay } from 'react-icons/fa'
 import { motion } from "framer-motion";
 import { supabase } from '../lib/supabase';
 import TimerOverlay from './timeOverlay';
+import { client } from '../client';
+import { useProfiles } from "thirdweb/react";
 
 const MobileOnlyPage = ({
   athletes,
@@ -14,6 +16,10 @@ const MobileOnlyPage = ({
   onClose,
   onEventClick,
 }) => {
+  const { data: profiles } = useProfiles({
+    client,
+  });
+  
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [showVideo, setShowVideo] = useState(false);
@@ -26,10 +32,10 @@ const MobileOnlyPage = ({
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Check if file is an allowed image type
-      const validTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+      // Check if file is an allowed image or video type
+      const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'video/mp4', 'video/quicktime', 'video/x-msvideo'];
       if (!validTypes.includes(file.type)) {
-        setUploadError('Only PNG, JPG, and JPEG files are allowed');
+        setUploadError('Only PNG, JPG, JPEG images and MP4, MOV, AVI videos are allowed');
         return;
       }
       
@@ -40,10 +46,35 @@ const MobileOnlyPage = ({
   
   const handleSubmit = async () => {
     if (!uploadFile || !selectedEvent) return;
+    if (!profiles || profiles.length === 0) {
+      setUploadError('Please connect your wallet first to upload files');
+      return;
+    }
     
     try {
       setUploading(true);
       setUploadError(null);
+      
+      const userId = profiles[0]?.details.id;
+      
+      // Check if user has already submitted to this event
+      const { data: existingSubmission, error: checkError } = await supabase
+        .from('Submissions')
+        .select('*')
+        .eq('eventId', selectedEvent.id)
+        .eq('userId', userId)
+        .single();
+        
+      if (checkError && checkError.code !== 'PGRST116') { // PGRST116 is "no rows returned" error
+        console.error('Error checking existing submission:', checkError);
+        throw checkError;
+      }
+      
+      if (existingSubmission) {
+        setUploadError('You have already submitted an entry for this contest');
+        setUploading(false);
+        return;
+      }
       
       // Create a unique file name with timestamp
       const timestamp = new Date().getTime();
@@ -71,6 +102,7 @@ const MobileOnlyPage = ({
           fileLink: publicUrl,
           fileName: uploadFile.name,
           created_at: new Date(),
+          userId: userId
         });
         
       if (insertError) throw insertError;
@@ -298,7 +330,7 @@ const MobileOnlyPage = ({
                         id="mobile-contest-file-input"
                         type="file"
                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                        accept=".jpg,.jpeg,.png"
+                        accept=".jpg,.jpeg,.png,.mp4,.mov,.avi"
                         onChange={handleFileChange}
                         disabled={uploading}
                       />
@@ -317,8 +349,12 @@ const MobileOnlyPage = ({
                         />
                       </svg>
                       <p className="text-indigo-600 font-medium">Click to upload</p>
-                      <p className="text-gray-500 text-sm">or drag and drop</p>
-                      <p className="text-gray-500 text-xs mt-1">PNG, JPG or JPEG files only</p>
+                      <p className="text-gray-500 text-sm">
+                        or drag and drop
+                      </p>
+                      <p className="text-gray-500 text-xs mt-1">
+                        PNG, JPG, JPEG images and MP4, MOV, AVI videos only
+                      </p>
                       
                       {uploadFile && (
                         <div className="mt-2 text-sm bg-indigo-50 p-2 rounded-lg w-full">

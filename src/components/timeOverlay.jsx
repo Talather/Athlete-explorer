@@ -44,7 +44,6 @@ const TimerOverlay = ({endDate, startDate, isBeforeStartDate, onTimerEnd , isCon
 
     return () => clearInterval(interval) 
   }, [endDate, startDate, isBeforeStartDate, onTimerEnd])
-console.log(isContest);
   return (
     <div
       className='text-white bg-[#565353a8] inline-block 

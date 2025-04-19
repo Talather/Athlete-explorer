@@ -1,8 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react'
 import './style.css'
+import { client } from './../../client';
+import { useProfiles } from "thirdweb/react";
 
 const RightSidebar = ({ isOpen, currentFto, onClose }) => {
-
+//  if (!profiles || profiles.length === 0) return;
+  const { data: profiles } = useProfiles({
+    client,
+  });
+  console.log(profiles);
   const [open, setOpen] = useState(false)
   const contentRef = useRef(null)
 
@@ -79,8 +85,8 @@ const RightSidebar = ({ isOpen, currentFto, onClose }) => {
 
         </div>
 
-        {/* RIGHT SIDE – Payment Section */}
-        <div className='bg-white custom-shadow py-10 px-[30px] h-full'>
+       {profiles?.length > 0 ? (
+          <div className='bg-white custom-shadow py-10 px-[30px] h-full'>
           <htmlForm className='text-[#1D1D1F] h-full flex flex-col justify-between gap-[10px]'>
 
             <div className='flex flex-col w-full gap-1'>
@@ -197,6 +203,11 @@ const RightSidebar = ({ isOpen, currentFto, onClose }) => {
 
           </htmlForm>
         </div>
+       ) : (
+        <div className='bg-white w-full custom-shadow py-10 px-[30px] h-full text-center'>
+          <h3 className="text-2xl font-bold">Please connect your wallet first</h3>
+        </div>
+       )}
       </div>
     </div>
   )

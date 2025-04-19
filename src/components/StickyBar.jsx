@@ -1,6 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { ConnectButton } from "thirdweb/react";
-import { client } from '../client';
+
 function StickyBar() {
   return (
     <div className='w-full flex items-center justify-center'>
@@ -24,18 +23,15 @@ function StickyBar() {
           <i className='fas fa-coins'></i> <span> FTO </span>
         </NavLink>
 
-        <div className='stickyBarLink'>
-          <ConnectButton 
-            client={client}
-            theme="light"
-            modalSize="wide"
-            autoConnect={true}
-          >
-            <div className='flex items-center justify-center'>
-              <i className='fa fa-wallet mr-1'></i> <span> Connect </span>
-            </div>
-          </ConnectButton>
-        </div>
+       
+        <NavLink
+          to='/wallet'
+          className={({ isActive }) =>
+            `stickyBarLink ${isActive ? 'stickyBarActiveLink' : ''}`
+          }
+        >
+          <i className='fas fa-wallet'></i> <span> Wallet </span>
+        </NavLink>
 
         <NavLink
           to='/settings'
