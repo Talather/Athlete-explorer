@@ -3,8 +3,8 @@ import { ConnectButton } from "thirdweb/react";
 import { client } from '../client';
 import { useProfiles } from "thirdweb/react";
 import { supabase } from '../lib/supabase';
-import {  useEffect } from 'react';
-
+import { useState, useEffect } from 'react';
+import { polygon } from "thirdweb/chains";
 import { inAppWallet } from "thirdweb/wallets";
 
 
@@ -23,6 +23,25 @@ function Navbar() {
   const { data: profiles } = useProfiles({
     client,
   });
+  const [change,setChange] = useState(0);
+
+useEffect(() => {
+  const buttons = document.querySelectorAll('.css-86pfay');
+  const buttons2 = document.querySelectorAll('.css-1j66weo');
+  buttons2.forEach((btn) => {
+    if (btn.innerText === 'Buy') {
+      btn.style.display = 'none';
+    }
+  });
+  buttons.forEach((btn) => {
+    const span = btn.querySelector('span');
+    if (span && span.textContent.trim() === 'Connect an App') {
+      btn.style.display = 'none';
+    }
+  });
+}, [profiles,change]);
+
+  
 
   const saveUser = async () => {
     try {
@@ -70,6 +89,9 @@ function Navbar() {
   useEffect(() => {
     if (profiles && profiles.length > 0 ) {
       saveUser();
+      setInterval(()=>{
+        setChange((prev)=>prev+1);
+      },100)
     }  
   }, [profiles]);
  
@@ -90,13 +112,65 @@ function Navbar() {
         <div className="flex justify-end flex-1">
           <ConnectButton 
             client={client}
+            
+            connectButton={{
+              label: "Login / Signup",
+            }}
+            // buttonTitle="Link Your Wallet"
             theme="light"
             modalSize="wide"
             autoConnect={true}
             wallets={wallets}
+            connectModal={{
+              showThirdwebBranding:false,
+            }}
             onConnect={(profile)=>{
+              setChange((prev)=>prev+1);
               saveUser();
             }}
+            detailsModal={{
+              assetTabs: ["token"],
+            }}
+            chain={polygon}
+            supportedTokens={
+              {
+                [polygon.id]: [
+                  {
+                    address: "0x53E0bca35eC356BD5ddDFebbD1Fc0fD03FaBad39",
+                    name: "$FIGO",
+                    symbol: "FIGO",
+                    icon: "https://veoivkpeywpcyxaikgng.supabase.co/storage/v1/object/public/athletes/0.8942476293941108.png",
+                  },
+                  {
+                    address: "0x53E0bca35eC356BD5ddDFebbD1Fc0fD03FaBad39",
+                    name: "$POATAN",
+                    symbol: "POATAN",
+                    icon: "https://veoivkpeywpcyxaikgng.supabase.co/storage/v1/object/public/athletes/0.12551816537350713.jpg",
+                  },
+                  {
+                    address: "0x53E0bca35eC356BD5ddDFebbD1Fc0fD03FaBad39",
+                    name: "$HARDEN",
+                    symbol: "HARDEN",
+                    icon: "https://veoivkpeywpcyxaikgng.supabase.co/storage/v1/object/public/athletes/0.5813046075726962.png",
+                  },
+                  {
+                    address: "0x53E0bca35eC356BD5ddDFebbD1Fc0fD03FaBad39",
+                    name: "$CURRY",
+                    symbol: "CURRY",
+                    icon: "https://veoivkpeywpcyxaikgng.supabase.co/storage/v1/object/public/athletes/0.7686259196047924.png",
+                  },
+                  {
+                    address: "0x53E0bca35eC356BD5ddDFebbD1Fc0fD03FaBad39",
+                    name: "$LEBRON",
+                    symbol: "LEBRON",
+                    icon: "https://veoivkpeywpcyxaikgng.supabase.co/storage/v1/object/public/athletes/0.021162288126469475.jpg",
+                  },
+                ],
+              }
+            }
+            
+            
+            
           />
         </div>
       </div>

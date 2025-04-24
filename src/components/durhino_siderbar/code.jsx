@@ -2,6 +2,18 @@ import React, { useState, useEffect, useRef } from 'react'
 import './style.css'
 import { client } from './../../client';
 import { useProfiles } from "thirdweb/react";
+import { ConnectEmbed } from 'thirdweb/react';
+import { inAppWallet } from "thirdweb/wallets";
+import { polygon } from "thirdweb/chains";
+
+
+const wallets = [
+inAppWallet({
+auth: {
+options: ["google", "email", "phone", "discord", "facebook"],
+},
+}),
+];
 
 const RightSidebar = ({ isOpen, currentFto, onClose }) => {
 //  if (!profiles || profiles.length === 0) return;
@@ -96,6 +108,7 @@ const RightSidebar = ({ isOpen, currentFto, onClose }) => {
                 maxLength="256" name="field-2"
                 data-name="Field 2" placeholder="Email address"
                 type="email" id="field-2" required=""
+                value={profiles[0]?.details.email}
               />
             </div>
 
@@ -204,9 +217,20 @@ const RightSidebar = ({ isOpen, currentFto, onClose }) => {
           </htmlForm>
         </div>
        ) : (
-        <div className='bg-white w-full custom-shadow py-10 px-[30px] h-full text-center'>
-          <h3 className="text-2xl font-bold">Please connect your wallet first</h3>
-        </div>
+        <div className='bg-white custom-shadow py-10 px-12 h-[100%] flex  justify-center'>
+
+        <div className='bg-white  h-[50%] '>
+        <ConnectEmbed client={client} 
+        theme="light"
+        wallets={wallets}
+        showThirdwebBranding={false}
+                    chain={polygon}
+        
+        />
+        </div>  
+        </div>  
+
+
        )}
       </div>
     </div>
