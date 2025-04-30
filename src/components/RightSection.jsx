@@ -110,12 +110,12 @@ function RightSection ({ isExpanded, selectedEvent, onClose }) {
       case 'video':
         return (
           selectedEvent?.video_url && (
-            <div className="mt-6 rounded-xl overflow-hidden border border-[#EEEEEE]">
+            <div className="mt-6 rounded-xl overflow-hidden border border-[#EEEEEE] w-[75%] aspect-video">
               <video
                 controls
                 width="100%"
                 height="auto"
-                className="w-full object-cover"
+                className="w-full object-cover aspect-video"
               >
                 <source src={selectedEvent.video_url} type="video/mp4" />
                 Your browser does not support the video tag.
@@ -262,7 +262,7 @@ function RightSection ({ isExpanded, selectedEvent, onClose }) {
   return (
     <div className={`shrink-0 border border-[#E7E7E7] bg-white rounded-3xl transition-all duration-300
       overflow-x-hidden overflow-y-auto py-5 px-6 relative
-      ${isExpanded ? 'w-[50%] ml-[-28%]' : ' md:w-[200px] lg:w-[220px] xl:w-[300px]'}`}
+      ${isExpanded ? 'w-[45%] ml-[-28%]' : ' md:w-[200px] lg:w-[220px] xl:w-[300px]'}`}
     >
       {isExpanded ? (
         <>

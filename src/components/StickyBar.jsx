@@ -25,12 +25,12 @@ function StickyBar() {
 
        
         <NavLink
-          to='/wallet'
+          to='/profile'
           className={({ isActive }) =>
             `stickyBarLink ${isActive ? 'stickyBarActiveLink' : ''}`
           }
         >
-          <i className='fas fa-wallet'></i> <span> Wallet </span>
+          <i className='fa fa-user'></i> <span> Profile </span>
         </NavLink>
 
         <NavLink
@@ -39,7 +39,7 @@ function StickyBar() {
             `stickyBarLink ${isActive ? 'stickyBarActiveLink' : ''}`
           }
         >
-          <i className='fa fa-user'></i> <span> Settings </span>
+          <i className='fa fa-gear'></i> <span> Settings </span>
         </NavLink>
 
         <NavLink

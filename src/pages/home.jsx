@@ -78,6 +78,7 @@ function Home() {
     <>
       {isMobile ? (
         <>
+        <div className="w-full relative h-[100dvh]">
           <Navbar />
 
           <MobileOnlyPage
@@ -90,9 +91,12 @@ function Home() {
             onClose={handleClose}
           />
 
-          <StickyBar />
+          <div className="sticky w-full bottom-0 z-50">
+            <StickyBar />
+          </div>
 
           <Footer />
+        </div>
         </>
       ) : (
         <>

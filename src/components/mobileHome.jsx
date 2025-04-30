@@ -252,7 +252,7 @@ const MobileOnlyPage = ({
                 controls
                 width="100%"
                 height="auto"
-                className="w-full object-cover"
+                className="w-full object-cover aspect-video"
               >
                 <source src={selectedEvent.video_url} type="video/mp4" />
                 Your browser does not support the video tag.
