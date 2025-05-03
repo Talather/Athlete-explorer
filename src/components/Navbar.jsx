@@ -103,9 +103,9 @@ useEffect(() => {
         </div>
         
         <div className="flex justify-start md:justify-center flex-1">
-          <a href="/" className="sm:p-[10px]">
-            <img sizes="auto" alt="Logo" className="w-[75px] h-[70px] px-[10px] py-[7.5px] 
-              sm:w-[80px] sm:h-[80px] sm:px-0 sm:py-0" src="/sixer.gif"/>
+          <a href="/" className="py-[10px] lg:p-[10px]">
+            <img sizes="auto" alt="Logo" className="w-[60px] h-[60px] md:px-[10px] md:py-[7.5px] 
+              sm:size-[80px] sm:px-0 sm:py-0" src="/sixer.gif"/>
           </a>
         </div>
         

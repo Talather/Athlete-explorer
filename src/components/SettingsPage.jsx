@@ -24,7 +24,7 @@ function SettingsPage() {
                             <img
                                 src={profileImage}
                                 alt="Profile"
-                                className="size-20 rounded-full object-cover border border-gray-300"
+                                className="size-20 rounded-full object-cover border border-gray-300 bg-white"
                             />
                             <label className="absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-xs cursor-pointer transition">
                                 Change
@@ -40,8 +40,8 @@ function SettingsPage() {
                             <label className="block text-sm font-bold mb-1">Username</label>
                             <input
                                 type="text"
-                                className="border border-gray-300 px-4 py-2 rounded w-full"
-                                placeholder="yourusername"
+                                className="border border-gray-300 bg-white px-4 py-2 rounded w-full"
+                                placeholder="your username"
                             />
                         </div>
                     </div>
@@ -51,17 +51,17 @@ function SettingsPage() {
                 <section className="mb-10">
                     <h2 className="text-xl font-bold mb-4">Preferences</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
+                        <div className="relative">
                             <label className="block text-sm font-bold mb-1">Language</label>
-                            <select className="border border-gray-300 px-4 py-2 rounded w-full">
+                            <select className="border border-gray-300 bg-white px-4 py-2 rounded w-full">
                                 <option>English</option>
                                 <option>Bangla</option>
                                 <option>Spanish</option>
                             </select>
                         </div>
-                        <div>
+                        <div className="relative">
                             <label className="block text-sm font-bold mb-1">Currency</label>
-                            <select className="border border-gray-300 px-4 py-2 rounded w-full">
+                            <select className="border border-gray-300 bg-white px-4 py-2 rounded w-full">
                                 <option>USD</option>
                                 <option>BDT</option>
                                 <option>EUR</option>
@@ -78,7 +78,7 @@ function SettingsPage() {
                             <label className="block text-sm font-bold mb-1">Email</label>
                             <input
                                 type="email"
-                                className="border border-gray-300 px-4 py-2 rounded w-full"
+                                className="border border-gray-300 bg-white px-4 py-2 rounded w-full"
                                 placeholder="you@example.com"
                             />
                         </div>
@@ -86,7 +86,7 @@ function SettingsPage() {
                             <label className="block text-sm font-bold mb-1">Phone</label>
                             <input
                                 type="tel"
-                                className="border border-gray-300 px-4 py-2 rounded w-full"
+                                className="border border-gray-300 bg-white px-4 py-2 rounded w-full"
                                 placeholder="+0123456789"
                             />
                         </div>

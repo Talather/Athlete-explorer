@@ -110,12 +110,12 @@ function RightSection ({ isExpanded, selectedEvent, onClose }) {
       case 'video':
         return (
           selectedEvent?.video_url && (
-            <div className="mt-6 rounded-xl overflow-hidden border border-[#EEEEEE] w-[75%] aspect-video">
+            <div className="mt-6 rounded-xl overflow-hidden border border-[#EEEEEE] bg-gray-500 w-full aspect-video">
               <video
                 controls
                 width="100%"
                 height="auto"
-                className="w-full object-cover aspect-video"
+                className="w-full object-contain aspect-video"
               >
                 <source src={selectedEvent.video_url} type="video/mp4" />
                 Your browser does not support the video tag.
