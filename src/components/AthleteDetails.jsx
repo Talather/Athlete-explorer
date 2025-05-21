@@ -1,9 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 function AthleteDetails({ athlete, events, onEventClick, isBlurred }) {
-  
-
-
   return (
     <div className={`w-full h-full rounded-3xl overflow-y-auto
       ${isBlurred ? "blur-lg pointer-events-none" : ""}`}
@@ -42,7 +39,7 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred }) {
                     px-[1.5cqw] py-[1.2cqw] shadow-md text-center"
                   >
                     <div className="text-black font-bold text-[1.1cqw]">
-                      1000 000 ${athlete?.firstName?.toUpperCase()}
+                      {athlete?.totalNoOfFanTokens} ${athlete?.firstName?.toUpperCase()}
                     </div>
                     <div className="text-[#969494] text-[1cqw]">
                       Tokens for sale

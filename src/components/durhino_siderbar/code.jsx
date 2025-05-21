@@ -1,11 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react'
 import './style.css'
 import { client } from './../../client';
-import { useProfiles } from "thirdweb/react";
+import { useProfiles, useActiveWallet } from "thirdweb/react";
 import { ConnectEmbed } from 'thirdweb/react';
 import { inAppWallet } from "thirdweb/wallets";
-import { polygon } from "thirdweb/chains";
-
+import { sepolia } from "thirdweb/chains";
+import { loadStripe } from '@stripe/stripe-js';
+import {
+  Elements,
+  CardElement,
+  useStripe,
+  useElements
+} from '@stripe/react-stripe-js';
+import { supabase } from './../../lib/supabase';
+import toast, { Toaster } from 'react-hot-toast';
 
 const wallets = [
   inAppWallet({
@@ -15,18 +23,59 @@ const wallets = [
   }),
 ];
 
+
+// Initialize Stripe with your publishable key
+const stripePromise = loadStripe('pk_test_51L42JBBjhuRU5cGW2oXLq1IubYuai5huuBi0eMrODKEwvZDSe7KgTMWStEAxOVIcj9nPxWiaOvHEm7pEqhoa8vB400KVHlGKBY');
+
+// Wrapper component that provides Stripe context
 const RightSidebar = ({ isOpen, currentFto, onClose }) => {
+  return (
+    <>
+      <Toaster position="top-center" toastOptions={{
+        duration: 5000,
+        style: {
+          background: '#363636',
+          color: '#fff',
+          padding: '16px',
+          borderRadius: '10px',
+        },
+        success: {
+          iconTheme: {
+            primary: '#4ade80',
+            secondary: '#fff',
+          },
+        },
+      }} />
+      <Elements stripe={stripePromise}>
+        <RightSidebarContent isOpen={isOpen} currentFto={currentFto} onClose={onClose} />
+      </Elements>
+    </>
+  );
+};
+
+// Main component with Stripe functionality
+const RightSidebarContent = ({ isOpen, currentFto, onClose }) => {
+
+  const wallet = useActiveWallet();
+    const address = wallet?.getAccount().address;
   //  if (!profiles || profiles.length === 0) return;
   const { data: profiles } = useProfiles({
     client,
   });
-  console.log(profiles);
-  const [open, setOpen] = useState(false)
-  const contentRef = useRef(null)
+  const stripe = useStripe();
+  const elements = useElements();
+  const [open, setOpen] = useState(false);
+  const contentRef = useRef(null);
+  
+  const [loading, setLoading] = useState(false);
+  const [paymentError, setPaymentError] = useState(null);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+  
+  const [quantity, setQuantity] = useState(1);
+  const pricePerNFT = currentFto?.Atheletes?.fanTokenInitialPrice || 0;
+  const total = quantity * pricePerNFT;
 
-  const [quantity, setQuantity] = useState(0)
-  const pricePerNFT = currentFto.Atheletes.fanTokenInitialPrice;
-  const total = quantity * pricePerNFT
+
 
   const handleIncrease = e => {
     e.preventDefault()
@@ -36,6 +85,90 @@ const RightSidebar = ({ isOpen, currentFto, onClose }) => {
   const handleDecrease = e => {
     e.preventDefault()
     setQuantity(prev => (prev > 0 ? prev - 1 : 0))
+  }
+  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!stripe || !elements || quantity <= 0) {
+      return;
+    }
+    
+    setLoading(true);
+    setPaymentError(null);
+    if(!currentFto.Atheletes.nftContractAddress){
+      setPaymentError("Contract address is not found");
+      setLoading(false);
+      return;
+    }
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('create-payment-intent', {
+        body:{
+          quantity: quantity,
+          wallet: address,
+          pricePerNFT: pricePerNFT,
+          contractAddress: currentFto?.Atheletes?.nftContractAddress,
+          email: profiles?.[0]?.details?.email || "test@example.com",
+          userId:profiles?.[0]?.details.id,
+        },
+      })
+      
+      if (error) {
+        console.error('Error creating payment intent:', error);
+        throw new Error(error.message || 'Failed to create payment');
+      }
+      
+      if (!data || !data.clientSecret) {
+        throw new Error('No client secret received from the server');
+      }
+      
+      console.log('Payment intent created');
+      const {clientSecret} = data;
+      
+      const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: elements.getElement(CardElement),
+          billing_details: {
+            email: profiles?.[0]?.details?.email || '',
+            name: profiles?.[0]?.details?.displayName || '',
+          },
+        },
+      });
+      
+      if (confirmError) {
+        console.error('Payment confirmation error:', confirmError);
+        throw new Error(confirmError.message);
+      }
+      
+      // Handle successful payment
+      if (paymentIntent.status === 'succeeded') {
+        console.log('Payment succeeded:', paymentIntent.id);
+        setPaymentSuccess(true);
+        
+        // Close the sidebar after a brief delay to show success message
+        setTimeout(() => {
+          onClose();
+          // Show toast notification after sidebar is closed
+          toast.success(
+            'Payment successful! You can view your NFTs in your wallet.',
+            {
+              icon: '🎉',
+              duration: 5000,
+            }
+          );
+        }, 1500);
+      } else {
+        throw new Error(`Payment status: ${paymentIntent.status}. Expected 'succeeded'.`);
+      }
+      
+    } catch (error) {
+      console.error('Payment error:', error);
+      setPaymentError(error.message || 'An error occurred with your payment');
+      toast.error(`Payment failed: ${error.message || 'Unknown error'}`);
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -55,7 +188,6 @@ const RightSidebar = ({ isOpen, currentFto, onClose }) => {
             bg-[#F0F0F0] transition-all duration-300 z-50 w-full max-w-[767px]
             ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
     >
-
       <img
         src='/closeButton.svg'
         alt='close'
@@ -64,9 +196,7 @@ const RightSidebar = ({ isOpen, currentFto, onClose }) => {
         style={{ cursor: 'pointer' }}
       />
 
-      <div className='flex flex-col sm:flex-row h-full'>
-        {/* LEFT SIDE – NFT Quantity */}
-
+      <div className='flex flex-col sm:flex-row  h-full'>
         <div className='sm:max-w-[316px] w-full p-5 space-y-10'>
           <h1 className='p-[10px] text-[30px] text-center font-bold leading-none'>${currentFto.Atheletes.fanTokenSymbol}</h1>
 
@@ -98,8 +228,8 @@ const RightSidebar = ({ isOpen, currentFto, onClose }) => {
         </div>
 
         {profiles?.length > 0 ? (
-          <div className='bg-white custom-shadow py-10 px-[30px] h-full'>
-            <htmlForm className='text-[#1D1D1F] h-full flex flex-col gap-5 overflow-auto'>
+          <div className='bg-white custom-shadow py-10 px-[30px] w-full h-full'>
+            <form className='text-[#1D1D1F] h-full flex flex-col gap-5 overflow-auto'>
 
               <div className='flex flex-col w-full gap-1'>
                 <label htmlFor="field-2" className="text-base font-bold">Email address</label>
@@ -175,48 +305,53 @@ const RightSidebar = ({ isOpen, currentFto, onClose }) => {
               )}
 
               <div className='flex flex-col w-full gap-1'>
-                <label htmlFor="card-number" className="text-base font-bold">Card number</label>
-                <input className="py-2 px-3 rounded outline-none custom-shadow
-                    border-[1px] border-[#ccc] focus:border-blue-400 font-[600]"
-                  maxLength="256" name="card-number"
-                  data-name="card-number" placeholder="1234 1234 1234 1234"
-                  type="text" id="card-number"
-                />
-              </div>
-
-              <div className='grid grid-cols-2 items-center gap-3'>
-
-                <div className='flex flex-col w-full gap-1'>
-                  <label htmlFor="expiration" className="text-base font-bold">Expiration</label>
-                  <input className="py-2 px-3 rounded outline-none custom-shadow
-                      border-[1px] border-[#ccc] focus:border-blue-400 font-[600]"
-                    maxLength="256" name="expiration"
-                    data-name="expiration" placeholder="MM / YY"
-                    type="text" id="expiration"
+                <label htmlFor="card-element" className="text-base font-bold">Card details</label>
+                <div className="py-3 px-3 rounded outline-none custom-shadow border-[1px] border-[#ccc] focus:border-blue-400">
+                  <CardElement
+                    options={{
+                      style: {
+                        base: {
+                          fontSize: '16px',
+                          color: '#424770',
+                          '::placeholder': {
+                            color: '#aab7c4',
+                          },
+                          fontFamily: 'Arial, sans-serif',
+                        },
+                        invalid: {
+                          color: '#9e2146',
+                        },
+                      },
+                    }}
                   />
                 </div>
-
-                <div className='flex flex-col w-full gap-1'>
-                  <label htmlFor="cvc" className="text-base font-bold">CVC</label>
-                  <input className="py-2 px-3 rounded outline-none custom-shadow
-                      border-[1px] border-[#ccc] focus:border-blue-400 font-[600]"
-                    maxLength="256" name="cvc"
-                    data-name="cvc" placeholder="CVC"
-                    type="text" id="cvc"
-                  />
-                </div>
-
               </div>
+              
+              {paymentError && (
+                <div className="text-red-500 text-sm font-medium">
+                  {paymentError}
+                </div>
+              )}
+              
+              {paymentSuccess && (
+                <div className="text-green-500 text-sm font-medium">
+                  Payment successful! Your NFTs will be delivered soon.
+                </div>
+              )}
 
               <label className='flex items-center gap-1 text-sm font-bold'>
                 <input type='checkbox' />I accept Fansday’s Terms and Conditions.
               </label>
 
-              <button className='inline-block text-center w-full rounded-[10px] text-base font-bold bg-black text-white p-[10px]'>
-                Pay with card
+              <button 
+                className={`inline-block text-center w-full rounded-[10px] text-base font-bold ${loading ? 'bg-gray-500' : 'bg-black'} text-white p-[10px]`}
+                disabled={!stripe || loading || quantity <= 0 || total <= 0}
+                onClick={handleSubmit}
+              >
+                {loading ? 'Processing...' : `Pay $${total.toFixed(2)}`}
               </button>
 
-            </htmlForm>
+            </form>
           </div>
         ) : (
           <div className='bg-white custom-shadow py-10 px-12 h-[100%] flex  justify-center'>
@@ -226,7 +361,7 @@ const RightSidebar = ({ isOpen, currentFto, onClose }) => {
                 theme="light"
                 wallets={wallets}
                 showThirdwebBranding={false}
-                chain={polygon}
+                chain={sepolia}
 
               />
             </div>

@@ -4,7 +4,8 @@ import { client } from '../client';
 import { useProfiles } from "thirdweb/react";
 import { supabase } from '../lib/supabase';
 import { useState, useEffect } from 'react';
-import { polygon } from "thirdweb/chains";
+import { useSelector } from 'react-redux';
+import { sepolia } from "thirdweb/chains";
 import { inAppWallet } from "thirdweb/wallets";
 
 
@@ -24,7 +25,11 @@ function Navbar() {
     client,
   });
   const [change,setChange] = useState(0);
+  
+  // Get athletes from Redux store
+  const { athletes } = useSelector(state => state.athletes);
 
+  const contracts = new Set(athletes?.map(athlete => athlete.nftContractAddress !== null ? athlete.nftContractAddress : "0x683Fb845548d161A9cAddedEDf46FcbB713FEB22"));
 useEffect(() => {
   const buttons = document.querySelectorAll('.css-86pfay');
   const buttons2 = document.querySelectorAll('.css-1j66weo');
@@ -129,45 +134,17 @@ useEffect(() => {
                 saveUser();
               }}
               detailsModal={{
-                assetTabs: ["token"],
+                assetTabs: ["token","nft"],
               }}
-              chain={polygon}
-              supportedTokens={
-                {
-                  [polygon.id]: [
-                    {
-                      address: "0x53E0bca35eC356BD5ddDFebbD1Fc0fD03FaBad39",
-                      name: "$FIGO",
-                      symbol: "FIGO",
-                      icon: "https://veoivkpeywpcyxaikgng.supabase.co/storage/v1/object/public/athletes/0.8942476293941108.png",
-                    },
-                    {
-                      address: "0x53E0bca35eC356BD5ddDFebbD1Fc0fD03FaBad39",
-                      name: "$POATAN",
-                      symbol: "POATAN",
-                      icon: "https://veoivkpeywpcyxaikgng.supabase.co/storage/v1/object/public/athletes/0.12551816537350713.jpg",
-                    },
-                    {
-                      address: "0x53E0bca35eC356BD5ddDFebbD1Fc0fD03FaBad39",
-                      name: "$HARDEN",
-                      symbol: "HARDEN",
-                      icon: "https://veoivkpeywpcyxaikgng.supabase.co/storage/v1/object/public/athletes/0.5813046075726962.png",
-                    },
-                    {
-                      address: "0x53E0bca35eC356BD5ddDFebbD1Fc0fD03FaBad39",
-                      name: "$CURRY",
-                      symbol: "CURRY",
-                      icon: "https://veoivkpeywpcyxaikgng.supabase.co/storage/v1/object/public/athletes/0.7686259196047924.png",
-                    },
-                    {
-                      address: "0x53E0bca35eC356BD5ddDFebbD1Fc0fD03FaBad39",
-                      name: "$LEBRON",
-                      symbol: "LEBRON",
-                      icon: "https://veoivkpeywpcyxaikgng.supabase.co/storage/v1/object/public/athletes/0.021162288126469475.jpg",
-                    },
-                  ],
-                }
-              } 
+              chain={sepolia}
+              // supportedNFTs={athletes && athletes.length > 0 
+              //   ? athletes
+              //     .filter(athlete => athlete.nftContractAddress) 
+              //     .map(athlete => athlete.nftContractAddress)
+              //   : ["0x4d5a9F4e440e288E68d9E796AAeb1E968B79B321"]} 
+
+              supportedNFTs={[...contracts]}
+              
             />
           </div>
         </div>

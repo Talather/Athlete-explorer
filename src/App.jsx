@@ -8,7 +8,7 @@ import Settings from './pages/Settings'
 
 function App () {
   return (
-    <ThirdwebProvider >
+    <ThirdwebProvider  >
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/page' element={<Durhino />} />
