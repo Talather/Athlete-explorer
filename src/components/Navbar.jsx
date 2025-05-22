@@ -136,7 +136,7 @@ useEffect(() => {
               detailsModal={{
                 assetTabs: ["token","nft"],
               }}
-              chain={sepolia}
+              chain={sepolia}                                                  
               // supportedNFTs={athletes && athletes.length > 0 
               //   ? athletes
               //     .filter(athlete => athlete.nftContractAddress) 
