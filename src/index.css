@@ -156,3 +156,57 @@ button:focus-visible {
   }
 }
 
+/* Custom Chat Scrollbar Styles */
+.chat-scrollbar {
+  /* For WebKit browsers (Chrome, Safari, Edge) */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(139, 69, 19, 0.3) transparent;
+}
+
+.chat-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.chat-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 10px;
+}
+
+.chat-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #EB9486, #8F4FF3);
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+  transition: all 0.3s ease;
+}
+
+.chat-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #e87c6c, #7a3de0);
+  border: 1px solid transparent;
+  background-clip: content-box;
+}
+
+.chat-scrollbar::-webkit-scrollbar-thumb:active {
+  background: linear-gradient(135deg, #e36852, #6b2bc7);
+}
+
+/* Dark mode scrollbar adjustments */
+.dark .chat-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #EB9486, #8F4FF3);
+  opacity: 0.8;
+}
+
+.dark .chat-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #f1a094, #9d5fff);
+  opacity: 1;
+}
+
+/* Firefox scrollbar styling */
+.chat-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(235, 148, 134, 0.6) transparent;
+}
+
+.dark .chat-scrollbar {
+  scrollbar-color: rgba(235, 148, 134, 0.4) transparent;
+}

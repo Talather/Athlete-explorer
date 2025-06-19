@@ -3,7 +3,7 @@ import { supabase } from '../lib/supabase';
 import TimerOverlay from './timeOverlay';
 import { client } from '../client';
 import { useProfiles } from "thirdweb/react";
-
+import EventChat from './EventChat';
 function RightSection ({ isExpanded, selectedEvent, onClose }) {
   const { data: profiles } = useProfiles({
     client,
@@ -110,7 +110,7 @@ function RightSection ({ isExpanded, selectedEvent, onClose }) {
       case 'video':
         return (
           selectedEvent?.video_url && (
-            <div className="mt-6 rounded-xl overflow-hidden border border-[#EEEEEE] bg-gray-500 w-full aspect-video">
+            <div className="mt-6 rounded-xl   border border-[#EEEEEE]  w-full aspect-video">
               <video
                 controls
                 width="100%"
@@ -120,6 +120,7 @@ function RightSection ({ isExpanded, selectedEvent, onClose }) {
                 <source src={selectedEvent.video_url} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
+              <EventChat event={selectedEvent}/>
             </div>
           )
         );
@@ -143,6 +144,8 @@ function RightSection ({ isExpanded, selectedEvent, onClose }) {
               <div className="bg-red-500 text-white px-3 py-1 rounded-full absolute top-2 right-2 z-30 text-sm font-medium">
                 LIVE
               </div>
+              <EventChat event={selectedEvent}/>
+
             </div>
           )
         );
@@ -250,6 +253,7 @@ function RightSection ({ isExpanded, selectedEvent, onClose }) {
                   </p>
                 )}
                 </div>
+              <EventChat event={selectedEvent}/>
                 
           </div>
         );
