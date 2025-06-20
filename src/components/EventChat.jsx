@@ -12,7 +12,7 @@ const EventChat = ({ event }) => {
   console.log(profiles.data);
   const currentUserId = profiles.data[0].details.id; 
   const [replyTo, setReplyTo] = useState(null)
-  const [showLoadMore, setShowLoadMore] = useState(false)
+  const [showLoadMore, setShowLoadMore] = useState(true)
   const username = profiles.data[0].details.name ? profiles.data[0].details.name : profiles.data[1].details.name ? profiles.data[1].details.name :profiles.data[0].details.email;
   // Chat hooks
   const {

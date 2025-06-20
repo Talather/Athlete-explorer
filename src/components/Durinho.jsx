@@ -8,7 +8,7 @@ import { supabase } from "./../lib/supabase";
 import { getCountryFlagFromName } from "../utils/countries";
 import ReactCountryFlag from "react-country-flag"
 import Navbar from "./Navbar";
-
+import { useStaticPages } from "../hooks/useStaticPages";
 
 function DurinhoPage() {
   const [showSidebar, setShowSidebar] = useState(false);
@@ -21,7 +21,8 @@ function DurinhoPage() {
  const [isBeforeStartDate , setIsBeforeStartDate] = useState(now < startDate);
  const [isAfterEndDate , setIsAfterEndDate] = useState(now > endDate);
 
-
+ // Fetch FAQ data from database
+ const { content: faqContent, loading: faqLoading, error: faqError } = useStaticPages('faq');
 
   useEffect(() => {
     setNow(new Date());
@@ -284,23 +285,43 @@ function DurinhoPage() {
 
             <div className="space-y-4 sm:space-y-6 md:px-[10px]">
               
-              <FAQItem
-                question={`What is $${currentFto.Atheletes.fanTokenSymbol}?`}
-                answer={`${currentFto.Atheletes.fanTokenSymbol} is ${currentFto.Atheletes.firstName} ${currentFto.Atheletes.lastName}' fan token. By owning $${currentFto.Atheletes.fanTokenSymbol}, you will be able to engage with the athlete and other fan token holders, participate in contests, earn rewards, and vote in polls to influence significant decisions ${currentFto.Atheletes.firstName} has to make!`}
-              />
+              {/* Dynamic FAQ items from database */}
+              {faqLoading ? (
+                <div className="flex justify-center items-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#e99289]"></div>
+                </div>
+              ) : faqError ? (
+                <div className="text-center text-red-500 py-4">
+                  Failed to load FAQ content
+                </div>
+              ) : (
+                faqContent?.content?.faqs?.map((faq, index) => (
+                  <FAQItem
+                    key={index}
+                    question={faq.question}
+                    answer={faq.answer}
+                  />
+                ))
+              )}
 
-              <FAQItem
-                question={`How do I buy $${currentFto.Atheletes.fanTokenSymbol}?`}
-                answer={`Click the Buy $${currentFto.Atheletes.fanTokenSymbol} button, enter your email, choose quantity, then either store in Winter wallet or your ETH wallet. Finally, pay with card.`}
-              />
-              <FAQItem
-                question="How do I participate in events?"
-                answer="Once the FTO ends, events will appear. You can join using your fan tokens. They’re not consumed, so you can reuse them."
-              />
+              {/* Fallback to hardcoded FAQ items if no database content */}
+              {!faqLoading && !faqError && (!faqContent?.content?.faqs || faqContent.content.faqs.length === 0) && (
+                <>
+                  <FAQItem
+                    question={`What is $${currentFto.Atheletes.fanTokenSymbol}?`}
+                    answer={`${currentFto.Atheletes.fanTokenSymbol} is ${currentFto.Atheletes.firstName} ${currentFto.Atheletes.lastName}' fan token. By owning $${currentFto.Atheletes.fanTokenSymbol}, you will be able to engage with the athlete and other fan token holders, participate in contests, earn rewards, and vote in polls to influence significant decisions ${currentFto.Atheletes.firstName} has to make!`}
+                  />
 
-              {/* <FAQItem question="" answer="" />
-              <FAQItem question="" answer="" />
-              <FAQItem question="" answer="" /> */}
+                  <FAQItem
+                    question={`How do I buy $${currentFto.Atheletes.fanTokenSymbol}?`}
+                    answer={`Click the Buy $${currentFto.Atheletes.fanTokenSymbol} button, enter your email, choose quantity, then either store in Winter wallet or your ETH wallet. Finally, pay with card.`}
+                  />
+                  <FAQItem
+                    question="How do I participate in events?"
+                    answer="Once the FTO ends, events will appear. You can join using your fan tokens. They're not consumed, so you can reuse them."
+                  />
+                </>
+              )}
             </div>
           </div>
         </div>

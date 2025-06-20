@@ -60,28 +60,25 @@ function Home() {
     if(!athlete.nftContractAddress){
       console.log("NO CONTRACT")
       dispatch(setSelectedAthlete({...athlete,
-
         video_url: "https://nargvalmcrunehnemvpa.supabase.co/storage/v1/object/sign/Athlete/Villain%20LeBron%20did%20not%20forget.mp4?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJBdGhsZXRlL1ZpbGxhaW4gTGVCcm9uIGRpZCBub3QgZm9yZ2V0Lm1wNCIsImlhdCI6MTc0MTU5ODYyOCwiZXhwIjoxNzQ0MTkwNjI4fQ.LCNqKXp4xqfja0Ga7QdfeQ4Vk-ZEUjj5lq8tXSj5sqM"
-
       }));
       dispatch(setEvents([]));
       return;
     }
+    console.log(athlete.nftContractAddress);
+
     const ownsNFT = await userOwnsNFT(
       athlete.nftContractAddress,
       address
     );
     console.log(ownsNFT);
-
     if (ownsNFT) {
-      dispatch(fetchAthleteEvents(athlete));
+      dispatch(fetchAthleteEvents({...athlete, ownsNFT: true}));
       return;
     }
     else{
       dispatch(setSelectedAthlete({...athlete,
-
         video_url: "https://nargvalmcrunehnemvpa.supabase.co/storage/v1/object/sign/Athlete/Villain%20LeBron%20did%20not%20forget.mp4?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJBdGhsZXRlL1ZpbGxhaW4gTGVCcm9uIGRpZCBub3QgZm9yZ2V0Lm1wNCIsImlhdCI6MTc0MTU5ODYyOCwiZXhwIjoxNzQ0MTkwNjI4fQ.LCNqKXp4xqfja0Ga7QdfeQ4Vk-ZEUjj5lq8tXSj5sqM"
-
       }));
       dispatch(setEvents([]));
     }
@@ -152,6 +149,7 @@ function Home() {
               events={events}
               onEventClick={handleEventClick}
               isBlurred={isExpanded}
+              ownsNFT={selectedAthlete?.ownsNFT}
             />
             <RightSection
               isExpanded={isExpanded}

@@ -24,10 +24,10 @@ function Footer() {
         </div>
 
         <div className='flex justify-center flex-col sm:flex-row lg:justify-end gap-2 sm:gap-5 xl:gap-10 w-full'>
-          <a href="/terms-of-use" class="text-lg text-center whitespace-nowrap">
+          <a href="/terms" class="text-lg text-center whitespace-nowrap">
             Terms and Conditions
           </a>
-          <a href="/privacy-policy" class="text-lg text-center whitespace-nowrap">
+          <a href="/privacy" class="text-lg text-center whitespace-nowrap">
             Privacy Policy
           </a>
         </div>

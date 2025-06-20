@@ -1,6 +1,53 @@
-import React from "react";
+import React, { useState } from "react";
+import { supabase } from '../lib/supabase';
+import { useProfiles } from "thirdweb/react";
+import { client } from '../client';
+import toast from 'react-hot-toast';
 
-function AthleteDetails({ athlete, events, onEventClick, isBlurred }) {
+function AthleteDetails({ athlete, events, onEventClick, isBlurred , ownsNFT }) {
+  const [subscriptionLoading, setSubscriptionLoading] = useState(false);
+  const { data: profiles } = useProfiles({ client });
+  console.log(profiles);
+
+  const handleSubscriptionPurchase = async () => {
+    if (!athlete?.id || !profiles?.[0]?.details?.id || !profiles?.[0]?.details?.email) {
+      toast.error('Please connect your wallet and ensure all required information is available');
+      return;
+    }
+
+    setSubscriptionLoading(true);
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('create-subscription-checkout-session', {
+        body: {
+          athleteId: athlete.id,
+          userId: profiles[0].details.id,
+          email: profiles[0].details.email
+        }
+      });
+      console.log(data);
+      console.log(error);
+
+      if (error) {
+        console.error('Error creating subscription checkout session:', error);
+        throw new Error(error.message || 'Failed to create subscription checkout session');
+      }
+
+      if (!data || !data.sessionUrl) {
+        throw new Error('No session URL received from the server');
+      }
+
+      // Redirect to Stripe checkout
+      window.location.href = data.sessionUrl;
+      
+    } catch (error) {
+      console.error('Subscription error:', error);
+      toast.error(`Subscription failed: ${error.message || 'Unknown error'}`);
+    } finally {
+      setSubscriptionLoading(false);
+    }
+  };
+
   return (
     <div className={`w-full h-full rounded-3xl overflow-y-auto
       ${isBlurred ? "blur-lg pointer-events-none" : ""}`}
@@ -23,7 +70,9 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred }) {
                 Your browser does not support the video tag.
               </video>
               <div className="bg-white/40 absolute top-0 left-0 w-full h-full flex flex-col gap-2 justify-between px-[2cqw] py-[1.5cqw]">
-                
+                <div className="flex justify-between items-start">
+
+
                 <div>
                   <div className="text-black font-bold text-[2cqw] leading-tight">
                     {athlete?.firstName || "Athlete Name"}
@@ -31,7 +80,21 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred }) {
                   <div className="text-[#373737] text-[1.3cqw] leading-tight max-w-[25cqw] font-medium">
                     {athlete?.description || "Athlete description"}
                   </div>
+                 
                 </div>
+                {ownsNFT === true ? (
+                <></>
+                ) : (
+                  <button 
+                    className="text-white p-3 rounded-xl text-[1cqw] bg-black leading-tight max-w-[25cqw] font-medium"
+                    onClick={handleSubscriptionPurchase}
+                    disabled={subscriptionLoading}
+                  >
+                   {subscriptionLoading ? 'Processing...' : 'Buy Subscription'}
+                  </button>
+                )}
+                  </div>
+                
 
                 <div className="flex items-center gap-[1.2cqw]">
                   <div className="bg-[#FAFAFB] border-[#EBEBEB] 
