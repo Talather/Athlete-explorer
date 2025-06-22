@@ -43,7 +43,7 @@ function StickyBar() {
         </NavLink>
 
         <NavLink
-          to='/help'
+          to='https://fansday.tawk.help/ '
           className={({ isActive }) =>
             `stickyBarLink ${isActive ? 'stickyBarActiveLink' : ''}`
           }
