@@ -7,7 +7,7 @@ import toast from 'react-hot-toast';
 function AthleteDetails({ athlete, events, onEventClick, isBlurred , ownsNFT }) {
   const [subscriptionLoading, setSubscriptionLoading] = useState(false);
   const { data: profiles } = useProfiles({ client });
-  console.log(profiles);
+
 
   const handleSubscriptionPurchase = async () => {
     if (!athlete?.id || !profiles?.[0]?.details?.id || !profiles?.[0]?.details?.email) {
@@ -158,7 +158,11 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred , ownsNFT }) 
               <h2
                 style={{ fontFamily: "Arial, sans-serif", textAlign: "center" }}
               >
-                This event will be available soon
+                {ownsNFT === true ? (
+                  "This event will be posted soon."
+                ) : (
+                  "You do not have a $XXX NFT or subscription. Get your NFT or subscription to access this area."
+                )}
               </h2>
             </div>
           )}

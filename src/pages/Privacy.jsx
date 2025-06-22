@@ -1,5 +1,6 @@
 import React from 'react';
 import Navbar from '../components/Navbar';
+import StickyBar from '../components/StickyBar';
 import Footer from '../components/Footer';
 import { useStaticPages } from '../hooks/useStaticPages';
 
@@ -19,7 +20,7 @@ const PrivacyPage = () => {
             </div>
           </div>
         </div>
-      </>
+        </>
     );
   }
 
@@ -44,6 +45,8 @@ const PrivacyPage = () => {
             </div>
           </div>
         </div>
+        <StickyBar />
+        <Footer />
       </>
     );
   }
@@ -141,6 +144,7 @@ const PrivacyPage = () => {
           </div>
         </div>
       </div>
+      <StickyBar />
       <Footer />
     </>
   );

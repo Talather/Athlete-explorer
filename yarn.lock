@@ -3635,6 +3635,11 @@ react-style-singleton@^2.2.2, react-style-singleton@^2.2.3:
     get-nonce "^1.0.0"
     tslib "^2.0.0"
 
+react-weglot@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/react-weglot/-/react-weglot-1.0.4.tgz#78a20f57ff08539368d0e9907af03f59e576bc06"
+  integrity sha512-qmvl4FbXN/GL4BvwDenCBi+uzl7oDrPQmkoBTbhUmXJ2gPsX+AwQPCUuk/Uwp3iop4oTfePyAMw5i+msmS6ptg==
+
 react@^19.0.0:
   version "19.0.0"
   resolved "https://registry.npmjs.org/react/-/react-19.0.0.tgz"

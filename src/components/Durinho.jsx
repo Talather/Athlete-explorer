@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSelector } from 'react-redux';
 import FAQItem from "../components/FAQItem";
 import RightSidebar from "../components/durhino_siderbar/code"; 
 import "../styles/durhino.css";
@@ -9,6 +10,7 @@ import { getCountryFlagFromName } from "../utils/countries";
 import ReactCountryFlag from "react-country-flag"
 import Navbar from "./Navbar";
 import { useStaticPages } from "../hooks/useStaticPages";
+import { convertCurrency, formatCurrency } from "../utils/currencyConverter";
 
 function DurinhoPage() {
   const [showSidebar, setShowSidebar] = useState(false);
@@ -21,6 +23,9 @@ function DurinhoPage() {
  const [isBeforeStartDate , setIsBeforeStartDate] = useState(now < startDate);
  const [isAfterEndDate , setIsAfterEndDate] = useState(now > endDate);
 
+ // Redux settings state
+ const { currency, exchangeRates } = useSelector(state => state.settings);
+
  // Fetch FAQ data from database
  const { content: faqContent, loading: faqLoading, error: faqError } = useStaticPages('faq');
 
@@ -28,6 +33,15 @@ function DurinhoPage() {
     setNow(new Date());
     fetchCurrentFto();
   }, []);
+
+  // Helper function to convert and format price
+  const getFormattedPrice = (priceInUSD) => {
+    if (!priceInUSD) return '€0.00';
+    const priceInEUR = priceInUSD ; // Convert USD to EUR
+    const convertedPrice = convertCurrency(priceInEUR, 'EUR', currency, exchangeRates);
+    const formattedPrice = formatCurrency(convertedPrice, currency);
+    return formattedPrice;
+  };
 
   const fetchCurrentFto = async () => {
     const now = new Date().toISOString();
@@ -255,7 +269,7 @@ function DurinhoPage() {
               <h3
                 className="price text-[23px] sm:text-[41px] flex justify-center"
               >
-                ${currentFto.Atheletes.fanTokenInitialPrice}.00
+                {getFormattedPrice(currentFto.Atheletes.fanTokenInitialPrice)}
               </h3>
               <div className="flex items-center justify-center">
                 <div className="fto-button-border-gradient">

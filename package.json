@@ -27,6 +27,7 @@
     "react-player": "^2.16.0",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.3.0",
+    "react-weglot": "^1.0.4",
     "redux": "^5.0.1",
     "redux-thunk": "^3.1.0",
     "thirdweb": "^5.94.2"

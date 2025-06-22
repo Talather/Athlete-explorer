@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAthletes, fetchAthleteEvents, setSelectedEvent, clearSelectedEvent ,setEvents , setSelectedAthlete } from "../store/slices/athleteSlice";
+import { fetchUserSubscriptions } from "../store/slices/subscriptionSlice";
+
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import AthleteDetails from "../components/AthleteDetails";
@@ -13,13 +15,16 @@ import { sepolia } from "thirdweb/chains";
 import { client } from "../client";
 import { useProfiles , useActiveWallet } from "thirdweb/react";
 import { userOwnsNFT } from "./../utils/userOwnsNft";
+// import { userHasSubscription } from "./../utils/userHasSubscription";
+
 import toast, { Toaster } from 'react-hot-toast';
 
 function Home() {
 
   const wallet = useActiveWallet();
   const address = wallet?.getAccount().address;
-
+  const { userSubscriptions } = useSelector(state => state.subscriptions);
+  const { data: profiles } = useProfiles({ client });
   const dispatch = useDispatch();
   const { 
     athletes, 
@@ -45,10 +50,14 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    // Dispatch the fetchAthletes action when component mounts
     dispatch(fetchAthletes());
   }, [dispatch]);
-
+  
+  useEffect(() => {
+    if(profiles !== undefined){
+      dispatch(fetchUserSubscriptions(profiles[0].details.id));
+    }
+  }, [profiles]);
   const handleSelectAthlete = async (athlete) => {
     if (!address) {
       toast.error("Please connect your wallet to continue", {
@@ -57,6 +66,17 @@ function Home() {
       });
       return;
     }
+    // Check if user has an active subscription for this athlete
+    const hasActiveSubscription = userSubscriptions?.some(
+      subscription => subscription.athleteId === athlete.id && subscription.active === true
+    );
+
+    if (hasActiveSubscription) {
+      console.log("HAS SUBSCRIPTION")
+      dispatch(fetchAthleteEvents({...athlete, ownsNFT: true,hasSubscription: true}));
+      return;
+    }
+
     if(!athlete.nftContractAddress){
       console.log("NO CONTRACT")
       dispatch(setSelectedAthlete({...athlete,
@@ -65,13 +85,10 @@ function Home() {
       dispatch(setEvents([]));
       return;
     }
-    console.log(athlete.nftContractAddress);
-
     const ownsNFT = await userOwnsNFT(
       athlete.nftContractAddress,
       address
     );
-    console.log(ownsNFT);
     if (ownsNFT) {
       dispatch(fetchAthleteEvents({...athlete, ownsNFT: true}));
       return;

@@ -1,50 +1,48 @@
 import { Link } from "react-router-dom"
 import { ConnectButton } from "thirdweb/react";
 import { client } from '../client';
-import { useProfiles } from "thirdweb/react";
+import { useProfiles, useActiveWallet } from "thirdweb/react";
 import { supabase } from '../lib/supabase';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { sepolia } from "thirdweb/chains";
 import { inAppWallet } from "thirdweb/wallets";
-
-
+import { User, Settings } from 'lucide-react';
 
 const wallets = [
-inAppWallet({
-auth: {
-options: ["google", "email", "phone", "discord", "facebook"],
-},
-}),
+  inAppWallet({
+    auth: {
+      options: ["google", "email", "phone", "discord", "facebook"],
+    },
+  }),
 ];
-
-
 
 function Navbar() {
   const { data: profiles } = useProfiles({
     client,
   });
+  const wallet = useActiveWallet();
   const [change,setChange] = useState(0);
   
   // Get athletes from Redux store
   const { athletes } = useSelector(state => state.athletes);
 
   const contracts = new Set(athletes?.map(athlete => athlete.nftContractAddress !== null ? athlete.nftContractAddress : "0x683Fb845548d161A9cAddedEDf46FcbB713FEB22"));
-useEffect(() => {
-  const buttons = document.querySelectorAll('.css-86pfay');
-  const buttons2 = document.querySelectorAll('.css-1j66weo');
-  buttons2.forEach((btn) => {
-    if (btn.innerText === 'Buy') {
-      btn.style.display = 'none';
-    }
-  });
-  buttons.forEach((btn) => {
-    const span = btn.querySelector('span');
-    if (span && span.textContent.trim() === 'Connect an App') {
-      btn.style.display = 'none';
-    }
-  });
-}, [profiles,change]);
+  useEffect(() => {
+    const buttons = document.querySelectorAll('.css-86pfay');
+    const buttons2 = document.querySelectorAll('.css-1j66weo');
+    buttons2.forEach((btn) => {
+      if (btn.innerText === 'Buy') {
+        btn.style.display = 'none';
+      }
+    });
+    buttons.forEach((btn) => {
+      const span = btn.querySelector('span');
+      if (span && span.textContent.trim() === 'Connect an App') {
+        btn.style.display = 'none';
+      }
+    });
+  }, [profiles,change]);
 
   
 
@@ -115,37 +113,60 @@ useEffect(() => {
         </div>
         
         <div className="flex justify-end flex-1">
-          <div className="primary-gradient rounded-[10px] p-0.5 overflow-hidden">
-            <ConnectButton 
-              client={client}
-              connectButton={{
-                label: "Login / Signup",
-              }}
-              // buttonTitle="Link Your Wallet"
-              // theme="light"
-              modalSize="wide"
-              autoConnect={true}
-              wallets={wallets}
-              connectModal={{
-                showThirdwebBranding:false,
-              }}
-              onConnect={(profile)=>{
-                setChange((prev)=>prev+1);
-                saveUser();
-              }}
-              detailsModal={{
-                assetTabs: ["token","nft"],
-              }}
-              chain={sepolia}                                                  
-              // supportedNFTs={athletes && athletes.length > 0 
-              //   ? athletes
-              //     .filter(athlete => athlete.nftContractAddress) 
-              //     .map(athlete => athlete.nftContractAddress)
-              //   : ["0x4d5a9F4e440e288E68d9E796AAeb1E968B79B321"]} 
+          <div className="flex items-center space-x-3">
+            {/* Profile & Settings Links - Show when wallet is connected */}
+            {wallet && (
+              <>
+                <Link 
+                  to="/profile" 
+                  className="flex items-center space-x-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 hover:bg-white/20 transition-colors text-white"
+                >
+                  <User size={18} />
+                  <span className="hidden sm:inline">Profile</span>
+                </Link>
+                
+                <Link 
+                  to="/settings" 
+                  className="flex items-center space-x-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 hover:bg-white/20 transition-colors text-white"
+                >
+                  <Settings size={18} />
+                  <span className="hidden sm:inline">Settings</span>
+                </Link>
+              </>
+            )}
+            
+            <div className="primary-gradient rounded-[10px] p-0.5 overflow-hidden">
+              <ConnectButton 
+                client={client}
+                connectButton={{
+                  label: "Login / Signup",
+                }}
+                // buttonTitle="Link Your Wallet"
+                // theme="light"
+                modalSize="wide"
+                autoConnect={true}
+                wallets={wallets}
+                connectModal={{
+                  showThirdwebBranding:false,
+                }}
+                onConnect={(profile)=>{
+                  setChange((prev)=>prev+1);
+                  saveUser();
+                }}
+                detailsModal={{
+                  assetTabs: ["token","nft"],
+                }}
+                chain={sepolia}                                                  
+                // supportedNFTs={athletes && athletes.length > 0 
+                //   ? athletes
+                //     .filter(athlete => athlete.nftContractAddress) 
+                //     .map(athlete => athlete.nftContractAddress)
+                //   : ["0x4d5a9F4e440e288E68d9E796AAeb1E968B79B321"]} 
 
-              supportedNFTs={[...contracts]}
-              
-            />
+                supportedNFTs={[...contracts]}
+                
+              />
+            </div>
           </div>
         </div>
       </div>

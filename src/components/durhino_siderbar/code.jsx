@@ -14,6 +14,8 @@ import {
 } from '@stripe/react-stripe-js';
 import { supabase } from './../../lib/supabase';
 import toast, { Toaster } from 'react-hot-toast';
+import { useSelector } from 'react-redux';
+import { convertCurrency, formatCurrency } from '../../utils/currencyConverter';
 
 const wallets = [
   inAppWallet({
@@ -23,10 +25,8 @@ const wallets = [
   }),
 ];
 
-
 // Initialize Stripe with your publishable key
-const stripePromise = loadStripe('pk_test_51L42JBBjhuRU5cGW2oXLq1IubYuai5huuBi0eMrODKEwvZDSe7KgTMWStEAxOVIcj9nPxWiaOvHEm7pEqhoa8vB400KVHlGKBY');
-
+const stripePromise = loadStripe('pk_test_51RQyMEPNwkgmNBRfcneVX7k3o4kE3d95JtSsJVNoQmQYCizB7gRD476gwj0wawtj6vJtirQ2ZFcyMDUbVAZYSM5H00ovm9pg1f');
 // Wrapper component that provides Stripe context
 const RightSidebar = ({ isOpen, currentFto, onClose }) => {
   return (
@@ -75,7 +75,21 @@ const RightSidebarContent = ({ isOpen, currentFto, onClose }) => {
   const pricePerNFT = currentFto?.Atheletes?.fanTokenInitialPrice || 0;
   const total = quantity * pricePerNFT;
 
+  // Redux settings state for currency
+  const { currency, exchangeRates } = useSelector(state => state.settings);
 
+  // Helper function to convert and format price
+  const getFormattedPrice = (priceInUSD) => {
+ 
+    if (!priceInUSD) return '€0.00';
+    
+    const priceInEUR = priceInUSD ; // Convert USD to EUR
+    
+    const convertedPrice = convertCurrency(priceInEUR, 'EUR', currency, exchangeRates);
+    const formattedPrice = formatCurrency(convertedPrice, currency);
+    
+    return formattedPrice;
+  };
 
   const handleIncrease = e => {
     e.preventDefault()
@@ -216,11 +230,11 @@ const RightSidebarContent = ({ isOpen, currentFto, onClose }) => {
             <div className='text-xl font-bold divide-y-2'>
               <div className='flex items-center justify-between px-[10px] py-[13px]'>
                 <span>NFT price</span>
-                <span>${currentFto.Atheletes.fanTokenInitialPrice}</span>
+                <span>{getFormattedPrice(pricePerNFT)}</span>
               </div>
               <div className='flex items-center justify-between px-[10px] py-[13px]'>
                 <span>Total</span>
-                <span>${total}</span>
+                <span>{getFormattedPrice(total)}</span>
               </div>
             </div>
           </div>
@@ -340,7 +354,7 @@ const RightSidebarContent = ({ isOpen, currentFto, onClose }) => {
               )}
 
               <label className='flex items-center gap-1 text-sm font-bold'>
-                <input type='checkbox' />I accept Fansday’s Terms and Conditions.
+                <input type='checkbox' />I accept Fansday's Terms and Conditions.
               </label>
 
               <button 
@@ -348,7 +362,7 @@ const RightSidebarContent = ({ isOpen, currentFto, onClose }) => {
                 disabled={!stripe || loading || quantity <= 0 || total <= 0}
                 onClick={handleSubmit}
               >
-                {loading ? 'Processing...' : `Pay $${total.toFixed(2)}`}
+                {loading ? 'Processing...' : `Pay ${getFormattedPrice(total)}`}
               </button>
 
             </form>
