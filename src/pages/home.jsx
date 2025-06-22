@@ -55,7 +55,8 @@ function Home() {
   
   useEffect(() => {
     if(profiles !== undefined){
-      dispatch(fetchUserSubscriptions(profiles[0].details.id));
+      // fetchUserSubscriptions is now handled globally in App.jsx
+      // dispatch(fetchUserSubscriptions(profiles[0].details.id));
     }
   }, [profiles]);
   const handleSelectAthlete = async (athlete) => {

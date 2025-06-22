@@ -50,8 +50,9 @@ function SettingsPage() {
 
   useEffect(() => {
     if (userId) {
-      dispatch(fetchUserSettings(userId));
-      dispatch(fetchExchangeRates());
+      // Data is now fetched globally in App.jsx, no need to fetch here
+      // dispatch(fetchUserSettings(userId));
+      // dispatch(fetchExchangeRates());
     }
   }, [userId, dispatch]);
 
