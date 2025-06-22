@@ -440,7 +440,7 @@ const Profile = () => {
                                 {message.Events?.Atheletes?.firstName} {message.Events?.Atheletes?.lastName}
                               </div>
                               <div className="text-xs text-[#717071] line-clamp-1">
-                                {message.Events?.title}
+                                {message.Events?.name}
                               </div>
                             </div>
                           </div>
