@@ -38,14 +38,14 @@ const ChatMessageItem = ({ message, isOwnMessage, showHeader, onReply, currentUs
             className={`rounded-lg max-w-full h-auto cursor-pointer transition-opacity ${
               message.sending ? 'opacity-70' : 'hover:opacity-90'
             }`}
-            onClick={() => !message.sending && window.open(message.file_url, '_blank')}
+            // onClick={() => !message.sending && window.open(message.file_url, '_blank')}
             loading="lazy"
           />
-          {message.file_name && (
+          {/* {message.file_name && (
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 truncate">
               {message.file_name}
             </p>
-          )}
+          )} */}
         </div>
       )
     }
@@ -102,6 +102,7 @@ const ChatMessageItem = ({ message, isOwnMessage, showHeader, onReply, currentUs
       </div>
     )
   }
+  
 
   return (
     <div className={`flex gap-3 px-4 py-2 group hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${
@@ -110,8 +111,12 @@ const ChatMessageItem = ({ message, isOwnMessage, showHeader, onReply, currentUs
       {/* Avatar placeholder */}
       {showHeader && (
         <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium flex-shrink-0"
-          style={{ background: 'linear-gradient(65deg, #EB9486, #8F4FF3)' }}>
-          {message.username?.[0]?.toUpperCase() || 'U'}
+          style={{ background: message?.profilePicture?'transparent':'linear-gradient(65deg, #EB9486, #8F4FF3)' }}>
+            {message?.profilePicture ? (
+              <img src={message?.profilePicture} alt="Profile" className="w-full h-full rounded-full" />
+            ) : (
+              message.username?.[0]?.toUpperCase() || 'U'
+            )}
         </div>
       )}
       

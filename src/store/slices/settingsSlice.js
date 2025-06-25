@@ -64,6 +64,12 @@ const settingsSlice = createSlice({
     currency: 'EUR',
     email: '',
     phone: '',
+    // Notification preferences
+    notifications_email: true,
+    notifications_sms: false,
+    notifications_browser: true,
+    // Browser notification permission
+    browserNotificationPermission: 'default',
     // Exchange rates
     exchangeRates: null,
     baseCurrency: 'EUR',
@@ -93,6 +99,9 @@ const settingsSlice = createSlice({
     },
     setNotificationSms: (state, action) => {
       state.notifications_sms = action.payload;
+    },
+    setNotificationBrowser: (state, action) => {
+      state.notifications_browser = action.payload;
     },
     clearError: (state) => {
       state.error = null;
@@ -161,6 +170,9 @@ export const {
   setCurrency,
   setEmail,
   setPhone,
+  setNotificationEmail,
+  setNotificationSms,
+  setNotificationBrowser,
   clearError,
 } = settingsSlice.actions;
 

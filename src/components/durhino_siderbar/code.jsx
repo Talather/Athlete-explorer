@@ -77,6 +77,7 @@ const RightSidebarContent = ({ isOpen, currentFto, onClose }) => {
 
   // Redux settings state for currency
   const { currency, exchangeRates } = useSelector(state => state.settings);
+  console.log(currency);
 
   // Helper function to convert and format price
   const getFormattedPrice = (priceInUSD) => {
@@ -121,10 +122,11 @@ const RightSidebarContent = ({ isOpen, currentFto, onClose }) => {
         body:{
           quantity: quantity,
           wallet: address,
-          pricePerNFT: pricePerNFT,
+          pricePerNFT: convertCurrency(pricePerNFT, 'EUR', currency, exchangeRates),
           contractAddress: currentFto?.Atheletes?.nftContractAddress,
           email: profiles?.[0]?.details?.email || "test@example.com",
           userId:profiles?.[0]?.details.id,
+          currency: currency,
         },
       })
       

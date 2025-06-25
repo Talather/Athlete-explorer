@@ -7,7 +7,7 @@ import Footer from '../components/Footer';
 import { fetchUserSubscriptions } from '../store/slices/subscriptionSlice';
 import { fetchAthletes } from '../store/slices/athleteSlice';
 import { supabase } from '../lib/supabase';
-import { userOwnsNFT } from '../utils/userOwnsNft';
+import { userOwnsNFT , userOwnsNFTBalance} from '../utils/userOwnsNft';
 import { subscriptionActions, validateSubscriptionAction } from '../utils/stripeSubscription';
 import { client } from '../client';
 import toast from 'react-hot-toast';
@@ -31,6 +31,8 @@ const Profile = () => {
   const address = wallet?.getAccount().address;
   const { data: profiles } = useProfiles({ client });
   const { userSubscriptions, loading: subscriptionsLoading } = useSelector(state => state.subscriptions);
+
+  const {profile} = useSelector(state=>state.user);
   const { athletes } = useSelector(state => state.athletes);
   const [userMessages, setUserMessages] = useState([]);
   const [messagesLoading, setMessagesLoading] = useState(false);
@@ -92,8 +94,8 @@ const Profile = () => {
           athletes
             .filter(athlete => athlete.nftContractAddress)
             .map(async (athlete) => {
-              const owns = await userOwnsNFT(athlete.nftContractAddress, address);
-              return owns ? athlete : null;
+              const owns = await userOwnsNFTBalance(athlete.nftContractAddress, address);
+              return owns.owns ? {...athlete, balance: Number(owns.balance)} : null;
             })
         );
         
@@ -216,8 +218,12 @@ const Profile = () => {
           {/* Profile Header */}
           <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-4 sm:mb-8">
             <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-[#e99289] to-[#9352ee] rounded-full flex items-center justify-center">
-                <User size={32} className="sm:size-10 text-white" />
+              <div className={profile?.profilePicture ? `w-16 h-16 sm:w-20 sm:h-20 bg-transparent rounded-full flex items-center justify-center` : `w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-[#e99289] to-[#9352ee] rounded-full flex items-center justify-center`}>
+                {profile?.profilePicture ? (
+                  <img src={profile?.profilePicture} alt="Profile" className="w-full h-full object-contain rounded-full" />
+                ) : (
+                  <User size={32} className="sm:size-10 text-white" />
+                )}
               </div>
               <div className="flex-1 text-center sm:text-left">
                 <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-[#e99289] to-[#9352ee] bg-clip-text text-transparent">
@@ -323,7 +329,7 @@ const Profile = () => {
                         <p className="text-[#717071] text-xs sm:text-sm mb-3 line-clamp-2">{athlete.bio}</p>
                         <div className="flex items-center justify-between">
                           <span className="text-xs bg-gradient-to-r from-[#e99289] to-[#9352ee] text-white px-2 sm:px-3 py-1 rounded-full">
-                            NFT Owned
+                            NFT Owned x {athlete.balance}
                           </span>
                         </div>
                       </div>

@@ -4,16 +4,22 @@ import ChatMessageItem from './ChatMessageItem'
 import ChatInput from './ChatInput'
 import { useRealtimeChat } from '../hooks/use-realtime-chat'
 import { useProfiles , useActiveWallet } from "thirdweb/react";
-
+import { useSelector } from 'react-redux'
 const EventChat = ({ event }) => {
+  const {
+      profile,
+      loading: userLoading,
+      error: userError,
+      uploadingPicture,
+      uploadError
+    } = useSelector(state => state.user);
   const wallet = useActiveWallet();
   const address = wallet?.getAccount().address;
   const profiles = useProfiles(address);
-  console.log(profiles.data);
   const currentUserId = profiles.data[0].details.id; 
   const [replyTo, setReplyTo] = useState(null)
   const [showLoadMore, setShowLoadMore] = useState(true)
-  const username = profiles.data[0].details.name ? profiles.data[0].details.name : profiles.data[1].details.name ? profiles.data[1].details.name :profiles.data[0].details.email;
+  const username = profile?.username ? profile.username : profile?.email? profile.email:profile?.phone ? profile.phone : profiles.data[0].details.id;
   // Chat hooks
   const {
     messages,
@@ -91,7 +97,7 @@ const EventChat = ({ event }) => {
 
   const handleSendMessage = async (content, replyToId) => {
     try {
-      await sendMessage(content, replyToId)
+      await sendMessage(content, replyToId , profile)
       // Always scroll to bottom when user sends a message
       setTimeout(() => scrollToBottom(), 100)
     } catch (error) {
@@ -101,7 +107,7 @@ const EventChat = ({ event }) => {
 
   const handleSendFile = async (file, replyToId, messageText) => {
     try {
-      await sendFileMessage(file, replyToId, messageText)
+      await sendFileMessage(file, replyToId, messageText , profile)
       // Always scroll to bottom when user sends a file
       setTimeout(() => scrollToBottom(), 100)
     } catch (error) {

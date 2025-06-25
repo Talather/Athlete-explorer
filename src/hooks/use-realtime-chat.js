@@ -69,53 +69,6 @@ export function useRealtimeChat({ eventId, username, userId }) {
     const channelName = `event-chat-${eventId}`
     const newChannel = supabase
       .channel(channelName)
-      .on(
-        'postgres_changes',
-        { 
-          event: 'INSERT', 
-          schema: 'public', 
-          table: 'messages',
-          filter: `event_id=eq.${eventId}` 
-        },
-        async (payload) => {
-          console.log('Real-time message received:', payload)
-          const newMessage = payload.new
-          
-          // Don't add messages from the real-time subscription if the user just sent it
-          // Let the optimistic UI handle it instead
-          if (newMessage.user_id === userId) {
-            console.log('Skipping own message from real-time subscription')
-            return // Skip own messages from real-time subscription
-          }
-          
-          console.log('Processing message from other user:', newMessage)
-          
-          // Fetch the complete message with reply data if needed
-          if (newMessage.reply_to_id) {
-            const { data } = await supabase
-              .from('messages')
-              .select(`
-                *,
-                reply_to:reply_to_id (
-                  id,
-                  username,
-                  content,
-                  message_type
-                )
-              `)
-              .eq('id', newMessage.id)
-              .single()
-            
-            if (data) {
-              console.log('Adding reply message:', data)
-              setMessages(current => [...current, data])
-            }
-          } else {
-            console.log('Adding regular message:', newMessage)
-            setMessages(current => [...current, newMessage])
-          }
-        }
-      )
       .on('broadcast', { event: 'new_message' }, async (payload) => {
         console.log('Broadcast message received:', payload)
         const messageData = payload.payload
@@ -153,11 +106,12 @@ export function useRealtimeChat({ eventId, username, userId }) {
       })
       .subscribe(async (status, error) => {
         console.log('Subscription status:', status, error)
+        setIsConnected(true);
+
         if (status === 'SUBSCRIBED') {
           console.log("Successfully subscribed to channel:", channelName)
-          setIsConnected(true)
         } else if (status === 'CHANNEL_ERROR') {
-          console.error('Channel error:', error)
+          console.error('Channel error:', error);
           setIsConnected(false)
         } else if (status === 'TIMED_OUT') {
           console.error('Subscription timed out')
@@ -180,28 +134,10 @@ export function useRealtimeChat({ eventId, username, userId }) {
   }, [eventId, userId, loadMessages])
 
   // Send text message
-  const sendMessage = useCallback(async (content, replyToId = null) => {
+  const sendMessage = useCallback(async (content, replyToId = null , profile) => {
     if (!content.trim() || !eventId) return
 
-    // Ensure user exists in database
-    try {
-      const { error: userError } = await supabase
-        .from('users')
-        .upsert({ 
-          id: userId, 
-          // username: username,
-          created_at: new Date().toISOString()
-        }, { 
-          onConflict: 'id',
-          ignoreDuplicates: true 
-        })
-      
-      if (userError && userError.code !== '23505') { // Ignore duplicate key errors
-        console.log('User upsert result:', userError)
-      }
-    } catch (error) {
-      console.log('User creation attempt:', error)
-    }
+
 
     // Create optimistic message
     const optimisticMessage = {
@@ -214,6 +150,7 @@ export function useRealtimeChat({ eventId, username, userId }) {
       reply_to_id: replyToId,
       created_at: new Date().toISOString(),
       sending: true,
+      profilePicture: profile?.profilePicture? profile?.profilePicture : null,
     }
 
     // Add optimistic message immediately
@@ -226,7 +163,8 @@ export function useRealtimeChat({ eventId, username, userId }) {
         username: username,
         content: content.trim(),
         message_type: replyToId ? 'reply' : 'text',
-        reply_to_id: replyToId
+        reply_to_id: replyToId,
+        profilePicture: profile?.profilePicture? profile?.profilePicture : null,
       }
 
       const { data, error } = await supabase
@@ -273,28 +211,9 @@ export function useRealtimeChat({ eventId, username, userId }) {
   }, [eventId, userId, username, channel])
 
   // Send file message
-  const sendFileMessage = useCallback(async (file, replyToId = null, messageText = '') => {
+  const sendFileMessage = useCallback(async (file, replyToId = null, messageText = '' , profile) => {
     if (!file || !eventId) return
 
-    // Ensure user exists in database
-    try {
-      const { error: userError } = await supabase
-        .from('users')
-        .upsert({ 
-          id: userId, 
-          username: username,
-          created_at: new Date().toISOString()
-        }, { 
-          onConflict: 'id',
-          ignoreDuplicates: true 
-        })
-      
-      if (userError && userError.code !== '23505') { // Ignore duplicate key errors
-        console.log('User upsert result:', userError)
-      }
-    } catch (error) {
-      console.log('User creation attempt:', error)
-    }
 
     // Create optimistic message
     const isImage = file.type.startsWith('image/')
@@ -305,7 +224,7 @@ export function useRealtimeChat({ eventId, username, userId }) {
       event_id: eventId,
       user_id: userId,
       username: username,
-      content: messageText || (isImage ? 'Image' : file.name),
+      content: messageText || (isImage ? '' : ''),
       message_type: replyToId ? 'reply' : (isImage ? 'image' : 'file'),
       file_url: optimisticFileUrl,
       file_name: file.name,
@@ -314,7 +233,7 @@ export function useRealtimeChat({ eventId, username, userId }) {
       reply_to_id: replyToId,
       created_at: new Date().toISOString(),
       sending: true,
-      isOptimistic: true
+      profilePicture: profile?.profilePicture? profile?.profilePicture : null,
     }
 
     // Add optimistic message immediately
@@ -345,7 +264,7 @@ export function useRealtimeChat({ eventId, username, userId }) {
 
       // Determine message type and content
       const messageType = replyToId ? 'reply' : (isImage ? 'image' : 'file')
-      const content = messageText || (isImage ? 'Image' : file.name)
+      const content = messageText || (isImage ? '' : '')
 
       const messageData = {
         event_id: eventId,
@@ -357,6 +276,7 @@ export function useRealtimeChat({ eventId, username, userId }) {
         file_name: file.name,
         file_type: file.type,
         file_size: file.size,
+        profilePicture: profile?.profilePicture? profile?.profilePicture : null,
         reply_to_id: replyToId
       }
 

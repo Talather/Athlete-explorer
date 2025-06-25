@@ -9,8 +9,20 @@ import {
   fetchExchangeRates,
   setLanguage,
   setCurrency,
+  setNotificationEmail,
+  setNotificationSms,
+  setNotificationBrowser,
   clearError
 } from '../store/slices/settingsSlice';
+
+import { 
+  updateUserProfile,
+  uploadProfilePicture,
+  createUserProfile,
+  clearError as clearUserError,
+  updateUsername
+} from '../store/slices/userSlice';
+
 import { supabase } from '../lib/supabase';
 import { supportedCurrencies, supportedLanguages } from '../utils/currencyConverter';
 import { 
@@ -40,21 +52,39 @@ function SettingsPage() {
     loading,
     error,
     exchangeRates,
-    exchangeRatesLoading
+    exchangeRatesLoading,
+    notifications_email,
+    notifications_sms,
+    notifications_browser,
+    browserNotificationPermission
   } = useSelector(state => state.settings);
 
-  const [profileImage, setProfileImage] = useState("/sixer.gif");
-  const [username, setUsername] = useState("");
-  const [activeTab, setActiveTab] = useState("preferences");
+  const {
+    profile,
+    loading: userLoading,
+    error: userError,
+    uploadingPicture,
+    uploadError
+  } = useSelector(state => state.user);
+
+  const [profileImage, setProfileImage] = useState(profile?.profilePicture || '/sixer.gif');
+  const [username, setUsername] = useState(profile?.username || '');
+  const [email, setEmail] = useState(profile?.email || '');
+  const [phone, setPhone] = useState(profile?.phone || '');
+  const [activeTab, setActiveTab] = useState("profile");
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
+  
+
+  // Update local state when profile data changes
   useEffect(() => {
-    if (userId) {
-      // Data is now fetched globally in App.jsx, no need to fetch here
-      // dispatch(fetchUserSettings(userId));
-      // dispatch(fetchExchangeRates());
+    if (profile) {
+      setProfileImage(profile.profilePicture || '/sixer.gif');
+      setUsername(profile.username || '');
+      setEmail(profile.email || '');
+      setPhone(profile.phone || '');
     }
-  }, [userId, dispatch]);
+  }, [profile]);
 
   // Update Weglot language when language changes
   useEffect(() => {
@@ -63,11 +93,56 @@ function SettingsPage() {
     }
   }, [language]);
 
-  const handleImageChange = (e) => {
+  // Check browser notification permission on mount
+  useEffect(() => {
+    if ('Notification' in window) {
+      // dispatch(setBrowserNotificationPermission(Notification.permission));
+    }
+  }, [dispatch]);
+
+  const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
+      if (!userId) {
+        toast.error('Please connect your wallet first');
+        return;
+      }
+
+      // Show preview immediately
       const imageUrl = URL.createObjectURL(file);
       setProfileImage(imageUrl);
+
+      try {
+        await dispatch(uploadProfilePicture({ userId, file })).unwrap();
+        toast.success('Profile picture updated successfully!');
+      } catch (error) {
+        toast.error(error || 'Failed to upload profile picture');
+        // Revert to original image on error
+        setProfileImage(profile?.profilePicture || '/sixer.gif');
+      }
+    }
+  };
+
+  const handleUsernameChange = (e) => {
+    setUsername(e.target.value);
+    dispatch(updateUsername(e.target.value));
+  };
+
+  const handleSaveProfile = async () => {
+    if (!userId) {
+      toast.error('Please connect your wallet first');
+      return;
+    }
+
+    try {
+      await dispatch(updateUserProfile({
+        userId,
+        profileData: { username }
+      })).unwrap();
+      
+      toast.success('Profile updated successfully!');
+    } catch (error) {
+      toast.error(error || 'Failed to update profile');
     }
   };
 
@@ -92,6 +167,49 @@ function SettingsPage() {
     }
   };
 
+  const handleSaveNotifications = async () => {
+    if (!userId) {
+      toast.error('Please connect your wallet first');
+      return;
+    }
+
+    try {
+      await dispatch(updateUserSettings({
+        userId,
+        settings: {
+          notifications_email,
+          notifications_sms,
+          notifications_browser,
+        }
+      })).unwrap();
+      
+      toast.success('Notification preferences saved successfully!');
+    } catch (error) {
+      toast.error(error || 'Failed to save notification preferences');
+    }
+  };
+
+  const handleRequestNotificationPermission = async () => {
+    if ('Notification' in window) {
+      try {
+        const permission = await Notification.requestPermission();
+        // dispatch(setBrowserNotificationPermission(permission));
+        
+        if (permission === 'granted') {
+          toast.success('Browser notifications enabled!');
+          dispatch(setNotificationBrowser(true));
+        } else if (permission === 'denied') {
+          toast.error('Browser notifications denied. You can enable them in your browser settings.');
+          dispatch(setNotificationBrowser(false));
+        }
+      } catch (error) {
+        toast.error('Error requesting notification permission');
+      }
+    } else {
+      toast.error('Browser notifications not supported');
+    }
+  };
+
   const handleDeleteAccount = async () => {
     if (!userId) return;
     
@@ -112,9 +230,9 @@ function SettingsPage() {
   };
 
   const tabs = [
-      { id: 'preferences', label: 'Preferences', icon: Globe },
-    // { id: 'profile', label: 'Profile', icon: User },
-    // { id: 'notifications', label: 'Notifications', icon: Bell },
+    { id: 'profile', label: 'Profile', icon: User },
+    { id: 'preferences', label: 'Preferences', icon: Globe },
+    { id: 'notifications', label: 'Notifications', icon: Bell },
   ];
 
   return (
@@ -157,7 +275,7 @@ function SettingsPage() {
           <div className="p-4 sm:p-6 lg:p-8">
             
             {/* Profile Tab */}
-            {/* {activeTab === 'profile' && (
+            {activeTab === 'profile' && (
               <div className="space-y-6">
                 <div className="flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-6">
                   <div className="relative group shrink-0">
@@ -166,13 +284,18 @@ function SettingsPage() {
                       alt="Profile"
                       className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 border-white shadow-lg"
                     />
-                    <label className="absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center text-white cursor-pointer transition-opacity">
-                      <Camera size={20} />
+                    <label className={`absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center text-white cursor-pointer transition-opacity ${uploadingPicture ? 'opacity-100' : ''}`}>
+                      {uploadingPicture ? (
+                        <Loader2 size={20} className="animate-spin" />
+                      ) : (
+                        <Camera size={20} />
+                      )}
                       <input
                         type="file"
                         accept="image/*"
                         onChange={handleImageChange}
                         className="hidden"
+                        disabled={uploadingPicture}
                       />
                     </label>
                   </div>
@@ -184,40 +307,72 @@ function SettingsPage() {
                         <input
                           type="text"
                           value={username}
-                          onChange={(e) => setUsername(e.target.value)}
+                          onChange={handleUsernameChange}
                           className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#9352ee] focus:border-transparent outline-none transition-all"
                           placeholder="Enter your username"
+                          disabled={userLoading}
                         />
                       </div>
-                      
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-sm font-semibold text-[#1D1D1D] mb-2">Email</label>
-                          <input
-                            type="email"
-                            value={email}
-                            onChange={(e) => dispatch(setEmail(e.target.value))}
-                            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#9352ee] focus:border-transparent outline-none transition-all"
-                            placeholder="you@example.com"
-                          />
-                        </div>
-                        
-                        <div>
-                          <label className="block text-sm font-semibold text-[#1D1D1D] mb-2">Phone</label>
-                          <input
-                            type="tel"
-                            value={phone}
-                            onChange={(e) => dispatch(setPhone(e.target.value))}
-                            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#9352ee] focus:border-transparent outline-none transition-all"
-                            placeholder="+1234567890"
-                          />
-                        </div>
+                      <div>
+                        <label className="block text-sm font-semibold text-[#1D1D1D] mb-2">Email</label>
+                        <input
+                          type="email"
+                          value={email}
+                          readOnly
+                          className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-600 cursor-not-allowed outline-none"
+                          placeholder="Email not set"
+                        />
+                        <p className="text-xs text-gray-500 mt-1">
+                          To change your email, go to <span className="font-medium">Wallet → Manage Wallet → Linked Profiles</span>
+                        </p>
                       </div>
+                      <div>
+                        <label className="block text-sm font-semibold text-[#1D1D1D] mb-2">Phone</label>
+                        <input
+                          type="tel"
+                          value={phone}
+                          readOnly
+                          className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-600 cursor-not-allowed outline-none"
+                          placeholder="Phone not set"
+                        />
+                        <p className="text-xs text-gray-500 mt-1">
+                          To change your phone number, go to <span className="font-medium">Wallet → Manage Wallet → Linked Profiles</span>
+                        </p>
+                      </div>
+                      
+                      <div className="flex items-center space-x-4">
+                        <button
+                          onClick={handleSaveProfile}
+                          disabled={userLoading}
+                          className="px-6 py-3 bg-gradient-to-r from-[#e99289] to-[#9352ee] text-white rounded-xl font-semibold flex items-center space-x-2 hover:shadow-lg transition-all disabled:opacity-50"
+                        >
+                          {userLoading ? (
+                            <Loader2 size={16} className="animate-spin" />
+                          ) : (
+                            <Save size={16} />
+                          )}
+                          <span>Save Profile</span>
+                        </button>
+                      </div>
+
+                      {userError && (
+                        <div className="p-3 bg-red-50 border border-red-200 rounded-lg flex items-center space-x-2 text-red-700">
+                          <AlertCircle size={16} />
+                          <span className="text-sm">{userError}</span>
+                        </div>
+                      )}
+
+                      {uploadError && (
+                        <div className="p-3 bg-red-50 border border-red-200 rounded-lg flex items-center space-x-2 text-red-700">
+                          <AlertCircle size={16} />
+                          <span className="text-sm">{uploadError}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
               </div>
-            )} */}
+            )}
 
             {/* Preferences Tab */}
             {activeTab === 'preferences' && (
@@ -269,102 +424,133 @@ function SettingsPage() {
                   </div>
                 </div>
 
-                {/* Exchange Rate Info */}
-                {/* {exchangeRates && (
-                  <div className="bg-gradient-to-r from-[#e99289]/10 to-[#9352ee]/10 rounded-xl p-4">
-                    <h3 className="font-semibold text-[#1D1D1D] mb-2 flex items-center">
-                      <DollarSign size={16} className="mr-2" />
-                      Current Exchange Rates
-                    </h3>
-                    <p className="text-sm text-[#717071]">
-                      Base: {exchangeRates.base} | Last updated: {exchangeRates.date}
-                    </p>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3 text-xs">
-                      {Object.entries(exchangeRates.rates).slice(0, 8).map(([curr, rate]) => (
-                        <div key={curr} className="bg-white/50 rounded px-2 py-1">
-                          <span className="font-medium">{curr}</span>: {rate.toFixed(4)}
-                        </div>
-                      ))}
-                    </div>
+                {/* Save Button */}
+                <div className="flex justify-between items-center pt-6 border-t border-gray-200">
+                  <button
+                    onClick={handleSaveSettings}
+                    disabled={loading}
+                    className="bg-gradient-to-r from-[#e99289] to-[#9352ee] text-white px-6 py-3 rounded-xl font-semibold flex items-center space-x-2 hover:shadow-lg transition-all disabled:opacity-50"
+                  >
+                    {loading ? (
+                      <Loader2 size={16} className="animate-spin" />
+                    ) : (
+                      <Save size={16} />
+                    )}
+                    <span>{loading ? 'Saving...' : 'Save Changes'}</span>
+                  </button>
+                </div>
+
+                {/* Error Display */}
+                {error && (
+                  <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center space-x-2">
+                    <AlertCircle size={20} className="text-red-500" />
+                    <span className="text-red-700 text-sm">{error}</span>
+                    <button 
+                      onClick={() => dispatch(clearError())}
+                      className="ml-auto text-red-500 hover:text-red-700"
+                    >
+                      ×
+                    </button>
                   </div>
-                )} */}
+                )}
               </div>
             )}
 
             {/* Notifications Tab */}
-            {/* {activeTab === 'notifications' && (
+            {activeTab === 'notifications' && (
               <div className="space-y-6">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-                    <div className="flex items-center space-x-3">
-                      <Mail size={20} className="text-[#9352ee]" />
-                      <div>
-                        <h3 className="font-semibold text-[#1D1D1D]">Email Notifications</h3>
-                        <p className="text-xs text-[#717071]">Receive updates via email</p>
-                      </div>
-                    </div>
-                    <label className="relative inline-flex items-center cursor-pointer">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  
+                  {/* Email Notifications */}
+                  <div>
+                    <label className="block text-sm font-semibold text-[#1D1D1D] mb-3">
+                      <Mail className="inline mr-2" size={16} />
+                      Email Notifications
+                    </label>
+                    <div className="flex items-center space-x-2">
                       <input
                         type="checkbox"
                         checked={notifications_email}
                         onChange={(e) => dispatch(setNotificationEmail(e.target.checked))}
-                        className="sr-only peer"
+                        className="w-4 h-4 text-[#9352ee] bg-gray-100 rounded border-gray-300 focus:ring-[#9352ee] focus:ring-2"
                       />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#9352ee]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#9352ee]"></div>
-                    </label>
-                  </div>
-                  
-                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-                    <div className="flex items-center space-x-3">
-                      <Phone size={20} className="text-[#e99289]" />
-                      <div>
-                        <h3 className="font-semibold text-[#1D1D1D]">SMS Notifications</h3>
-                        <p className="text-xs text-[#717071]">Receive updates via SMS</p>
-                      </div>
+                      <span className="text-sm">Receive email notifications</span>
                     </div>
-                    <label className="relative inline-flex items-center cursor-pointer">
+                  </div>
+
+                  {/* SMS Notifications */}
+                  <div>
+                    <label className="block text-sm font-semibold text-[#1D1D1D] mb-3">
+                      <Phone className="inline mr-2" size={16} />
+                      SMS Notifications
+                    </label>
+                    <div className="flex items-center space-x-2">
                       <input
                         type="checkbox"
                         checked={notifications_sms}
                         onChange={(e) => dispatch(setNotificationSms(e.target.checked))}
-                        className="sr-only peer"
+                        className="w-4 h-4 text-[#9352ee] bg-gray-100 rounded border-gray-300 focus:ring-[#9352ee] focus:ring-2"
                       />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#e99289]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#e99289]"></div>
-                    </label>
+                      <span className="text-sm">Receive SMS notifications</span>
+                    </div>
                   </div>
+
+                  {/* Browser Notifications */}
+                  <div>
+                    <label className="block text-sm font-semibold text-[#1D1D1D] mb-3">
+                      <Bell className="inline mr-2" size={16} />
+                      Browser Notifications
+                    </label>
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        checked={notifications_browser}
+                        onChange={(e) => dispatch(setNotificationBrowser(e.target.checked))}
+                        className="w-4 h-4 text-[#9352ee] bg-gray-100 rounded border-gray-300 focus:ring-[#9352ee] focus:ring-2"
+                      />
+                      <span className="text-sm">Receive browser notifications</span>
+                      {browserNotificationPermission === 'denied' && (
+                        <span className="text-xs text-red-500">Browser notifications are blocked. Please enable them in your browser settings.</span>
+                      )}
+                      {/* {browserNotificationPermission === 'default' && (
+                        <button
+                          onClick={handleRequestNotificationPermission}
+                          className="ml-2 text-sm text-[#9352ee] hover:text-[#1D1D1D]"
+                        >
+                          Request permission
+                        </button>
+                      )} */}
+                    </div>
+                  </div>
+
+               
+                
+
+               
+
+               
+
+               
+
+                </div>
+
+                {/* Save Button */}
+                <div className="flex justify-between items-center pt-6 border-t border-gray-200">
+                  <button
+                    onClick={handleSaveNotifications}
+                    disabled={loading}
+                    className="bg-gradient-to-r from-[#e99289] to-[#9352ee] text-white px-6 py-3 rounded-xl font-semibold flex items-center space-x-2 hover:shadow-lg transition-all disabled:opacity-50"
+                  >
+                    {loading ? (
+                      <Loader2 size={16} className="animate-spin" />
+                    ) : (
+                      <Save size={16} />
+                    )}
+                    <span>{loading ? 'Saving...' : 'Save Changes'}</span>
+                  </button>
                 </div>
               </div>
-            )} */}
-
-            {/* Error Display */}
-            {error && (
-              <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center space-x-2">
-                <AlertCircle size={20} className="text-red-500" />
-                <span className="text-red-700 text-sm">{error}</span>
-                <button 
-                  onClick={() => dispatch(clearError())}
-                  className="ml-auto text-red-500 hover:text-red-700"
-                >
-                  ×
-                </button>
-              </div>
             )}
-
-            {/* Save Button */}
-            <div className="flex justify-between items-center pt-6 border-t border-gray-200">
-              <button
-                onClick={handleSaveSettings}
-                disabled={loading}
-                className="bg-gradient-to-r from-[#e99289] to-[#9352ee] text-white px-6 py-3 rounded-xl font-semibold flex items-center space-x-2 hover:shadow-lg transition-all disabled:opacity-50"
-              >
-                {loading ? (
-                  <Loader2 size={16} className="animate-spin" />
-                ) : (
-                  <Save size={16} />
-                )}
-                <span>{loading ? 'Saving...' : 'Save Changes'}</span>
-              </button>
-            </div>
 
             {/* Danger Zone */}
             <div className="border-t border-red-200 pt-6 mt-8">

@@ -17,6 +17,7 @@ import { fetchUserSettings, fetchExchangeRates } from './store/slices/settingsSl
 import {  fetchUserSubscriptions } from './store/slices/subscriptionSlice'
 import { client } from './client';
 import { useProfiles } from 'thirdweb/react';
+import { fetchUserProfile } from './store/slices/userSlice'
 // Main App Routes Component
 function AppRoutes() {
   const wallet = useActiveWallet();
@@ -30,10 +31,12 @@ function AppRoutes() {
   useEffect(() => {
     dispatch(fetchExchangeRates());
   }, [dispatch]);
+ 
 
   // Fetch user-specific data when wallet connects
   useEffect(() => {
     if (userId) {
+      dispatch(fetchUserProfile(userId));
       dispatch(fetchUserSettings(userId));
       dispatch(fetchUserSubscriptions(userId));
     }

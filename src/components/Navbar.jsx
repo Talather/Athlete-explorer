@@ -31,8 +31,15 @@ function Navbar() {
   useEffect(() => {
     const buttons = document.querySelectorAll('.css-86pfay');
     const buttons2 = document.querySelectorAll('.css-1j66weo');
+    const buttons3 = document.querySelectorAll('.css-86pfay');
+
     buttons2.forEach((btn) => {
-      if (btn.innerText === 'Buy') {
+      if (btn.innerText === 'Buy' || btn.innerText === 'Send' || btn.innerText === 'Receive' ) {
+        btn.style.display = 'none';
+      }
+    });
+    buttons3.forEach((btn) => {
+      if (btn.innerText === 'Transactions' ) {
         btn.style.display = 'none';
       }
     });
@@ -52,9 +59,71 @@ function Navbar() {
       
       const userId = profiles[0]?.details.id;
       const userEmail = profiles[0]?.details.email;
+      const username = profiles[0]?.details.name? profiles[0]?.details.name : "username";
       
     
       if (!userId || !userEmail) return;
+
+      // Detect user's country and set defaults
+      const detectLocationDefaults = async () => {
+        try {
+          // Use IP geolocation service to detect country
+          const response = await fetch('https://ipapi.co/json/');
+          const locationData = await response.json();
+          const countryCode = locationData.country_code?.toUpperCase();
+
+          console.log('Detected country:', countryCode);
+
+          // Set language and currency based on country
+          let language = 'en'; // Default to English
+          let currency = 'USD'; // Default to USD
+
+          switch (countryCode) {
+            case 'TR': // Turkey
+              language = 'tr';
+              currency = 'TRY';
+              break;
+            case 'GB': // United Kingdom
+              language = 'en';
+              currency = 'GBP';
+              break;
+            case 'US': // United States
+              language = 'en';
+              currency = 'USD';
+              break;
+            // European Union countries
+            case 'DE': case 'FR': case 'IT': case 'ES': case 'NL': 
+            case 'BE': case 'AT': case 'PT': case 'IE': case 'FI':
+            case 'LU': case 'SI': case 'SK': case 'EE': case 'LV':
+            case 'LT': case 'CY': case 'MT': case 'GR':
+              language = 'en';
+              currency = 'EUR';
+              break;
+            case 'BR': // Brazil
+              language = 'pt';
+              currency = 'BRL';
+              break;
+            case 'KR': // South Korea
+              language = 'ko';
+              currency = 'KRW';
+              break;
+            case 'JP': // Japan
+              language = 'ja';
+              currency = 'JPY';
+              break;
+            default:
+              // For all other countries, keep English and USD
+              language = 'en';
+              currency = 'USD';
+          }
+
+          return { language, currency, country: countryCode };
+        } catch (error) {
+          console.error('Error detecting location:', error);
+          // Fallback to defaults
+          return { language: 'en', currency: 'USD', country: null };
+        }
+      };
 
       // Check if user already exists
       const { data: existingUser, error: fetchError } = await supabase
@@ -70,16 +139,25 @@ function Navbar() {
 
       // Only save if user doesn't exist
       if (!existingUser) {
+        // Detect location and set defaults
+        const { language, currency, country } = await detectLocationDefaults();
+
         const { error: insertError } = await supabase
           .from('users')
           .insert([
-            { id: userId, email: userEmail }
+            { 
+              id: userId, 
+              email: userEmail, 
+              username: username,
+              language: language,
+              currency: currency,
+            }
           ]);
 
         if (insertError) {
           console.error('Error saving user:', insertError);
         } else {
-          console.log('User saved successfully');
+          console.log('User saved successfully with defaults:', { language, currency, country });
         }
       } else {
         console.log('User already exists');
@@ -153,6 +231,8 @@ function Navbar() {
                   setChange((prev)=>prev+1);
                   saveUser();
                 }}
+                theme={"light"}
+
                 detailsModal={{
                   assetTabs: ["token","nft"],
                 }}

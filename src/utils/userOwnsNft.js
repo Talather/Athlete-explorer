@@ -19,3 +19,19 @@ export async function userOwnsNFT(contractAddress, userAddress) {
     return false;
   }
 }
+
+export async function userOwnsNFTBalance(contractAddress, userAddress) {
+  try {
+    const providerOrSigner = new ethers.JsonRpcProvider("https://eth-sepolia.public.blastapi.io");
+  const contract = new ethers.Contract(contractAddress, ERC721_ABI, providerOrSigner);
+  const balance = await contract.balanceOf(userAddress);
+  console.log(balance);
+  if(BigInt(balance) > 0n){
+    return {owns:true,balance: balance};
+  }
+  return {owns:false,balance: 0};
+} catch (error) {
+  console.error("Error checking NFT ownership:", error);
+  return {owns:false,balance: 0};
+}
+}

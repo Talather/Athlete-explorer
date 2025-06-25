@@ -1,7 +1,7 @@
 import React, { useState, useRef, useCallback } from 'react'
 import EmojiPicker from 'emoji-picker-react'
 import { Send, Paperclip, Smile, X, Reply, Upload, Image, File, Loader2 } from 'lucide-react'
-
+import { useSelector } from 'react-redux'
 const ChatInput = ({ onSendMessage, onSendFile, replyTo, onCancelReply, disabled = false }) => {
   const [message, setMessage] = useState('')
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
@@ -274,7 +274,7 @@ const ChatInput = ({ onSendMessage, onSendFile, replyTo, onCancelReply, disabled
           type="file"
           onChange={(e) => e.target.files?.[0] && handleFileSelect(e.target.files[0])}
           className="hidden"
-          accept="image/*,video/*,.pdf,.doc,.docx,.txt,.zip,.rar"
+          accept="image/*,video/*"
         />
 
         {/* Emoji picker overlay */}
