@@ -3,11 +3,12 @@ import { supabase } from '../lib/supabase';
 import { useProfiles } from "thirdweb/react";
 import { client } from '../client';
 import toast from 'react-hot-toast';
-
+import { useSelector } from "react-redux";
 function AthleteDetails({ athlete, events, onEventClick, isBlurred , ownsNFT }) {
   const [subscriptionLoading, setSubscriptionLoading] = useState(false);
   const { data: profiles } = useProfiles({ client });
-
+  const {currency} = useSelector(state => state.settings);
+  console.log(currency);
 
   const handleSubscriptionPurchase = async () => {
     if (!athlete?.id || !profiles?.[0]?.details?.id || !profiles?.[0]?.details?.email) {
@@ -22,7 +23,8 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred , ownsNFT }) 
         body: {
           athleteId: athlete.id,
           userId: profiles[0].details.id,
-          email: profiles[0].details.email
+          email: profiles[0].details.email,
+          currencyCode: currency,
         }
       });
       console.log(data);

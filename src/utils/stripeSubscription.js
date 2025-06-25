@@ -8,27 +8,16 @@ const STRIPE_API_BASE = 'https://api.stripe.com/v1';
 export const subscriptionActions = {
   
   // Pause subscription
-  pauseSubscription: async (subscriptionId, stripeSubscriptionId) => {
+  pauseSubscription: async (stripeSubscriptionId) => {
     try {
-      // Update local database first
-      const { data, error } = await supabase
-        .from('subscriptions')
-        .update({ 
-          active: false, 
-          paused: true,
-        })
-        .eq('id', subscriptionId)
-        .select();
-
-      if (error) throw error;
-
-      // In a real implementation, you'd call your backend API which would:
-      // 1. Pause the Stripe subscription
-      // 2. Update the database
-      // 3. Send confirmation emails
-      
-      console.log('Subscription paused locally:', data);
-      return { success: true, data };
+      const { data: subscriptionData, error: subscriptionError } = await supabase.functions.invoke('pause-subscription', {
+        body: {
+          subscriptionId: stripeSubscriptionId,
+        }
+      });
+      console.log(subscriptionData);
+      console.log(subscriptionError);
+      return { success: true, subscriptionData };
       
     } catch (error) {
       console.error('Error pausing subscription:', error);
@@ -37,21 +26,16 @@ export const subscriptionActions = {
   },
 
   // Resume subscription
-  resumeSubscription: async (subscriptionId, stripeSubscriptionId) => {
+  resumeSubscription: async (stripeSubscriptionId) => {
     try {
-      const { data, error } = await supabase
-        .from('subscriptions')
-        .update({ 
-          active: true, 
-          paused: false,
-        })
-        .eq('id', subscriptionId)
-        .select();
-
-      if (error) throw error;
-
-      console.log('Subscription resumed locally:', data);
-      return { success: true, data };
+      const { data: subscriptionData, error: subscriptionError } = await supabase.functions.invoke('resume-subscription', {
+        body: {
+          subscriptionId: stripeSubscriptionId,
+        }
+      });
+      console.log(subscriptionData);
+      console.log(subscriptionError);
+      return { success: true, subscriptionData };
       
     } catch (error) {
       console.error('Error resuming subscription:', error);

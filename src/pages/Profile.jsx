@@ -127,27 +127,18 @@ const Profile = () => {
       let result;
       switch (action) {
         case 'pause':
+          console.log('Invoking pause subscription function...');
           result = await subscriptionActions.pauseSubscription(
-            subscription.id, 
             subscription.stripe_subscription_id
           );
+          console.log('Pause subscription result:', result);
           break;
         case 'resume':
+          console.log('Invoking resume subscription function...');
           result = await subscriptionActions.resumeSubscription(
-            subscription.id, 
             subscription.stripe_subscription_id
           );
-          break;
-        case 'cancel':
-          // Show confirmation dialog
-          if (!window.confirm('Are you sure you want to cancel this subscription? This action cannot be undone.')) {
-            toast.dismiss(loadingToast);
-            return;
-          }
-          result = await subscriptionActions.cancelSubscription(
-            subscription.id, 
-            subscription.stripe_subscription_id
-          );
+          console.log('Resume subscription result:', result);
           break;
         default:
           throw new Error(`Unknown action: ${action}`);
@@ -158,9 +149,11 @@ const Profile = () => {
       if (result.success) {
         toast.success(`Subscription ${action}d successfully!`);
         
-        // Refresh subscriptions
+        // Refresh subscriptions from database
+        console.log('Refreshing subscriptions from database...');
         if (userId) {
-          dispatch(fetchUserSubscriptions(userId));
+          await dispatch(fetchUserSubscriptions(userId));
+          console.log('Subscriptions refreshed successfully');
         }
       } else {
         throw new Error('Action failed');
@@ -399,13 +392,13 @@ const Profile = () => {
                                     <Play size={14} className="sm:size-4" />
                                   </button>
                                 )}
-                                <button
+                                {/* <button
                                   onClick={() => handleSubscriptionAction(subscription, 'cancel')}
                                   className="p-1.5 sm:p-2 text-[#717071] hover:text-red-500 transition-colors"
                                   title="Cancel subscription"
                                 >
                                   <Trash2 size={14} className="sm:size-4" />
-                                </button>
+                                </button> */}
                               </div>
                             </div>
                           </div>

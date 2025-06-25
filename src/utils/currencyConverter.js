@@ -1,41 +1,22 @@
 // Currency conversion utilities
 
 export const convertCurrency = (amountInEUR, fromCurrency, toCurrency, exchangeRates) => {
-  console.log('=== Simple Currency Conversion ===');
-  console.log('Amount in EUR:', amountInEUR);
-  console.log('Target currency:', toCurrency);
-  console.log('Exchange rates:', exchangeRates);
-  
   if (!amountInEUR || !exchangeRates) {
-    console.log('Returning original amount:', amountInEUR);
     return amountInEUR;
   }
-
-  // If target currency is EUR, return as is
   if (toCurrency === 'EUR') {
-    console.log('Target is EUR, returning original amount:', amountInEUR);
     return amountInEUR;
   }
-
-  // Get the rate for target currency (all rates are EUR-based)
   const rates = exchangeRates.rates || exchangeRates;
   const rate = rates[toCurrency] || 1;
-  
-  // Simple multiplication: EUR amount * rate = target currency amount
   const convertedAmount = amountInEUR * rate;
-  
-  console.log(`Converting ${amountInEUR} EUR to ${toCurrency}: ${amountInEUR} * ${rate} = ${convertedAmount}`);
-  console.log('=== End Simple Currency Conversion ===');
-  
   return convertedAmount;
 };
 
 export const formatCurrency = (amount, currency) => {
   if (!amount && amount !== 0) return '0.00';
-  
   const currencyInfo = supportedCurrencies.find(c => c.code === currency);
   const symbol = currencyInfo?.symbol || currency;
-  
   try {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -49,7 +30,6 @@ export const formatCurrency = (amount, currency) => {
   }
 };
 
-// Supported currencies from Frankfurter API
 export const supportedCurrencies = [
   { code: 'TRY', name: 'Turkish Lira', symbol: '₺', flag: '🇹🇷' },
   { code: 'EUR', name: 'Euro', symbol: '€', flag: '🇪🇺' },
