@@ -7,18 +7,18 @@ import Footer from '../components/Footer';
 import { fetchUserSubscriptions } from '../store/slices/subscriptionSlice';
 import { fetchAthletes } from '../store/slices/athleteSlice';
 import { supabase } from '../lib/supabase';
-import { userOwnsNFT , userOwnsNFTBalance} from '../utils/userOwnsNft';
+import { userOwnsNFT, userOwnsNFTBalance } from '../utils/userOwnsNft';
 import { subscriptionActions, validateSubscriptionAction } from '../utils/stripeSubscription';
 import { client } from '../client';
 import toast from 'react-hot-toast';
-import { 
-  User, 
-  Crown, 
-  Calendar, 
-  MessageCircle, 
-  Pause, 
-  Play, 
-  Trash2, 
+import {
+  User,
+  Crown,
+  Calendar,
+  MessageCircle,
+  Pause,
+  Play,
+  Trash2,
   ExternalLink,
   Trophy,
   Clock,
@@ -32,7 +32,7 @@ const Profile = () => {
   const { data: profiles } = useProfiles({ client });
   const { userSubscriptions, loading: subscriptionsLoading } = useSelector(state => state.subscriptions);
 
-  const {profile} = useSelector(state=>state.user);
+  const { profile } = useSelector(state => state.user);
   const { athletes } = useSelector(state => state.athletes);
   const [userMessages, setUserMessages] = useState([]);
   const [messagesLoading, setMessagesLoading] = useState(false);
@@ -56,7 +56,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchUserMessages = async () => {
       if (!userId) return;
-      
+
       setMessagesLoading(true);
       try {
         const { data, error } = await supabase
@@ -87,7 +87,7 @@ const Profile = () => {
   useEffect(() => {
     const checkNFTOwnership = async () => {
       if (!address || !athletes?.length) return;
-      
+
       setNftsLoading(true);
       try {
         const nftChecks = await Promise.all(
@@ -95,10 +95,10 @@ const Profile = () => {
             .filter(athlete => athlete.nftContractAddress)
             .map(async (athlete) => {
               const owns = await userOwnsNFTBalance(athlete.nftContractAddress, address);
-              return owns.owns ? {...athlete, balance: Number(owns.balance)} : null;
+              return owns.owns ? { ...athlete, balance: Number(owns.balance) } : null;
             })
         );
-        
+
         setOwnedNFTs(nftChecks.filter(Boolean));
       } catch (error) {
         console.error('Error checking NFT ownership:', error);
@@ -145,10 +145,10 @@ const Profile = () => {
       }
 
       toast.dismiss(loadingToast);
-      
+
       if (result.success) {
         toast.success(`Subscription ${action}d successfully!`);
-        
+
         // Refresh subscriptions from database
         console.log('Refreshing subscriptions from database...');
         if (userId) {
@@ -158,7 +158,7 @@ const Profile = () => {
       } else {
         throw new Error('Action failed');
       }
-      
+
     } catch (error) {
       console.error(`Error ${action}ing subscription:`, error);
       toast.error(`Failed to ${action} subscription`);
@@ -186,7 +186,7 @@ const Profile = () => {
 
   if (!address) {
     return (
-      <>
+      <div className='h-[100dvh] relative'>
         <Navbar />
         <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-[#f8e3e0] to-[#e9d5f7]">
           <div className="text-center">
@@ -197,14 +197,16 @@ const Profile = () => {
             </div>
           </div>
         </div>
-        <StickyBar />
+        <div className="sticky w-full bottom-0 z-40">
+          <StickyBar />
+        </div>
         <Footer />
-      </>
+      </div>
     );
   }
 
   return (
-    <>
+    <div className='h-[100dvh] relative'>
       <Navbar />
       <div className="min-h-screen bg-gradient-to-r from-[#f8e3e0] to-[#e9d5f7] py-4 sm:py-8 px-2 sm:px-4">
         <div className="max-w-7xl mx-auto">
@@ -229,18 +231,19 @@ const Profile = () => {
                   {address}
                 </p>
               </div>
-              <div className="text-center sm:text-right">
+              {/* client requirement to remove this section */}
+              {/* <div className="text-center sm:text-right">
                 <div className="text-xs sm:text-sm text-[#717071]">Active Subscriptions</div>
                 <div className="text-xl sm:text-2xl font-bold text-[#9352ee]">
                   {userSubscriptions?.filter(sub => sub.active).length || 0}
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
 
           {/* Tab Navigation */}
           <div className="bg-white rounded-xl shadow-lg mb-4 sm:mb-8">
-            <div className="flex overflow-x-auto border-b border-gray-200 scrollbar-hide">
+            <div className="flex items-center flex-wrap justify-center border-b border-gray-200 scrollbar-hide">
               {[
                 { id: 'overview', label: 'Overview', icon: User },
                 { id: 'nfts', label: 'NFTs', icon: Trophy },
@@ -250,14 +253,13 @@ const Profile = () => {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center space-x-1 sm:space-x-2 px-3 sm:px-6 py-3 sm:py-4 font-medium transition-colors whitespace-nowrap text-sm sm:text-base ${
-                    activeTab === tab.id
-                      ? 'text-[#9352ee] border-b-2 border-[#9352ee]'
-                      : 'text-[#717071] hover:text-[#9352ee]'
-                  }`}
+                  className={`flex items-center space-x-1 sm:space-x-2 px-1.5 sm:px-6 py-3 sm:py-4 font-medium transition-colors whitespace-nowrap text-sm sm:text-base ${activeTab === tab.id
+                    ? 'text-[#9352ee] border-b-2 border-[#9352ee]'
+                    : 'text-[#717071] hover:text-[#9352ee]'
+                    }`}
                 >
                   <tab.icon size={16} className="sm:size-5" />
-                  <span className="hidden xs:inline sm:inline">{tab.label}</span>
+                  <span className="inline">{tab.label}</span>
                 </button>
               ))}
             </div>
@@ -313,10 +315,10 @@ const Profile = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                     {ownedNFTs.map((athlete) => (
                       <div key={athlete.id} className="border border-gray-200 rounded-lg p-3 sm:p-4 hover:shadow-md transition-shadow">
-                        <img 
-                          src={athlete.profilePicture || '/default-athlete.png'} 
+                        <img
+                          src={athlete.profilePicture || '/default-athlete.png'}
                           alt={athlete.firstName}
-                          className="w-full h-36 sm:h-48 object-contain rounded-lg mb-3 sm:mb-4"
+                          className="w-full h-36 sm:h-48 object-cover rounded-lg mb-3 sm:mb-4"
                         />
                         <h4 className="font-semibold text-[#1D1D1D] mb-2 text-sm sm:text-base">{athlete.firstName} {athlete.lastName}</h4>
                         <p className="text-[#717071] text-xs sm:text-sm mb-3 line-clamp-2">{athlete.bio}</p>
@@ -353,8 +355,8 @@ const Profile = () => {
                         <div key={subscription.id} className="border border-gray-200 rounded-lg p-3 sm:p-4">
                           <div className="flex flex-col sm:flex-row sm:items-center justify-between space-y-3 sm:space-y-0">
                             <div className="flex items-center space-x-3 sm:space-x-4">
-                              <img 
-                                src={athlete?.profilePicture || '/default-athlete.png'} 
+                              <img
+                                src={athlete?.profilePicture || '/default-athlete.png'}
                                 alt={athlete?.firstName}
                                 className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover"
                               />
@@ -367,11 +369,10 @@ const Profile = () => {
                               </div>
                             </div>
                             <div className="flex items-center justify-between sm:justify-end space-x-3">
-                              <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium ${
-                                subscription.active 
-                                  ? 'bg-green-100 text-green-700'
-                                  : 'bg-gray-100 text-gray-700'
-                              }`}>
+                              <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium ${subscription.active
+                                ? 'bg-green-100 text-green-700'
+                                : 'bg-gray-100 text-gray-700'
+                                }`}>
                                 {subscription.active ? 'Active' : 'Inactive'}
                               </span>
                               <div className="flex space-x-1 sm:space-x-2">
@@ -429,8 +430,8 @@ const Profile = () => {
                       <div key={message.id} className="border border-gray-200 rounded-lg p-3 sm:p-4">
                         <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-3 space-y-2 sm:space-y-0">
                           <div className="flex items-center space-x-3">
-                            <img 
-                              src={message.Events?.Atheletes?.profilePicture || '/default-athlete.png'} 
+                            <img
+                              src={message.Events?.Atheletes?.profilePicture || '/default-athlete.png'}
                               alt={message.Events?.Atheletes?.firstName}
                               className="w-6 h-6 sm:w-8 sm:h-8 rounded-full object-cover"
                             />
@@ -473,9 +474,11 @@ const Profile = () => {
           </div>
         </div>
       </div>
-      <StickyBar />
+      <div className="sticky w-full bottom-0 z-40">
+        <StickyBar />
+      </div>
       <Footer />
-    </>
+    </div>
   );
 };
 

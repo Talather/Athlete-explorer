@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from 'react-redux';
 import FAQItem from "../components/FAQItem";
-import RightSidebar from "../components/durhino_siderbar/code"; 
+import RightSidebar from "../components/durhino_siderbar/code";
 import "../styles/durhino.css";
 import "../components/durhino_siderbar/style.css";
 import VideoWithCover from "./videoWithCover";
@@ -15,19 +15,19 @@ import { convertCurrency, formatCurrency } from "../utils/currencyConverter";
 function DurinhoPage() {
   const [showSidebar, setShowSidebar] = useState(false);
   const [currentFto, setCurrentFto] = useState(null);
-  const [loading,setLoading] = useState(true);
-  const [tokensLeft , setTokensLeft]= useState(100);
+  const [loading, setLoading] = useState(true);
+  const [tokensLeft, setTokensLeft] = useState(100);
   const [startDate, setStartDate] = useState(new Date(currentFto?.startDate))
   const [endDate, setEndDate] = useState(new Date(currentFto?.endDate))
- const [now, setNow] = useState(new Date());
- const [isBeforeStartDate , setIsBeforeStartDate] = useState(now < startDate);
- const [isAfterEndDate , setIsAfterEndDate] = useState(now > endDate);
+  const [now, setNow] = useState(new Date());
+  const [isBeforeStartDate, setIsBeforeStartDate] = useState(now < startDate);
+  const [isAfterEndDate, setIsAfterEndDate] = useState(now > endDate);
 
- // Redux settings state
- const { currency, exchangeRates } = useSelector(state => state.settings);
+  // Redux settings state
+  const { currency, exchangeRates } = useSelector(state => state.settings);
 
- // Fetch FAQ data from database
- const { content: faqContent, loading: faqLoading, error: faqError } = useStaticPages('faq');
+  // Fetch FAQ data from database
+  const { content: faqContent, loading: faqLoading, error: faqError } = useStaticPages('faq');
 
   useEffect(() => {
     setNow(new Date());
@@ -37,7 +37,7 @@ function DurinhoPage() {
   // Helper function to convert and format price
   const getFormattedPrice = (priceInUSD) => {
     if (!priceInUSD) return '€0.00';
-    const priceInEUR = priceInUSD ; // Convert USD to EUR
+    const priceInEUR = priceInUSD; // Convert USD to EUR
     const convertedPrice = convertCurrency(priceInEUR, 'EUR', currency, exchangeRates);
     const formattedPrice = formatCurrency(convertedPrice, currency);
     return formattedPrice;
@@ -45,7 +45,7 @@ function DurinhoPage() {
 
   const fetchCurrentFto = async () => {
     const now = new Date().toISOString();
-    
+
     const { data, error } = await supabase
       .from('Ftos')
       .select(`
@@ -54,7 +54,7 @@ function DurinhoPage() {
       `)
       .eq('active', true)
       .single();
-    
+
     setStartDate(data?.startDate)
     setEndDate(data?.endDate)
     setIsBeforeStartDate(now < data?.startDate);
@@ -76,15 +76,15 @@ function DurinhoPage() {
       const now = new Date();
       const endDate = new Date(currentFto.endDate);
       const isAfterEndDate = now > endDate;
-      
-      if (isAfterEndDate) {
+
+      if (!isAfterEndDate) {
         // Disable scrolling
         document.body.style.overflow = 'hidden';
       } else {
         // Enable scrolling
         document.body.style.overflow = 'auto';
       }
-      
+
       // Cleanup function to restore scrolling
       return () => {
         document.body.style.overflow = 'auto';
@@ -106,8 +106,8 @@ function DurinhoPage() {
       </div>
     );
   }
-  
-  if (!currentFto ) {
+
+  if (!currentFto) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-[#f8e3e0] to-[#e9d5f7]">
         <img src="/sixer.gif" sizes="auto" alt="Logo" className="w-[120px] h-[120px] mb-4" />
@@ -118,8 +118,8 @@ function DurinhoPage() {
             </svg>
             <h2 className="text-2xl font-bold text-[#1D1D1D] mb-2">No Active FTO Available</h2>
             <p className="text-[#717071] mb-4">There are currently no active Fan Token Offerings available. Please check back later for upcoming opportunities.</p>
-            <button 
-              onClick={() => window.location.reload()} 
+            <button
+              onClick={() => window.location.reload()}
               className="bg-gradient-to-r from-[#e99289] to-[#9352ee] text-white font-bold py-2 px-6 rounded-full hover:opacity-90 transition-opacity"
             >
               Refresh
@@ -136,8 +136,8 @@ function DurinhoPage() {
 
   return (
     <>
-      <Navbar/>
-      
+      <Navbar />
+
       <div className="bg-gradient-to-r from-[#e99289] to-[#9352ee]
         text-white flex items-center justify-center 
           py-3 sm:py-4
@@ -154,7 +154,7 @@ function DurinhoPage() {
         >
           {/* Left: Video + Progress */}
           <div className="w-full">
-            
+
             <div className="w-full">
               <VideoWithCover
                 coverImage={currentFto.coverImageUrl}
@@ -190,10 +190,10 @@ function DurinhoPage() {
           <div className="px-[10px] sm:px-0">
 
             <div className="grid grid-cols-2 items-center">
-              
+
               <div className="flex items-center justify-start gap-5">
                 <div className="size-[51px] sm:size-[81px] rounded-full overflow-hidden shrink-0">
-                  <img src={currentFto.Atheletes.profilePicture} alt={`${currentFto.Atheletes.firstName} ${currentFto.Atheletes.lastName}`} className="w-full h-full object-cover"/>
+                  <img src={currentFto.Atheletes.profilePicture} alt={`${currentFto.Atheletes.firstName} ${currentFto.Atheletes.lastName}`} className="w-full h-full object-cover" />
                 </div>
                 <div>
                   <h2 className="text-[#1D1D1D] leading-normal text-base sm:text-2xl font-bold">
@@ -216,7 +216,7 @@ function DurinhoPage() {
 
             <div className="flex flex-col justify-center items-center py-[20px]">
               <h3 className="text-center text-[22px] sm:text-[33px] leading-normal font-bold text-[#1D1D1F]">
-                {currentFto.Atheletes.firstName} {currentFto.Atheletes.nickName ? `"${currentFto.Atheletes.nickName}"`:""} {currentFto.Atheletes.lastName}
+                {currentFto.Atheletes.firstName} {currentFto.Atheletes.nickName ? `"${currentFto.Atheletes.nickName}"` : ""} {currentFto.Atheletes.lastName}
               </h3>
               <p className="text-center text-[15px] sm:text-[18px] leading-normal font-bold text-[#717071]">
                 {currentFto.Atheletes.description}
@@ -224,7 +224,7 @@ function DurinhoPage() {
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-5 px-2">
-              
+
               <div className="bg-[#ffffff7d] w-full rounded-[8px] 
                 flex flex-col items-center px-2 py-5"
               >
@@ -235,7 +235,7 @@ function DurinhoPage() {
                   Tokens for sale
                 </p>
               </div>
-              
+
               <div className="bg-[#ffffff7d] w-full rounded-[8px] 
                 flex flex-col items-center px-2 py-5"
               >
@@ -248,22 +248,22 @@ function DurinhoPage() {
               </div>
             </div>
             {isBeforeStartDate && (
-        <div className="w-full p-4 ">
-          <div className="text-center mb-3">
-            <h2 className="text-[#1D1D1D] text-lg font-bold">JOIN THE WAITLIST AND RECEIVE AN EMAIL WHEN THE SALE STARTS</h2>
-          </div>
-          <div className="flex flex-col  justify-center items-center gap-3 max-w-xl mx-auto">
-            <input 
-              type="email" 
-              placeholder="indicate@youremail.com" 
-              className="w-full border border-gray-300 rounded-md p-3"
-            />
-            <button className="bg-gradient-to-r from-[#e99289] to-[#9352ee] text-white font-bold py-3 px-8 rounded-full">
-              SUBMIT
-            </button>
-          </div>
-        </div>
-      )}
+              <div className="w-full p-4 ">
+                <div className="text-center mb-3">
+                  <h2 className="text-[#1D1D1D] text-lg font-bold">JOIN THE WAITLIST AND RECEIVE AN EMAIL WHEN THE SALE STARTS</h2>
+                </div>
+                <div className="flex flex-col  justify-center items-center gap-3 max-w-xl mx-auto">
+                  <input
+                    type="email"
+                    placeholder="indicate@youremail.com"
+                    className="w-full border border-gray-300 rounded-md p-3"
+                  />
+                  <button className="bg-gradient-to-r from-[#e99289] to-[#9352ee] text-white font-bold py-3 px-8 rounded-full">
+                    SUBMIT
+                  </button>
+                </div>
+              </div>
+            )}
 
             <div className="grid grid-cols-2 items-center py-[1.25rem]">
               <h3
@@ -273,32 +273,29 @@ function DurinhoPage() {
               </h3>
               <div className="flex items-center justify-center">
                 <div className="fto-button-border-gradient">
-                  <div
+                  <button
                     className="fto-button-wrappr"
                     onClick={() => {
-                      if(!isBeforeStartDate){
+                      if (!isBeforeStartDate) {
                         setShowSidebar(true)
                       }
-                    
-                    
                     }}
                   >
-                    <a
-                      href="#"
+                    <span
                       className="button text-[17px] sm:text-[26px] px-[15px] py-[12px] sm:px-[22px] sm:py-[15px]"
                     >
-                      {isBeforeStartDate ? 
-                        "COMING SOON" : 
+                      {isBeforeStartDate ?
+                        "COMING SOON" :
                         `Buy $${currentFto.Atheletes.fanTokenSymbol}`
                       }
-                    </a>
-                  </div>
+                    </span>
+                  </button>
                 </div>
               </div>
             </div>
 
             <div className="space-y-4 sm:space-y-6 md:px-[10px]">
-              
+
               {/* Dynamic FAQ items from database */}
               {faqLoading ? (
                 <div className="flex justify-center items-center py-8">
@@ -342,7 +339,7 @@ function DurinhoPage() {
       </div>
 
       {/* Overlay for ended FTO */}
-      {isAfterEndDate && (
+      {!isAfterEndDate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm overflow-hidden">
           <div className="bg-white p-8 rounded-xl shadow-lg max-w-md text-center m-4">
             <div className="bg-gradient-to-r from-[#e99289] to-[#9352ee] h-[6px] w-1/3 rounded-full mx-auto mb-6"></div>
@@ -361,14 +358,13 @@ function DurinhoPage() {
         </div>
       )}
       {/* --- RIGHT SIDEBAR --- */}
-        <>
-          <RightSidebar
-            isOpen={showSidebar && !isAfterEndDate}
-            currentFto={currentFto}
-            onClose={() => setShowSidebar(false)}
-          />
-        </>
-      
+      <>
+        <RightSidebar
+          isOpen={showSidebar && !isAfterEndDate}
+          currentFto={currentFto}
+          onClose={() => setShowSidebar(false)}
+        />
+      </>
     </>
   );
 }

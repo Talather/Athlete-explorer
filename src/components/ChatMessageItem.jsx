@@ -147,7 +147,7 @@ const ChatMessageItem = ({ message, isOwnMessage, showHeader, onReply, currentUs
 
             {/* Message text */}
             {message.content && message.content.trim() && (
-              <div className="text-sm text-gray-900 dark:text-gray-100 break-words">
+              <div className="text-sm text-gray-900 dark:text-gray-100 break-words text-start">
                 {message.content}
               </div>
             )}

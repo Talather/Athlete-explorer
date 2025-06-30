@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAthletes, fetchAthleteEvents, setSelectedEvent, clearSelectedEvent ,setEvents , setSelectedAthlete } from "../store/slices/athleteSlice";
+import { fetchAthletes, fetchAthleteEvents, setSelectedEvent, clearSelectedEvent, setEvents, setSelectedAthlete } from "../store/slices/athleteSlice";
 import { fetchUserSubscriptions } from "../store/slices/subscriptionSlice";
 
 import Navbar from "../components/Navbar";
@@ -13,11 +13,12 @@ import MobileOnlyPage from "../components/mobileHome";
 import { useWalletBalance } from "thirdweb/react";
 import { sepolia } from "thirdweb/chains";
 import { client } from "../client";
-import { useProfiles , useActiveWallet } from "thirdweb/react";
+import { useProfiles, useActiveWallet } from "thirdweb/react";
 import { userOwnsNFT } from "./../utils/userOwnsNft";
 // import { userHasSubscription } from "./../utils/userHasSubscription";
 
 import toast, { Toaster } from 'react-hot-toast';
+import EventChat from "../components/EventChat";
 
 function Home() {
 
@@ -26,17 +27,28 @@ function Home() {
   const { userSubscriptions } = useSelector(state => state.subscriptions);
   const { data: profiles } = useProfiles({ client });
   const dispatch = useDispatch();
-  const { 
-    athletes, 
-    selectedAthlete, 
-    events, 
-    selectedEvent, 
-    isExpanded, 
-    loading, 
-    error 
+  const {
+    athletes,
+    selectedAthlete,
+    events,
+    selectedEvent,
+    isExpanded,
+    loading,
+    error
   } = useSelector(state => state.athletes);
-  
+
   const [isMobile, setIsMobile] = useState(false);
+  const [isChatPopupOpen, setIsChatPopupOpen] = useState(false);
+
+  const chatPopupOpen = () => {
+    setIsChatPopupOpen(true);
+    document.body.style.overflow = 'hidden';
+  }
+
+  const chatPopupClose = () => {
+    setIsChatPopupOpen(false);
+    document.body.style.overflow = 'auto';
+  }
 
   useEffect(() => {
     const checkScreenSize = () => {
@@ -52,9 +64,9 @@ function Home() {
   useEffect(() => {
     dispatch(fetchAthletes());
   }, [dispatch]);
-  
+
   useEffect(() => {
-    if(profiles !== undefined){
+    if (profiles !== undefined) {
       // fetchUserSubscriptions is now handled globally in App.jsx
       // dispatch(fetchUserSubscriptions(profiles[0].details.id));
     }
@@ -74,13 +86,14 @@ function Home() {
 
     if (hasActiveSubscription) {
       console.log("HAS SUBSCRIPTION")
-      dispatch(fetchAthleteEvents({...athlete, ownsNFT: true,hasSubscription: true}));
+      dispatch(fetchAthleteEvents({ ...athlete, ownsNFT: true, hasSubscription: true }));
       return;
     }
 
-    if(!athlete.nftContractAddress){
+    if (!athlete.nftContractAddress) {
       console.log("NO CONTRACT")
-      dispatch(setSelectedAthlete({...athlete,
+      dispatch(setSelectedAthlete({
+        ...athlete,
         video_url: "https://nargvalmcrunehnemvpa.supabase.co/storage/v1/object/sign/Athlete/Villain%20LeBron%20did%20not%20forget.mp4?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJBdGhsZXRlL1ZpbGxhaW4gTGVCcm9uIGRpZCBub3QgZm9yZ2V0Lm1wNCIsImlhdCI6MTc0MTU5ODYyOCwiZXhwIjoxNzQ0MTkwNjI4fQ.LCNqKXp4xqfja0Ga7QdfeQ4Vk-ZEUjj5lq8tXSj5sqM"
       }));
       dispatch(setEvents([]));
@@ -91,11 +104,12 @@ function Home() {
       address
     );
     if (ownsNFT) {
-      dispatch(fetchAthleteEvents({...athlete, ownsNFT: true}));
+      dispatch(fetchAthleteEvents({ ...athlete, ownsNFT: true }));
       return;
     }
-    else{
-      dispatch(setSelectedAthlete({...athlete,
+    else {
+      dispatch(setSelectedAthlete({
+        ...athlete,
         video_url: "https://nargvalmcrunehnemvpa.supabase.co/storage/v1/object/sign/Athlete/Villain%20LeBron%20did%20not%20forget.mp4?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJBdGhsZXRlL1ZpbGxhaW4gTGVCcm9uIGRpZCBub3QgZm9yZ2V0Lm1wNCIsImlhdCI6MTc0MTU5ODYyOCwiZXhwIjoxNzQ0MTkwNjI4fQ.LCNqKXp4xqfja0Ga7QdfeQ4Vk-ZEUjj5lq8tXSj5sqM"
       }));
       dispatch(setEvents([]));
@@ -130,31 +144,53 @@ function Home() {
           },
         },
       }} />
+
+      {/* chat popup start */}
+      {isChatPopupOpen && 
+        <div className="fixed inset-0 z-[999] px-2 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm overflow-hidden">
+          <div className="rounded-xl shadow-lg text-center w-full h-full
+                flex items-center justify-center relative"
+          >
+            <button onClick={chatPopupClose} className='close-btn absolute top-5 right-5'>
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 1L1 19" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M1 1L19 19" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+
+            <EventChat event={selectedEvent} />
+          </div>
+        </div>
+      }
+      {/* chat popup end */}
+
       {isMobile ? (
         <>
-        <div className="w-full relative h-[100dvh]">
-          <Navbar />
+          <div className="w-full relative h-[100dvh]">
+            <Navbar />
 
-          <MobileOnlyPage
-            athletes={athletes}
-            selectedAthlete={selectedAthlete}
-            events={events}
-            onSelectAthlete={handleSelectAthlete}
-            onEventClick={handleEventClick}
-            isExpanded={isExpanded}
-            onClose={handleClose}
-          />
+            <MobileOnlyPage
+              athletes={athletes}
+              selectedAthlete={selectedAthlete}
+              events={events}
+              onSelectAthlete={handleSelectAthlete}
+              onEventClick={handleEventClick}
+              isExpanded={isExpanded}
+              onClose={handleClose}
+              openChatPopup={chatPopupOpen}
+            />
 
-          <div className="sticky w-full bottom-0 z-50">
-            <StickyBar />
+            <div className="sticky w-full bottom-0 z-50">
+              <StickyBar />
+            </div>
+
+            <Footer />
           </div>
-
-          <Footer />
-        </div>
         </>
       ) : (
         <>
-          <Navbar/>
+          <Navbar />
+
           <div className="flex h-[calc(100vh-196px)] gap-5 lg:gap-10 justify-between pt-10 pb-6 px-10">
             <Sidebar
               athletes={athletes}
@@ -173,6 +209,7 @@ function Home() {
               isExpanded={isExpanded}
               selectedEvent={selectedEvent}
               onClose={handleClose}
+              openChatPopup={chatPopupOpen}
             />
           </div>
           <StickyBar />

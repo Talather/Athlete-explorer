@@ -178,22 +178,21 @@ function Navbar() {
  
   return (
     <div className='navbar shadow-md'>
-      <div className='w-full flex items-center justify-between px-4'>
-        <div className="flex-1 hidden md:block">
-        
-        </div>
-        
-        <div className="flex justify-start md:justify-center flex-1">
-          <a href="/" className="py-[10px] lg:p-[10px]">
-            <img sizes="auto" alt="Logo" className="w-[60px] h-[60px] md:px-[10px] md:py-[7.5px] 
-              sm:size-[80px] sm:px-0 sm:py-0" src="/sixer.gif"/>
+      <div className='w-full grid grid-cols-2 sm:grid-cols-3 justify-between px-4 py-[10px] relative'>
+
+        <div className="hidden sm:block"></div>
+
+        <div className="flex justify-start sm:justify-center">
+          <a href="/" className="inline-block">
+              <img sizes="auto" alt="Logo" className="size-[60px] object-cover
+                sm:size-[80px] sm:px-[10px] sm:py-[7.5px]" src="/sixer.gif"/>
           </a>
         </div>
         
-        <div className="flex justify-end flex-1">
+        <div className="flex justify-end">
           <div className="flex items-center space-x-3">
             {/* Profile & Settings Links - Show when wallet is connected */}
-            {wallet && (
+            {/* {wallet && (
               <>
                 <Link 
                   to="/profile" 
@@ -211,7 +210,7 @@ function Navbar() {
                   <span className="hidden sm:inline">Settings</span>
                 </Link>
               </>
-            )}
+            )} */}
             
             <div className="primary-gradient rounded-[10px] p-0.5 overflow-hidden">
               <ConnectButton 
@@ -249,6 +248,7 @@ function Navbar() {
             </div>
           </div>
         </div>
+
       </div>
     </div>
   )

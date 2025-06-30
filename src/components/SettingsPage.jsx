@@ -250,7 +250,7 @@ function SettingsPage() {
           
           {/* Tab Navigation */}
           <div className="border-b border-gray-200 px-4 sm:px-6">
-            <div className="flex space-x-4 sm:space-x-8 overflow-x-auto">
+            <div className="flex flex-wrap items-center justify-center space-x-4 sm:space-x-8">
               {tabs.map((tab) => {
                 const IconComponent = tab.icon;
                 return (
