@@ -13,11 +13,12 @@ import './index.css'
 import { useWeglot } from 'react-weglot';
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import { fetchUserSettings, fetchExchangeRates } from './store/slices/settingsSlice'
+import { setLanguage, setCurrency, updateUserSettings, fetchUserSettings, fetchExchangeRates } from './store/slices/settingsSlice'
 import {  fetchUserSubscriptions } from './store/slices/subscriptionSlice'
 import { client } from './client';
 import { useProfiles } from 'thirdweb/react';
 import { fetchUserProfile } from './store/slices/userSlice'
+
 // Main App Routes Component
 function AppRoutes() {
   const wallet = useActiveWallet();
@@ -41,6 +42,105 @@ function AppRoutes() {
       dispatch(fetchUserSubscriptions(userId));
     }
   }, [userId, dispatch]);
+  const getUserLocation = () => {
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        reject(new Error('Geolocation not supported by this browser.'));
+      } else {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            resolve({ lat, lng });
+          },
+          (error) => {
+            reject(new Error('Failed to get location: ' + error.message));
+          }
+        );
+      }
+    });
+  };
+
+  const getCountryCodeFromLatLng = async (lat, lng) => {
+    try {
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`
+      );
+      const data = await res.json();
+      console.log(data , lat,lng);
+      const countryCode = data?.address?.country_code?.toUpperCase(); // e.g. "PK", "US"
+      return countryCode || null;
+    } catch (error) {
+      console.error('Reverse geocoding failed:', error);
+      return null;
+    }
+  };
+  const detectLocationDefaults = async () => {
+    try {
+      const { lat, lng } = await getUserLocation(); // from previous step
+      const countryCode = await getCountryCodeFromLatLng(lat, lng);
+  
+      console.log('Detected country:', countryCode);
+  
+      let language = 'en';
+      let currency = 'USD';
+  
+      switch (countryCode) {
+        case 'TR': language = 'tr'; currency = 'TRY'; break;
+        case 'GB': language = 'en'; currency = 'GBP'; break;
+        case 'US': language = 'en'; currency = 'USD'; break;
+        case 'DE': case 'FR': case 'IT': case 'ES': case 'NL':
+        case 'BE': case 'AT': case 'PT': case 'IE': case 'FI':
+        case 'LU': case 'SI': case 'SK': case 'EE': case 'LV':
+        case 'LT': case 'CY': case 'MT': case 'GR':
+          language = 'en'; currency = 'EUR'; break;
+        case 'BR': language = 'pt'; currency = 'BRL'; break;
+        case 'KR': language = 'ko'; currency = 'KRW'; break;
+        case 'JP': language = 'ja'; currency = 'JPY'; break;
+      }
+  
+      return { language, currency, country: countryCode };
+    } catch (err) {
+      console.error('Location detection failed:', err);
+      return { language: 'en', currency: 'USD', country: null };
+    }
+  };
+  useEffect(() => {
+    (async () => {
+      try {
+        const { language, currency, country } = await detectLocationDefaults();
+        console.log('Detected:', { language, currency, country });
+        
+        // Get previously stored location data from localStorage
+        const storedLocationData = localStorage.getItem('userLocationData');
+        const previousData = storedLocationData ? JSON.parse(storedLocationData) : null;
+        
+        console.log('Previous data:', previousData);
+        
+        // Check if location has changed or if it's the first time
+        const hasLocationChanged = !previousData || 
+          previousData.language !== language || 
+          previousData.currency !== currency ||
+          previousData.country !== country;
+        
+        if (hasLocationChanged) {
+          console.log('Location changed, updating settings...');
+          
+          // Store new location data in localStorage
+          const newLocationData = { language, currency, country, timestamp: Date.now() };
+          localStorage.setItem('userLocationData', JSON.stringify(newLocationData));
+          
+          // Dispatch changes to Redux
+          dispatch(setLanguage(language));
+          dispatch(setCurrency(currency));
+        } else {
+          console.log('Location unchanged, skipping update');
+        }
+      } catch (error) {
+        console.error('Location detection failed:', error);
+      }
+    })();
+  }, []);
 
   return (
     <>

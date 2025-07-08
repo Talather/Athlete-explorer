@@ -22,7 +22,8 @@ import {
   ExternalLink,
   Trophy,
   Clock,
-  Hash
+  Hash,
+  CreditCard
 } from 'lucide-react';
 
 const Profile = () => {
@@ -38,6 +39,8 @@ const Profile = () => {
   const [messagesLoading, setMessagesLoading] = useState(false);
   const [ownedNFTs, setOwnedNFTs] = useState([]);
   const [nftsLoading, setNftsLoading] = useState(false);
+  const [userTransactions, setUserTransactions] = useState([]);
+  const [transactionsLoading, setTransactionsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
 
   const userId = profiles?.[0]?.details?.id;
@@ -112,6 +115,45 @@ const Profile = () => {
       checkNFTOwnership();
     }
   }, [address, athletes]);
+
+  // Fetch user transactions
+  useEffect(() => {
+    const fetchUserTransactions = async () => {
+      if (!userId) return;
+
+      setTransactionsLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from('transactions')
+          .select('*')
+          .eq('userId', userId)
+          .order('created_at', { ascending: false });
+        
+        if (error) throw error;
+        
+        // Enhance transactions with athlete names
+        const enhancedTransactions = data?.map(transaction => {
+          const athlete = athletes?.find(a => a.nftContractAddress === transaction.contract_address);
+          console.log(transaction.quantity);
+          return {
+            ...transaction,
+            athleteName: athlete ? `${athlete.fanTokenSymbol}` : 'Subscription'
+          };
+        }) || [];
+        
+        setUserTransactions(enhancedTransactions);
+      } catch (error) {
+        console.error('Error fetching user transactions:', error);
+        toast.error('Failed to load transactions');
+      } finally {
+        setTransactionsLoading(false);
+      }
+    };
+
+    if (userId && athletes?.length) {
+      fetchUserTransactions();
+    }
+  }, [userId, athletes]);
 
   const handleSubscriptionAction = async (subscription, action) => {
     try {
@@ -248,6 +290,7 @@ const Profile = () => {
                 { id: 'overview', label: 'Overview', icon: User },
                 { id: 'nfts', label: 'NFTs', icon: Trophy },
                 { id: 'subscriptions', label: 'Subscriptions', icon: Crown },
+                { id: 'transactions', label: 'Transactions', icon: CreditCard },
                 { id: 'messages', label: 'Messages', icon: MessageCircle }
               ].map((tab) => (
                 <button
@@ -412,6 +455,72 @@ const Profile = () => {
                     <Crown size={40} className="sm:size-12 mx-auto text-gray-300 mb-3 sm:mb-4" />
                     <h4 className="text-base sm:text-lg font-medium text-[#717071] mb-2">No Subscriptions</h4>
                     <p className="text-[#717071] text-sm sm:text-base">You don't have any subscriptions yet.</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {activeTab === 'transactions' && (
+              <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6">
+                <h3 className="text-lg sm:text-xl font-semibold text-[#1D1D1D] mb-4 sm:mb-6">Transaction History</h3>
+                {transactionsLoading ? (
+                  <div className="flex items-center justify-center py-8 sm:py-12">
+                    <div className="w-6 h-6 sm:w-8 sm:h-8 border-4 border-t-[#9352ee] border-r-[#e99289] border-b-[#9352ee] border-l-[#e99289] rounded-full animate-spin"></div>
+                  </div>
+                ) : userTransactions.length > 0 ? (
+                  <div className="space-y-3 sm:space-y-4">
+                    {userTransactions.map((transaction) => (
+                      <div key={transaction.id} className="border border-gray-200 rounded-lg p-3 sm:p-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 space-y-2 sm:space-y-0">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-[#e99289] to-[#9352ee] rounded-full flex items-center justify-center">
+                              <CreditCard size={16} className="sm:size-5 text-white" />
+                            </div>
+                            <div>
+                              <div className="font-medium text-[#1D1D1D] text-sm sm:text-base">
+                                {transaction.athleteName}
+                              </div>
+                              {transaction.quantity ? (
+                                <div className="text-xs text-[#717071]">
+                                  Quantity: {transaction.quantity}
+                                </div>
+                              ) : <div className="text-xs text-[#717071]">
+                              Per Month
+                            </div>}
+                            </div>
+                          </div>
+                          <div className="flex flex-col sm:items-end">
+                            <div className="text-lg sm:text-xl font-bold text-[#9352ee]">
+                              {(transaction.total_amount / 100).toFixed(2)} {transaction.currency || 'USD'}
+                            </div>
+                            <div className="text-xs text-[#717071] flex items-center space-x-1">
+                              <Clock size={10} className="sm:size-3" />
+                              <span>{formatDate(transaction.created_at)} at {formatTime(transaction.created_at)}</span>
+                            </div>
+                          </div>
+                        </div>
+                        {transaction.status && (
+                          <div className="flex justify-between items-center pt-2 border-t border-gray-100">
+                            <span className="text-xs text-[#717071]">Status</span>
+                            <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium ${
+                              transaction.status === 'completed' 
+                                ? 'bg-green-100 text-green-700'
+                                : transaction.status === 'pending'
+                                ? 'bg-yellow-100 text-yellow-700' 
+                                : 'bg-red-100 text-red-700'
+                            }`}>
+                              {transaction.status?.charAt(0).toUpperCase() + transaction.status?.slice(1)}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 sm:py-12">
+                    <CreditCard size={40} className="sm:size-12 mx-auto text-gray-300 mb-3 sm:mb-4" />
+                    <h4 className="text-base sm:text-lg font-medium text-[#717071] mb-2">No Transactions</h4>
+                    <p className="text-[#717071] text-sm sm:text-base">You haven't made any transactions yet.</p>
                   </div>
                 )}
               </div>

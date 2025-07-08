@@ -13,7 +13,7 @@ import {
   useElements
 } from '@stripe/react-stripe-js';
 import { supabase } from './../../lib/supabase';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 import { convertCurrency, formatCurrency } from '../../utils/currencyConverter';
 
@@ -31,21 +31,7 @@ const stripePromise = loadStripe('pk_test_51RQyMEPNwkgmNBRfcneVX7k3o4kE3d95JtSsJ
 const RightSidebar = ({ isOpen, currentFto, onClose }) => {
   return (
     <>
-      <Toaster position="top-center" toastOptions={{
-        duration: 5000,
-        style: {
-          background: '#363636',
-          color: '#fff',
-          padding: '16px',
-          borderRadius: '10px',
-        },
-        success: {
-          iconTheme: {
-            primary: '#4ade80',
-            secondary: '#fff',
-          },
-        },
-      }} />
+    
       <Elements stripe={stripePromise}>
         <RightSidebarContent isOpen={isOpen} currentFto={currentFto} onClose={onClose} />
       </Elements>

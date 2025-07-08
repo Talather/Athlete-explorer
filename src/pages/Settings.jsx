@@ -8,6 +8,7 @@ function Settings() {
     <div className='bg-[#f5f5f7]'>
       <div className='h-[100dvh] relative'>
         <Navbar />
+        
 
         <SettingsPage />
 

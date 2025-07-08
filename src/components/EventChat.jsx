@@ -31,7 +31,7 @@ const EventChat = ({ event }) => {
     loadMoreMessages
   } = useRealtimeChat({
     eventId: event?.id,
-    username: username, // Generate a proper username
+    username: username, 
     userId:currentUserId,
   })
 

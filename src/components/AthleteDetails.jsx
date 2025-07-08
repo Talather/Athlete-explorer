@@ -4,6 +4,9 @@ import { useProfiles } from "thirdweb/react";
 import { client } from '../client';
 import toast from 'react-hot-toast';
 import { useSelector } from "react-redux";
+import ReactCountryFlag from "react-country-flag"
+import { getCountryFlagFromName } from "../utils/countries";
+
 function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT }) {
   const [subscriptionLoading, setSubscriptionLoading] = useState(false);
   const { data: profiles } = useProfiles({ client });
@@ -138,7 +141,7 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT }) {
                   <div className="flex items-center gap-3">
                     {athlete?.country && 
                       <div className="max-w-[60px] h-[40px] w-full overflow-hidden">
-                        <img src={athlete?.country} alt='country-flag' className='w-full h-full object-cover bg-red-400' />
+                          <ReactCountryFlag style={{width: '100%', height: '100%' , borderRadius: '5px'}} countryCode={getCountryFlagFromName(athlete.country)} svg />
                       </div>
                     }
                   </div>

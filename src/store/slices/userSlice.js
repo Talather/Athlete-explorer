@@ -36,9 +36,18 @@ export const updateUserProfile = createAsyncThunk(
         .eq('id', userId)
         .select()
         .single();
-
+         console.log(data);
       if (error) {
         throw error;
+      }
+  
+      if (profileData.username) {
+        // Don't await this - let it run in background
+       const{data,error} = await supabase
+          .from('messages')
+          .update({ username: profileData.username })
+          .eq('user_id', userId)
+          console.log(data,error);
       }
 
       return data;
@@ -90,6 +99,20 @@ export const uploadProfilePicture = createAsyncThunk(
       if (error) {
         throw error;
       }
+
+      // Update messages table with new profile picture asynchronously
+      // Don't await this - let it run in background
+      supabase
+        .from('messages')
+        .update({ profilePicture: profilePictureUrl })
+        .eq('user_id', userId)
+        .then(({ error: messageError }) => {
+          if (messageError) {
+            console.error('Error updating messages profile picture:', messageError);
+          } else {
+            console.log('Messages profile picture updated successfully');
+          }
+        });
 
       return data;
     } catch (error) {

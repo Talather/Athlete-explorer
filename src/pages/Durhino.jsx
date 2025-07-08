@@ -47,6 +47,9 @@ function Durhino() {
 
   const fetchCurrentFto = async () => {
     const now = new Date().toISOString();
+    if(currentFto){
+      setLoading(false);
+    }
 
     const { data, error } = await supabase
       .from('Ftos')

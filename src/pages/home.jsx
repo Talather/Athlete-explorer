@@ -17,7 +17,7 @@ import { useProfiles, useActiveWallet } from "thirdweb/react";
 import { userOwnsNFT } from "./../utils/userOwnsNft";
 // import { userHasSubscription } from "./../utils/userHasSubscription";
 
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import EventChat from "../components/EventChat";
 
 function Home() {
@@ -129,22 +129,6 @@ function Home() {
 
   return (
     <>
-      <Toaster position="top-center" toastOptions={{
-        duration: 3000,
-        style: {
-          background: '#363636',
-          color: '#fff',
-          padding: '16px',
-          borderRadius: '10px',
-        },
-        error: {
-          iconTheme: {
-            primary: '#ff4b4b',
-            secondary: '#fff',
-          },
-        },
-      }} />
-
       {/* chat popup start */}
       {isChatPopupOpen && 
         <div className="fixed inset-0 z-[999] px-2 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm overflow-hidden">

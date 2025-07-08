@@ -37,7 +37,6 @@ import {
   Camera,
   Loader2,
   AlertCircle,
-  CheckCircle2
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
