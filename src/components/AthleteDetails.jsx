@@ -180,19 +180,19 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT }) {
                   Tokens for sale
                 </div>
               </div>
-
-              <div className="bg-[#FAFAFB] border-[#EBEBEB] 
+              {athlete?.fto?.startDate && (
+                <div className="bg-[#FAFAFB] border-[#EBEBEB] 
                     rounded-3xl leading-snug flex items-center flex-col justify-center
                     px-[1.5cqw] py-[1.2cqw] shadow-md text-center"
-              >
-                <div className="text-black font-bold text-[1.1cqw]">
-                  07/15/2023
+                >
+                  <div className="text-black font-bold text-[1.1cqw]">
+                    {athlete?.fto?.startDate ? new Date(athlete.fto.startDate).toLocaleDateString('en-US') : ''}
+                  </div>
+                  <div className="text-[#969494] text-[1cqw]">
+                    Tokens sale start date
+                  </div>
                 </div>
-                <div className="text-[#969494] text-[1cqw]">
-                  Tokens sale start date
-                </div>
-              </div>
-
+              )}
             </div>
           </div>
 
