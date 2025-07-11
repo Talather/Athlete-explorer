@@ -13,6 +13,8 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT }) {
   const { currency } = useSelector(state => state.settings);
   const [started, setStarted] = useState(false);
 
+  const [videoUrl, setVideoUrl] = useState(athlete?.fto?.videoUrl || "https://nargvalmcrunehnemvpa.supabase.co/storage/v1/object/sign/Athlete/Villain%20LeBron%20did%20not%20forget.mp4?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJBdGhsZXRlL1ZpbGxhaW4gTGVCcm9uIGRpZCBub3QgZm9yZ2V0Lm1wNCIsImlhdCI6MTc0MTU5ODYyOCwiZXhwIjoxNzQ0MTkwNjI4fQ.LCNqKXp4xqfja0Ga7QdfeQ4Vk-ZEUjj5lq8tXSj5sqM" );
+
   const videoRef = useRef(null)
 
   const handlePlay = () => {
@@ -65,15 +67,17 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT }) {
     }
   };
 
+
+
   // console.log(athlete);
 
   return (
     <div className={`w-full h-full rounded-3xl overflow-y-auto
       ${isBlurred ? "blur-lg pointer-events-none" : ""}`}
     >
-      {athlete?.video_url && (
+      {(athlete?.id && videoUrl) && (
         <div
-          key={athlete.id || athlete?.video_url}
+          key={videoUrl}
           className="rounded-3xl overflow-hidden h-[240px] relative border border-[#EEEEEE] mb-5"
         >
           <div className="h-2 primary-gradient z-20 rounded-t-3xl sticky top-0"></div>
@@ -90,7 +94,7 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT }) {
                 setStarted(false);
               }}
             >
-              <source src={athlete?.video_url} type="video/mp4" />
+              <source src={videoUrl} type="video/mp4" />
               Your browser does not support the video tag.
             </video>
           }
@@ -107,7 +111,7 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT }) {
 
             {/* pause and start video button */}
 
-            {!started &&
+            {(!started && videoUrl)?
               <button onClick={handlePlay} className='size-[55px] flex items-center justify-center
                   rounded-full z-[3] bg-black/60 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
                   text-[20px] text-white
@@ -115,7 +119,7 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT }) {
               >
                 ▶
               </button>
-            }
+            : <></>}
             {/* pause and start video button */}
 
             <div className="flex justify-between items-start gap-3">

@@ -7,7 +7,8 @@ import TimerOverlay from './timeOverlay';
 import { client } from '../client';
 import { useProfiles } from "thirdweb/react";
 import EventChat from './EventChat';
-
+import ReactCountryFlag from "react-country-flag"
+import { getCountryFlagFromName } from "../utils/countries";
 const MobileOnlyPage = ({
   athletes,
   selectedAthlete,
@@ -30,6 +31,8 @@ const MobileOnlyPage = ({
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState(null);
   const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [videoUrl,setVideoUrl] = useState(selectedAthlete?.fto?.videoUrl || "https://nargvalmcrunehnemvpa.supabase.co/storage/v1/object/sign/Athlete/Villain%20LeBron%20did%20not%20forget.mp4?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJBdGhsZXRlL1ZpbGxhaW4gTGVCcm9uIGRpZCBub3QgZm9yZ2V0Lm1wNCIsImlhdCI6MTc0MTU5ODYyOCwiZXhwIjoxNzQ0MTkwNjI4fQ.LCNqKXp4xqfja0Ga7QdfeQ4Vk-ZEUjj5lq8tXSj5sqM");
+
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -437,6 +440,7 @@ const MobileOnlyPage = ({
                   className='size-[55px] object-cover rounded-full shrink-0'
                   onClick={() => {
                     onSelectAthlete(athlete)
+                    setVideoUrl(athlete?.fto?.videoUrl)
                     setShowVideo(false)
                   }}
                 />
@@ -485,21 +489,23 @@ const MobileOnlyPage = ({
                       alt={selectedAthlete.firstName}
                       style={styles.videoImage}
                     />
-                    <div
-                      onClick={() => setShowVideo(true)}
-                      style={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        background: 'rgba(0,0,0,0.6)',
-                        borderRadius: '100%',
-                        padding: '26px',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      <FaPlay style={{ color: '#fff', fontSize: '18px' }} />
-                    </div>
+                   {(selectedAthlete?.id && videoUrl) && (
+                     <div
+                     onClick={() => {setShowVideo(true)}}
+                     style={{
+                       position: 'absolute',
+                       top: '50%',
+                       left: '50%',
+                       transform: 'translate(-50%, -50%)',
+                       background: 'rgba(0,0,0,0.6)',
+                       borderRadius: '100%',
+                       padding: '26px',
+                       cursor: 'pointer'
+                     }}
+                   >
+                     <FaPlay style={{ color: '#fff', fontSize: '18px' }} />
+                   </div>
+                   )}
                   </>
                 ) : (
                   <video
@@ -511,7 +517,7 @@ const MobileOnlyPage = ({
                       setShowVideo(false);
                     }}
                   >
-                    <source src={selectedAthlete?.video_url} type='video/mp4' />
+                    <source src={videoUrl} type='video/mp4' />
                     Your browser does not support the video tag.
                   </video>
                 )}
@@ -520,10 +526,11 @@ const MobileOnlyPage = ({
                 >
                     <div className="flex items-center gap-3">
                       {selectedAthlete?.country &&
-                        <div className="max-w-[50px] h-[30px] w-full overflow-hidden">
-                          <img src={selectedAthlete?.country} alt='country-flag' className='w-full h-full object-cover bg-red-400' />
-                        </div>
+                         <div className="max-w-[60px] h-[40px] w-full overflow-hidden">
+                         <ReactCountryFlag style={{width: '100%', height: '100%' , borderRadius: '5px'}} countryCode={getCountryFlagFromName(selectedAthlete.country)} svg />
+                     </div>
                       }
+                       
                     </div>
                     <div className="text-white text-[4cqw] leading-tight max-w-[25cqw] font-bold">
                       {selectedAthlete?.dayOfTheWeek || "Athlete dayOfTheWeek"}

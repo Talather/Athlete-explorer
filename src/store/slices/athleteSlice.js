@@ -1,7 +1,29 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { supabase } from '../../lib/supabase';
 
-// Async thunk to fetch athletes
+// Helper function to fetch the latest FTO for an athlete
+const fetchAthleteFto = async (id) => {
+  try {
+    const { data, error } = await supabase
+      .from("Ftos")
+      .select("*")
+      .eq("athleteTokenId", id)
+      .order("created_at", { ascending: false })
+      .limit(1);
+    
+    if (error) {
+      console.error('Error fetching FTO for athlete', id, ':', error);
+      return null;
+    }
+    
+    return data && data.length > 0 ? data[0] : null;
+  } catch (error) {
+    console.error('Error fetching FTO for athlete', id, ':', error);
+    return null;
+  }
+};
+
+// Async thunk to fetch athletes with their latest FTOs
 export const fetchAthletes = createAsyncThunk(
   'athletes/fetchAthletes',
   async (_, { rejectWithValue }) => {
@@ -15,7 +37,18 @@ export const fetchAthletes = createAsyncThunk(
         return rejectWithValue(error.message);
       }
       
-      return data;
+      // Fetch FTOs for each athlete
+      const athletesWithFtos = await Promise.all(
+        data.map(async (athlete) => {
+          const fto = await fetchAthleteFto(athlete.id);
+          return {
+            ...athlete,
+            fto: fto
+          };
+        })
+      );
+      
+      return athletesWithFtos;
     } catch (error) {
       return rejectWithValue(error.message);
     }

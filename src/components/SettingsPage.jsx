@@ -5,8 +5,7 @@ import { client } from '../client';
 
 import { 
   fetchUserSettings, 
-  updateUserSettings, 
-  fetchExchangeRates,
+  updateUserSettings,
   setLanguage,
   setCurrency,
   setNotificationEmail,
@@ -66,7 +65,7 @@ function SettingsPage() {
     uploadError
   } = useSelector(state => state.user);
 
-  const [profileImage, setProfileImage] = useState(profile?.profilePicture || '/sixer.gif');
+  const [profileImage, setProfileImage] = useState(profile?.profilePicture);
   const [username, setUsername] = useState(profile?.username || '');
   const [email, setEmail] = useState(profile?.email || '');
   const [phone, setPhone] = useState(profile?.phone || '');
@@ -78,7 +77,7 @@ function SettingsPage() {
   // Update local state when profile data changes
   useEffect(() => {
     if (profile) {
-      setProfileImage(profile.profilePicture || '/sixer.gif');
+      setProfileImage(profile.profilePicture);
       setUsername(profile.username || '');
       setEmail(profile.email || '');
       setPhone(profile.phone || '');
@@ -278,11 +277,17 @@ function SettingsPage() {
               <div className="space-y-6">
                 <div className="flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-6">
                   <div className="relative group shrink-0">
+                    {profileImage? 
+                  (
                     <img
                       src={profileImage}
                       alt="Profile"
                       className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 border-white shadow-lg"
                     />
+                  ):(
+                    <User size={90}/>
+                  )}
+                    
                     <label className={`absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center text-white cursor-pointer transition-opacity ${uploadingPicture ? 'opacity-100' : ''}`}>
                       {uploadingPicture ? (
                         <Loader2 size={20} className="animate-spin" />

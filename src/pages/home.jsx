@@ -66,10 +66,7 @@ function Home() {
   }, [dispatch]);
 
   useEffect(() => {
-    if (profiles !== undefined) {
-      // fetchUserSubscriptions is now handled globally in App.jsx
-      // dispatch(fetchUserSubscriptions(profiles[0].details.id));
-    }
+  
   }, [profiles]);
   const handleSelectAthlete = async (athlete) => {
     if (!address) {
@@ -79,6 +76,10 @@ function Home() {
       });
       return;
     }
+    // console.log(athlete);
+    
+
+
     // Check if user has an active subscription for this athlete
     const hasActiveSubscription = userSubscriptions?.some(
       subscription => subscription.athleteId === athlete.id && subscription.active === true
@@ -89,6 +90,7 @@ function Home() {
       dispatch(fetchAthleteEvents({ ...athlete, ownsNFT: true, hasSubscription: true }));
       return;
     }
+  
 
     if (!athlete.nftContractAddress) {
       console.log("NO CONTRACT")
