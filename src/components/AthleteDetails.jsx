@@ -7,13 +7,13 @@ import { useSelector } from "react-redux";
 import ReactCountryFlag from "react-country-flag"
 import { getCountryFlagFromName } from "../utils/countries";
 
-function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT }) {
+function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT, openVideoPopup }) {
   const [subscriptionLoading, setSubscriptionLoading] = useState(false);
   const { data: profiles } = useProfiles({ client });
   const { currency } = useSelector(state => state.settings);
   const [started, setStarted] = useState(false);
 
-  const [videoUrl, setVideoUrl] = useState(athlete?.fto?.videoUrl || "https://nargvalmcrunehnemvpa.supabase.co/storage/v1/object/sign/Athlete/Villain%20LeBron%20did%20not%20forget.mp4?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJBdGhsZXRlL1ZpbGxhaW4gTGVCcm9uIGRpZCBub3QgZm9yZ2V0Lm1wNCIsImlhdCI6MTc0MTU5ODYyOCwiZXhwIjoxNzQ0MTkwNjI4fQ.LCNqKXp4xqfja0Ga7QdfeQ4Vk-ZEUjj5lq8tXSj5sqM" );
+  const [videoUrl, setVideoUrl] = useState(athlete?.fto?.videoUrl || "https://nargvalmcrunehnemvpa.supabase.co/storage/v1/object/sign/Athlete/Villain%20LeBron%20did%20not%20forget.mp4?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJBdGhsZXRlL1ZpbGxhaW4gTGVCcm9uIGRpZCBub3QgZm9yZ2V0Lm1wNCIsImlhdCI6MTc0MTU5ODYyOCwiZXhwIjoxNzQ0MTkwNjI4fQ.LCNqKXp4xqfja0Ga7QdfeQ4Vk-ZEUjj5lq8tXSj5sqM");
 
   const videoRef = useRef(null)
 
@@ -75,66 +75,44 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT }) {
     <div className={`w-full h-full rounded-3xl overflow-y-auto
       ${isBlurred ? "blur-lg pointer-events-none" : ""}`}
     >
-      {(athlete?.id && videoUrl) && (
+      {(athlete?.id) && (
         <div
-          key={videoUrl}
           className="rounded-3xl overflow-hidden h-[240px] relative border border-[#EEEEEE] mb-5"
         >
           <div className="h-2 primary-gradient z-20 rounded-t-3xl sticky top-0"></div>
 
-          {started &&
-            <video
-              ref={videoRef}
-              autoPlay
-              muted
-              width="100%"
-              height="70%"
-              className="w-full h-full object-cover"
-              onEnded={() => {
-                setStarted(false);
-              }}
-            >
-              <source src={videoUrl} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          }
-
           {/* video cover start */}
-
-          {!started &&
-            <div className='video-cover w-full h-full'>
-              <img src={athlete?.profilePicture} alt='cover' className='w-full h-full object-cover object-center' />
-            </div>
-          }
+          <div className='w-full h-full flex items-center justify-center'>
+            <img src={athlete?.profilePicture} alt='cover' className='w-full max-w-[250px] h-[180px] object-cover object-center' />
+          </div>
 
           <div className="bg-white/40 z-10 absolute top-0 left-0 w-full h-full flex flex-col gap-2 justify-between px-[2cqw] py-[1.5cqw]">
-
             {/* pause and start video button */}
-
-            {(!started && videoUrl)?
-              <button onClick={handlePlay} className='size-[55px] flex items-center justify-center
+            {(athlete?.fto?.videoUrl) ?
+              <button onClick={openVideoPopup} className='size-[55px] flex items-center justify-center
                   rounded-full z-[3] bg-black/60 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
                   text-[20px] text-white
                   transition-all duration-500 opacity-100 hover:scale-105'
               >
                 ▶
               </button>
-            : <></>}
+              : <></>}
             {/* pause and start video button */}
 
             <div className="flex justify-between items-start gap-3">
               <div className="flex justify-between w-full items-start">
                 <div className="space-y-1">
                   <div className="flex items-center gap-3">
-                    {athlete?.profilePicture && 
+                    {athlete?.profilePicture &&
                       <div className="size-[50px] rounded-full overflow-hidden">
                         <img src={athlete?.profilePicture} alt='cover' className='w-full h-full object-cover' />
                       </div>
                     }
 
                     <div className="text-black font-bold text-[2cqw] leading-tight">
-                      {athlete?.fanTokenSymbol || "Fan Token Symbol"}
+                      ${athlete?.fanTokenSymbol || "Fan Token Symbol"}
                     </div>
+
                   </div>
                   <div className="text-black text-[1.3cqw] leading-tight max-w-[25cqw] font-bold">
                     {athlete?.sport || "Athlete Sport"}
@@ -143,9 +121,9 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT }) {
 
                 <div className="space-y-1 flex flex-col items-end">
                   <div className="flex items-center gap-3">
-                    {athlete?.country && 
+                    {athlete?.country &&
                       <div className="max-w-[60px] h-[40px] w-full overflow-hidden">
-                          <ReactCountryFlag style={{width: '100%', height: '100%' , borderRadius: '5px'}} countryCode={getCountryFlagFromName(athlete.country)} svg />
+                        <ReactCountryFlag style={{ width: '100%', height: '100%', borderRadius: '5px' }} countryCode={getCountryFlagFromName(athlete.country)} svg />
                       </div>
                     }
                   </div>
@@ -155,32 +133,27 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT }) {
                 </div>
 
               </div>
+            </div>
+
+            <div className="flex items-end justify-between gap-[1.2cqw]">
+
               {ownsNFT === true ? (
                 <></>
               ) : (
-                <button
-                  className="text-white shrink-0 p-3 rounded-xl text-[1cqw] bg-black leading-tight max-w-[25cqw] font-medium"
-                  onClick={handleSubscriptionPurchase}
-                  disabled={subscriptionLoading}
-                >
-                  {subscriptionLoading ? 'Processing...' : 'Buy Subscription'}
-                </button>
+                <div className="shrink-0 primary-gradient overflow-hidden h-[3.2cqw] p-0.5 rounded-full cursor-pointer">
+                  <button
+                    className="text-black p-3 text-[1cqw] rounded-full bg-white leading-tight 
+                      max-w-[25cqw] h-full flex items-center justify-center
+                      font-medium transition-all duration-300 hover:bg-gray-100"
+                    onClick={handleSubscriptionPurchase}
+                    disabled={subscriptionLoading}
+                  >
+                    {subscriptionLoading ? 'Processing...' : 'Buy Subscription'}
+                  </button>
+                </div>
               )}
-            </div>
 
-            <div className="flex items-center justify-between gap-[1.2cqw]">
-              <div className="bg-[#FAFAFB] border-[#EBEBEB] 
-                    rounded-3xl leading-snug flex items-center flex-col justify-center
-                    px-[1.5cqw] py-[1.2cqw] shadow-md text-center"
-              >
-                <div className="text-black font-bold text-[1.1cqw]">
-                  {athlete?.totalNoOfFanTokens} ${athlete?.firstName?.toUpperCase()}
-                </div>
-                <div className="text-[#969494] text-[1cqw]">
-                  Tokens for sale
-                </div>
-              </div>
-              {athlete?.fto?.startDate && (
+              {/* {athlete?.fto?.startDate && (
                 <div className="bg-[#FAFAFB] border-[#EBEBEB] 
                     rounded-3xl leading-snug flex items-center flex-col justify-center
                     px-[1.5cqw] py-[1.2cqw] shadow-md text-center"
@@ -192,7 +165,7 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT }) {
                     Tokens sale start date
                   </div>
                 </div>
-              )}
+              )} */}
             </div>
           </div>
 
@@ -216,24 +189,44 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT }) {
                     rounded-3xl overflow-hidden min-h-[9.4cqw] px-8 py-6 shadow-sm 
                     flex items-start flex-col"
                 >
-                  <h3 className="font-bold text-[22px] leading-tight">{event.name}</h3>
+                  <div className="flex gap-2 justify-between w-full">
+                    <h3 className="font-bold text-[22px] leading-tight">{event.name}</h3>
+
+
+                    <div className="shrink-0 primary-gradient overflow-hidden p-0.5 rounded-[12px]
+                      cursor-pointer text-white max-w-[80px] py-1 w-full"
+                    >
+                      {event.type}
+                    </div>
+                  
+                  </div>
                   <p className="text-[#969494] text-lg">{event.description}</p>
-                  <p className="text-pink text-lg">{event.type}</p>
                 </button>
               </div>
             ))
           ) : (
             <div
-              className="h-[150px] bg-[#FCFCFC] border border-[#E7E7E7] shadow-sm
-              rounded-3xl flex items-center justify-center text-[#C9C8C8] p-6 overflow-y-auto"
+              className={`h-[150px] border border-[#E7E7E7] shadow-sm
+              rounded-3xl flex items-center justify-center text-[#C9C8C8] text-xl font-bold p-6 overflow-y-auto
+              ${ownsNFT ? 'bg-[#FCFCFC]' : 'blur-[0.8px]'}`}
+
             >
               <h2
                 style={{ fontFamily: "Arial, sans-serif", textAlign: "center" }}
               >
                 {ownsNFT === true ? (
-                  "This event will be posted soon."
+                  <div>
+                    The first event of ${athlete?.fanTokenSymbol} will be posted soon!
+                  </div>
                 ) : (
-                  "You do not have a $XXX NFT or subscription. Get your NFT or subscription to access this area."
+                  <div className="text-center flex flex-col items-center">
+                    <span className="text-3xl">
+                      🔒
+                    </span>
+                    <span>
+                      You need at least one ${athlete?.fanTokenSymbol} token or a subscription to see these events.
+                    </span>
+                  </div>
                 )}
               </h2>
             </div>
@@ -248,9 +241,6 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT }) {
             <h2 className="text-center font-bold text-[28px]">
               Select an Athlete.
             </h2>
-            <p className="text-center text-lg">
-              To see more information, select an athlete first.
-            </p>
           </div>
         </div>
       )}

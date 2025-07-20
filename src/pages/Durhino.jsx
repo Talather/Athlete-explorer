@@ -149,7 +149,7 @@ function Durhino() {
         text-white flex items-center justify-center 
           py-3 sm:py-4
           text-[24px] sm:text-[2.5vw] leading-normal font-semibold
-      ">
+        ">
           <h1>{currentFto.Atheletes.fanTokenSymbol}  Day (Round {currentFto.roundNumber})</h1>
         </div>
 
@@ -254,6 +254,7 @@ function Durhino() {
                   </p>
                 </div>
               </div>
+
               {isBeforeStartDate && (
                 <div className="w-full p-4 ">
                   <div className="text-center mb-3">
@@ -302,7 +303,7 @@ function Durhino() {
                 </div>
               </div>
 
-              <div className="space-y-4 sm:space-y-6 md:px-[10px]">
+              <div className="space-y-4 sm:space-y-6 md:px-[10px] mt-5 sm:mt-0">
 
                 {/* Dynamic FAQ items from database */}
                 {faqLoading ? (
@@ -374,7 +375,7 @@ function Durhino() {
           />
         </>
 
-        <div className="sticky w-full bottom-0 z-40 bg-[#f5f5f7] rounded-t-[30px]">
+        <div className="sticky w-full bottom-0 z-40 rounded-t-[30px]">
           {/* mobile version price and buy button */}
           <div className="stickyBarWrapper sm:hidden flex justify-between min-[345px]:justify-center px-1.5 gap-2 min-[345px]:gap-[15%] items-center py-[1.25rem] bg-white rounded-t-[30px]">
             <h3

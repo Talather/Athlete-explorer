@@ -500,10 +500,9 @@ const Profile = () => {
                           </div>
                         </div>
                         {transaction.status && (
-                          <div className="flex justify-between items-center pt-2 border-t border-gray-100">
-                            <span className="text-xs text-[#717071]">Status</span>
+                          <div className="flex justify-end items-center pt-2 border-t border-gray-100">
                             <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium ${
-                              transaction.status === 'completed' 
+                              transaction.status === 'succeeded' 
                                 ? 'bg-green-100 text-green-700'
                                 : transaction.status === 'pending'
                                 ? 'bg-yellow-100 text-yellow-700' 

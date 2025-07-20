@@ -12,6 +12,7 @@ const TermsPage = () => {
     return (
       <>
         <Navbar />
+
         <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-[#f8e3e0] to-[#e9d5f7]">
           <div className="text-center">
             <div className="bg-white p-6 rounded-xl shadow-md">
@@ -21,6 +22,7 @@ const TermsPage = () => {
             </div>
           </div>
         </div>
+        
       </>
     );
   }
@@ -132,8 +134,13 @@ const TermsPage = () => {
           </div>
         </div>
       </div>
-      <StickyBar />
+
+      
+      <div className="sticky w-full bottom-0 z-40">
+        <StickyBar />
+      </div>
       <Footer />
+      
     </>
   );
 };

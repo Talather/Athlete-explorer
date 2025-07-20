@@ -1,14 +1,17 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { FiSearch } from 'react-icons/fi'
 import { FaPlay } from 'react-icons/fa'
 import { motion } from "framer-motion";
 import { supabase } from '../lib/supabase';
+import toast from 'react-hot-toast';
 import TimerOverlay from './timeOverlay';
 import { client } from '../client';
 import { useProfiles } from "thirdweb/react";
+import { useSelector } from "react-redux";
 import EventChat from './EventChat';
 import ReactCountryFlag from "react-country-flag"
 import { getCountryFlagFromName } from "../utils/countries";
+
 const MobileOnlyPage = ({
   athletes,
   selectedAthlete,
@@ -17,12 +20,12 @@ const MobileOnlyPage = ({
   isExpanded,
   onClose,
   onEventClick,
-  openChatPopup
+  ownsNFT,
+  openChatPopup,
+  openVideoPopup
 }) => {
-  const { data: profiles } = useProfiles({
-    client,
-  });
 
+  const { data: profiles } = useProfiles({ client });
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [showVideo, setShowVideo] = useState(false);
@@ -31,8 +34,51 @@ const MobileOnlyPage = ({
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState(null);
   const [uploadSuccess, setUploadSuccess] = useState(false);
-  const [videoUrl,setVideoUrl] = useState(selectedAthlete?.fto?.videoUrl || "https://nargvalmcrunehnemvpa.supabase.co/storage/v1/object/sign/Athlete/Villain%20LeBron%20did%20not%20forget.mp4?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJBdGhsZXRlL1ZpbGxhaW4gTGVCcm9uIGRpZCBub3QgZm9yZ2V0Lm1wNCIsImlhdCI6MTc0MTU5ODYyOCwiZXhwIjoxNzQ0MTkwNjI4fQ.LCNqKXp4xqfja0Ga7QdfeQ4Vk-ZEUjj5lq8tXSj5sqM");
+  const [videoUrl, setVideoUrl] = useState(selectedAthlete?.fto?.videoUrl || "https://nargvalmcrunehnemvpa.supabase.co/storage/v1/object/sign/Athlete/Villain%20LeBron%20did%20not%20forget.mp4?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJBdGhsZXRlL1ZpbGxhaW4gTGVCcm9uIGRpZCBub3QgZm9yZ2V0Lm1wNCIsImlhdCI6MTc0MTU5ODYyOCwiZXhwIjoxNzQ0MTkwNjI4fQ.LCNqKXp4xqfja0Ga7QdfeQ4Vk-ZEUjj5lq8tXSj5sqM");
+  const [subscriptionLoading, setSubscriptionLoading] = useState(false);
+  const { currency } = useSelector(state => state.settings);
+  const [filtered, setFiltered] = useState(athletes);
 
+
+  const handleSubscriptionPurchase = async () => {
+    if (!selectedAthlete?.id || !profiles?.[0]?.details?.id || !profiles?.[0]?.details?.email) {
+      toast.error('Please connect your wallet and ensure all required information is available');
+      return;
+    }
+
+    setSubscriptionLoading(true);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('create-subscription-checkout-session', {
+        body: {
+          athleteId: selectedAthlete.id,
+          userId: profiles[0].details.id,
+          email: profiles[0].details.email,
+          currencyCode: currency,
+        }
+      });
+      console.log(data);
+      console.log(error);
+
+      if (error) {
+        console.error('Error creating subscription checkout session:', error);
+        throw new Error(error.message || 'Failed to create subscription checkout session');
+      }
+
+      if (!data || !data.sessionUrl) {
+        throw new Error('No session URL received from the server');
+      }
+
+      // Redirect to Stripe checkout
+      window.location.href = data.sessionUrl;
+
+    } catch (error) {
+      console.error('Subscription error:', error);
+      toast.error(`Subscription failed: ${error.message || 'Unknown error'}`);
+    } finally {
+      setSubscriptionLoading(false);
+    }
+  };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -229,20 +275,27 @@ const MobileOnlyPage = ({
       fontSize: '14px',
       fontWeight: 'bold',
       color: '#333',
-      marginBottom: '6px'
     },
     cardMeta: {
       fontSize: '12px',
-      color: '#777'
+      color: '#777',
+      padding: '2px 0'
     }
   }
 
-  const filteredAthletes = athletes.filter(athlete => {
-    const searchTermLower = searchTerm.toLowerCase();
-    return (
-      (athlete.fanTokenSymbol?.toLowerCase() || '').includes(searchTermLower)
+  useEffect(() => {
+    setFiltered(
+      athletes.filter(athlete => {
+        const searchTermLower = searchTerm.toLowerCase();
+        return (athlete.fanTokenSymbol?.toLowerCase() || '').includes(searchTermLower);
+      })
     );
-  });
+  }, [searchTerm, athletes]);
+
+  const withAccess = filtered.filter(a => a.hasAccess);
+  const withoutAccess = filtered.filter(a => !a.hasAccess);
+
+  console.log("mobile athletes", athletes);
 
   // Event content rendering function for the right sidebar when expanded
   const renderEventDetailContent = () => {
@@ -386,8 +439,7 @@ const MobileOnlyPage = ({
                     <button
                       onClick={handleSubmit}
                       disabled={!uploadFile || uploading}
-                      className={`w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-full transition-all ${(!uploadFile || uploading) ? 'opacity-50 cursor-not-allowed' : ''
-                        }`}
+                      className={`w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-full transition-all ${(!uploadFile || uploading) ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
                       {uploading ? 'Uploading...' : 'Submit Entry'}
                     </button>
@@ -424,6 +476,7 @@ const MobileOnlyPage = ({
           <div className='w-full primary-gradient h-2 sticky top-0'></div>
 
           <div className='divide-y-2 divide-[#EBEBEB]'>
+
             <button
               className='w-full p-[12px] flex items-center gap-1'
               onClick={() => setSearchVisible(!searchVisible)}
@@ -432,24 +485,55 @@ const MobileOnlyPage = ({
               <span className='text-black font-bold'>Search</span>
             </button>
 
-            {filteredAthletes.map(athlete => (
-              <div className='flex flex-col bg-white items-center gap-[6px] px-2 py-[10px]' key={athlete.id}>
-                <img
-                  src={athlete.profilePicture || 'https://via.placeholder.com/40'}
-                  alt={athlete.firstName}
-                  className='size-[55px] object-cover rounded-full shrink-0'
-                  onClick={() => {
-                    onSelectAthlete(athlete)
-                    setVideoUrl(athlete?.fto?.videoUrl)
-                    setShowVideo(false)
-                  }}
-                />
-                <div className='text-sm font-bold'>${athlete.fanTokenSymbol}</div>
-                <div className='text-[#969494] text-sm'>
-                  {athlete.sport}
-                </div>
+            {withAccess.length > 0 && (
+              <div>
+                <h3 className='text-sm border-b font-semibold py-1 text-center'>Your Athletes</h3>
+                {withAccess.map(athlete => (
+                  <button
+                    onClick={() => {
+                      onSelectAthlete(athlete)
+                      setVideoUrl(athlete?.fto?.videoUrl)
+                      setShowVideo(false)
+                    }}
+                    className='w-full flex flex-col bg-white items-center gap-[6px] px-2 py-[10px]' key={athlete.id}>
+                    <img
+                      src={athlete.profilePicture || 'https://via.placeholder.com/40'}
+                      alt={athlete.firstName}
+                      className='size-[55px] object-cover rounded-full shrink-0'
+                    />
+                    <span className='text-sm font-bold'>${athlete.fanTokenSymbol}</span>
+                    <span className='text-[#969494] text-sm'>
+                      {athlete.sport}
+                    </span>
+                  </button>
+                ))}
               </div>
-            ))}
+            )}
+
+            {withoutAccess.length > 0 && (
+              <div>
+                <h3 className='text-sm border-b font-semibold py-1 text-center'>Locked Athletes</h3>
+                {withoutAccess.map(athlete => (
+                  <button
+                    onClick={() => {
+                      onSelectAthlete(athlete)
+                      setVideoUrl(athlete?.fto?.videoUrl)
+                      setShowVideo(false)
+                    }}
+                    className='w-full flex flex-col bg-white items-center gap-[6px] px-2 py-[10px]' key={athlete.id}>
+                    <img
+                      src={athlete.profilePicture || 'https://via.placeholder.com/40'}
+                      alt={athlete.firstName}
+                      className='size-[55px] object-cover rounded-full shrink-0'
+                    />
+                    <span className='text-sm font-bold'>${athlete.fanTokenSymbol}</span>
+                    <span className='text-[#969494] text-sm'>
+                      {athlete.sport}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -489,23 +573,23 @@ const MobileOnlyPage = ({
                       alt={selectedAthlete.firstName}
                       style={styles.videoImage}
                     />
-                   {(selectedAthlete?.id && videoUrl) && (
-                     <div
-                     onClick={() => {setShowVideo(true)}}
-                     style={{
-                       position: 'absolute',
-                       top: '50%',
-                       left: '50%',
-                       transform: 'translate(-50%, -50%)',
-                       background: 'rgba(0,0,0,0.6)',
-                       borderRadius: '100%',
-                       padding: '26px',
-                       cursor: 'pointer'
-                     }}
-                   >
-                     <FaPlay style={{ color: '#fff', fontSize: '18px' }} />
-                   </div>
-                   )}
+                    {(selectedAthlete?.id && videoUrl) && (
+                      <div
+                        onClick={openVideoPopup}
+                        style={{
+                          position: 'absolute',
+                          top: '50%',
+                          left: '50%',
+                          transform: 'translate(-50%, -50%)',
+                          background: 'rgba(0,0,0,0.6)',
+                          borderRadius: '100%',
+                          padding: '18px',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        <FaPlay style={{ color: '#fff', fontSize: '14px' }} />
+                      </div>
+                    )}
                   </>
                 ) : (
                   <video
@@ -521,50 +605,120 @@ const MobileOnlyPage = ({
                     Your browser does not support the video tag.
                   </video>
                 )}
-                <div className='bg-black/50 w-full absolute top-0 px-4 py-1
-                  flex items-center justify-between'
+
+                <div className='bg-black/80 w-full 
+                  absolute top-0 px-4 py-2
+                  flex items-start justify-between'
                 >
-                    <div className="flex items-center gap-3">
-                      {selectedAthlete?.country &&
-                         <div className="max-w-[60px] h-[40px] w-full overflow-hidden">
-                         <ReactCountryFlag style={{width: '100%', height: '100%' , borderRadius: '5px'}} countryCode={getCountryFlagFromName(selectedAthlete.country)} svg />
-                     </div>
-                      }
-                       
-                    </div>
-                    <div className="text-white text-[4cqw] leading-tight max-w-[25cqw] font-bold">
-                      {selectedAthlete?.dayOfTheWeek || "Athlete dayOfTheWeek"}
-                    </div>
+                  <div className="text-white leading-tight space-y-1">
+
+                    {selectedAthlete.fanTokenSymbol &&
+                      <div className="text-[4cqw] font-bold">
+                        $ {selectedAthlete.fanTokenSymbol}
+                      </div>
+                    }
+
+                    {selectedAthlete?.sport &&
+                      <div className="text-[3.2cqw]">
+                        {selectedAthlete?.sport}
+                      </div>
+                    }
+
+                  </div>
+
+                  <div className='space-y-1'>
+                    {selectedAthlete?.country &&
+                      <div className="max-w-[25px] w-full ml-auto overflow-hidden">
+                        <ReactCountryFlag style={{ width: '100%', height: '100%' }} countryCode={getCountryFlagFromName(selectedAthlete.country)} svg />
+                      </div>
+                    }
+                    {selectedAthlete?.dayOfTheWeek &&
+                      <div className="text-white text-[4cqw] leading-tight max-w-[25cqw] font-bold">
+                        {selectedAthlete?.dayOfTheWeek || "Athlete dayOfTheWeek"}
+                      </div>
+                    }
+                  </div>
                 </div>
 
-                <div style={styles.videoOverlay}>
-                  <div>{selectedAthlete.fanTokenSymbol}</div>
-                  {/* <div>{selectedAthlete.owners || '2.4m'} Owners</div> */}
-                  <div>{events.length} Events</div>
-                </div>
+                {!ownsNFT && (
+                  <div className='bg-black/80 w-full 
+                    absolute bottom-0 px-4 py-2'
+                  >
+                    <div className="shrink-0 primary-gradient overflow-hidden max-w-[35cqw] p-0.5 rounded-full cursor-pointer">
+                      <button
+                        className="text-black p-3 text-[3cqw] rounded-full bg-white leading-tight 
+                          w-full h-full flex items-center justify-center
+                          font-medium transition-all duration-300 hover:bg-gray-100"
+                        onClick={handleSubscriptionPurchase}
+                        disabled={subscriptionLoading}
+                      >
+                        {subscriptionLoading ? 'Processing...' : 'Buy Subscription'}
+                      </button>
+                    </div>
+
+                  </div>
+                )}
               </div>
             </div>
-            {/* <div className='overflow-x-hidden overflow-y-scroll'> */}
 
-            {events.map(event => (
-              <div
-                style={styles.card}
-                onClick={() => {
-                  onEventClick(event)
-                  setSelectedEvent(event);
-                }}
-              >
-                <div style={styles.cardContent}>
-                  <div style={styles.cardText}>
-                    {event.name || 'Untitled Event'}
+            <div className='w-full'>
+              {events.length > 0 ? (
+                events.map(event => (
+                  <div
+                    key={event.id} // Always add a key when mapping!
+                    style={styles.card}
+                    onClick={() => {
+                      onEventClick(event);
+                      setSelectedEvent(event);
+                    }}
+                  >
+                    <div style={styles.cardContent}>
+                      <div className='w-full flex items-center justify-between gap-1'>
+                        <div style={styles.cardText}>
+                          {event.name || 'Untitled Event'}
+                        </div>
+
+                        <div className="shrink-0 primary-gradient overflow-hidden p-0.5 rounded-[12px]
+                          cursor-pointer text-white max-w-[80px] py-1 w-full text-center"
+                        >
+                          {event.type}
+                        </div>
+                      </div>
+                      <div style={styles.cardMeta}>
+                        {event.description || 'N/A'}
+                      </div>
+
+                    </div>
                   </div>
-                  <div style={styles.cardMeta}>
-                    Description: {event.description || 'N/A'}
-                  </div>
+                ))
+              ) : (
+                <div
+                  className={`border border-[#E7E7E7] shadow-sm
+              rounded-2xl flex items-center justify-center text-[#C9C8C8] text-lg font-bold p-6 overflow-y-auto
+              ${ownsNFT ? 'bg-[#FCFCFC]' : 'blur-[0.8px]'}`}
+
+                >
+                  <h2
+                    style={{ fontFamily: "Arial, sans-serif", textAlign: "center" }}
+                  >
+                    {ownsNFT === true ? (
+                      <div>
+                        The first event of ${selectedAthlete.fanTokenSymbol} will be posted soon!
+                      </div>
+                    ) : (
+                      <div className="text-center flex flex-col items-center">
+                        <span className="text-3xl">
+                          🔒
+                        </span>
+                        <span>
+                          You need at least one ${selectedAthlete.fanTokenSymbol} token or a subscription to see these events.
+                        </span>
+                      </div>
+                    )}
+                  </h2>
                 </div>
-              </div>
-            ))}
-            {/* </div> */}
+              )}
+            </div>
 
           </>
         ) : (
@@ -572,7 +726,6 @@ const MobileOnlyPage = ({
               text-[#C9C8C8] flex flex-col items-center justify-center px-5 py-6'
           >
             <div className='text-center text-xl font-bold'>Select an Athlete</div>
-            <div className='text-center'>To see more information, select athlete first.</div>
           </div>
         )}
       </div>

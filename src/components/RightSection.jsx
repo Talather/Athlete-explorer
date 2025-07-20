@@ -300,9 +300,6 @@ function RightSection({ isExpanded, selectedEvent, onClose, openChatPopup }) {
           <h2 className="text-center text-[#C9C8C8] text-[28px] font-bold leading-tight">
             Select an Athlete and an Event.
           </h2>
-          <p className="text-center text-[#C9C8C8] text-lg leading-tight">
-            To see more information, select an athlete and an event first.
-          </p>
         </div>
       )}
     </div>

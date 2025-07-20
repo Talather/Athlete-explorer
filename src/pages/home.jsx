@@ -19,6 +19,7 @@ import { userOwnsNFT } from "./../utils/userOwnsNft";
 
 import toast from 'react-hot-toast';
 import EventChat from "../components/EventChat";
+import VideoPopup from "../components/VideoPopup";
 
 function Home() {
 
@@ -39,6 +40,8 @@ function Home() {
 
   const [isMobile, setIsMobile] = useState(false);
   const [isChatPopupOpen, setIsChatPopupOpen] = useState(false);
+  const [isVideoPopupOpen, setIsVideoPopupOpen] = useState(false);
+  const [athletesWithAccess, setAthletesWithAccess] = useState([]);
 
   const chatPopupOpen = () => {
     setIsChatPopupOpen(true);
@@ -47,6 +50,16 @@ function Home() {
 
   const chatPopupClose = () => {
     setIsChatPopupOpen(false);
+    document.body.style.overflow = 'auto';
+  }
+
+  const videoPopupOpen = () => {
+    setIsVideoPopupOpen(true);
+    document.body.style.overflow = 'hidden';
+  }
+
+  const videoPopupClose = () => {
+    setIsVideoPopupOpen(false);
     document.body.style.overflow = 'auto';
   }
 
@@ -66,7 +79,7 @@ function Home() {
   }, [dispatch]);
 
   useEffect(() => {
-  
+
   }, [profiles]);
   const handleSelectAthlete = async (athlete) => {
     if (!address) {
@@ -77,7 +90,7 @@ function Home() {
       return;
     }
     // console.log(athlete);
-    
+
 
 
     // Check if user has an active subscription for this athlete
@@ -90,7 +103,7 @@ function Home() {
       dispatch(fetchAthleteEvents({ ...athlete, ownsNFT: true, hasSubscription: true }));
       return;
     }
-  
+
 
     if (!athlete.nftContractAddress) {
       console.log("NO CONTRACT")
@@ -129,10 +142,40 @@ function Home() {
     dispatch(clearSelectedEvent());
   };
 
+  // console.log("Selected Athlete: ",selectedAthlete);
+
+  useEffect(() => {
+    const enhanceAthletes = async () => {
+      if (!address || !athletes.length) return;
+
+      const enhanced = await Promise.all(athletes.map(async (athlete) => {
+        const isValidContract = /^0x[a-fA-F0-9]{40}$/.test(athlete.nftContractAddress);
+        const ownsNFT = isValidContract
+          ? await userOwnsNFT(athlete.nftContractAddress, address)
+          : false;
+
+        const hasSubscription = userSubscriptions?.some(
+          sub => sub.athleteId === athlete.id && sub.active
+        );
+
+        return {
+          ...athlete,
+          hasAccess: ownsNFT || hasSubscription
+        };
+      }));
+
+      setAthletesWithAccess(enhanced);
+    };
+
+    enhanceAthletes();
+  }, [athletes, address, userSubscriptions]);
+
+
+
   return (
     <>
       {/* chat popup start */}
-      {isChatPopupOpen && 
+      {isChatPopupOpen &&
         <div className="fixed inset-0 z-[999] px-2 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm overflow-hidden">
           <div className="rounded-xl shadow-lg text-center w-full h-full
                 flex items-center justify-center relative"
@@ -150,13 +193,20 @@ function Home() {
       }
       {/* chat popup end */}
 
+      {/* video popup start */}
+      {isVideoPopupOpen &&
+        <VideoPopup selectedAthlete={selectedAthlete} videoPopupClose={videoPopupClose} />
+      }
+      {/* video popup end */}
+
       {isMobile ? (
         <>
           <div className="w-full relative h-[100dvh]">
             <Navbar />
 
             <MobileOnlyPage
-              athletes={athletes}
+              key={selectedAthlete?.id}
+              athletes={athletesWithAccess}
               selectedAthlete={selectedAthlete}
               events={events}
               onSelectAthlete={handleSelectAthlete}
@@ -164,6 +214,8 @@ function Home() {
               isExpanded={isExpanded}
               onClose={handleClose}
               openChatPopup={chatPopupOpen}
+              openVideoPopup={videoPopupOpen}
+              ownsNFT={selectedAthlete?.ownsNFT}
             />
 
             <div className="sticky w-full bottom-0 z-50">
@@ -179,7 +231,7 @@ function Home() {
 
           <div className="flex h-[calc(100vh-196px)] gap-5 lg:gap-10 justify-between pt-10 pb-6 px-10">
             <Sidebar
-              athletes={athletes}
+              athletes={athletesWithAccess}
               onSelect={handleSelectAthlete}
               isBlurred={isExpanded}
             />
@@ -190,6 +242,7 @@ function Home() {
               onEventClick={handleEventClick}
               isBlurred={isExpanded}
               ownsNFT={selectedAthlete?.ownsNFT}
+              openVideoPopup={videoPopupOpen}
             />
             <RightSection
               isExpanded={isExpanded}

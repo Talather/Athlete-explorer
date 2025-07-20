@@ -144,8 +144,12 @@ const PrivacyPage = () => {
           </div>
         </div>
       </div>
-      <StickyBar />
+      
+      <div className="sticky w-full bottom-0 z-40">
+        <StickyBar />
+      </div>
       <Footer />
+
     </>
   );
 };
