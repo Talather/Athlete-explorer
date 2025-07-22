@@ -579,7 +579,7 @@ const MobileOnlyPage = ({
                   {filteredAllAthletes.length > 0 && (
                     <MobileSidebar
                       athletes={filteredAllAthletes}
-                      title="Your Athletes"
+                      title="Locked Athletes"
                       onClick={handleAthleteClick}
                     />
                   )}
