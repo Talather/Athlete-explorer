@@ -1,22 +1,32 @@
 import { useState, useEffect } from 'react';
 
-function Sidebar({ athletes, onSelect, isBlurred }) {
+function Sidebar({ allAthletes, athletes, onSelect, isBlurred }) {
   const [search, setSearch] = useState('');
   const [filtered, setFiltered] = useState(athletes);
+  const [filteredAllAthletes, setFilteredAllAthletes] = useState(allAthletes);
+
 
   useEffect(() => {
-    setFiltered(
-      athletes.filter(athlete => {
-        const searchLower = search.toLowerCase();
-        return (athlete.fanTokenSymbol?.toLowerCase() || '').includes(searchLower);
-      })
+    const searchLower = search.toLowerCase();
+
+    const filteredSubset = athletes.filter(athlete =>
+      (athlete.fanTokenSymbol?.toLowerCase() || '').includes(searchLower)
     );
-  }, [search, athletes]);
+    setFiltered(filteredSubset);
+
+    const filteredAll = allAthletes.filter(athlete =>
+      (athlete.fanTokenSymbol?.toLowerCase() || '').includes(searchLower)
+    );
+    setFilteredAllAthletes(filteredAll);
+  }, [search, athletes, allAthletes]);
+
 
   const withAccess = filtered.filter(a => a.hasAccess);
   const withoutAccess = filtered.filter(a => !a.hasAccess);
 
-  console.log("desktop athletes", athletes);
+  // console.log("desktop all athletes", allAthletes);
+  // console.log("desktop with access athletes", withAccess);
+  // console.log("desktop without access athletes", withoutAccess);
 
   return (
     <div className={`max-w-[300px] w-full bg-[#FAFAFB] h-full relative overflow-hidden border border-[#EBEBEB] shadow-sm rounded-3xl
@@ -40,57 +50,91 @@ function Sidebar({ athletes, onSelect, isBlurred }) {
           )}
         </div>
 
-        {withAccess.length > 0 && (
-          <div>
-            <h3 className='text-lg font-semibold mt-2 mb-2'>🎯 Your Athletes</h3>
-            <ul className='flex flex-col items-center w-full gap-3'>
-              {withAccess.map((athlete, index) => (
-                <button
-                  key={`access-${index}`}
-                  onClick={() => onSelect(athlete)}
-                  className='w-full h-[73px] primary-gradient overflow-hidden p-px rounded-3xl shadow-md cursor-pointer'
-                >
-                  <span className='bg-white w-full h-full gap-2 rounded-[23px] py-[10px] px-4 
-                    transition-all duration-300 hover:bg-gray-100 flex items-center'>
-                    <span className='size-[55px] rounded-full overflow-hidden shrink-0'>
-                      <img src={athlete.profilePicture} alt={athlete.firstName} className='size-full object-cover' />
-                    </span>
-                    <span>
-                      <p className='font-bold text-base'>${athlete.fanTokenSymbol}</p>
-                      <span className='text-[#969494] text-sm'>{athlete.sport}</span>
-                    </span>
-                  </span>
-                </button>
-              ))}
-            </ul>
+        {(withAccess.length > 0 || withoutAccess.length > 0) ? (
+          <div className='w-full'>
+            {withAccess.length > 0 && (
+              <div>
+                <h3 className='text-lg font-semibold mt-2 mb-2'>My Athletes 🎯</h3>
+                <ul className='flex flex-col items-center w-full gap-3'>
+                  {withAccess.map((athlete, index) => (
+                    <button
+                      key={`access-${index}`}
+                      onClick={() => onSelect(athlete)}
+                      className='w-full h-[73px] primary-gradient overflow-hidden p-px rounded-3xl shadow-md cursor-pointer'
+                    >
+                      <span className='bg-white w-full h-full gap-2 rounded-[23px] py-[10px] px-4 
+                        transition-all duration-300 hover:bg-gray-100 flex items-center'>
+                        <span className='size-[55px] rounded-full overflow-hidden shrink-0'>
+                          <img src={athlete.profilePicture} alt={athlete.firstName} className='size-full object-cover' />
+                        </span>
+                        <span>
+                          <p className='font-bold text-base'>${athlete.fanTokenSymbol}</p>
+                          <span className='text-[#969494] text-sm'>{athlete.sport}</span>
+                        </span>
+                      </span>
+                    </button>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {withoutAccess.length > 0 && (
+              <div>
+                <h3 className='text-lg font-semibold mt-6 mb-2'>Locked Athletes 🔒</h3>
+                <ul className='flex flex-col items-center w-full gap-3'>
+                  {withoutAccess.map((athlete, index) => (
+                    <button
+                      key={`locked-${index}`}
+                      onClick={() => onSelect(athlete)}
+                      className='w-full h-[73px] primary-gradient overflow-hidden p-px rounded-3xl shadow-md cursor-pointer'
+                    >
+                      <span className='bg-white w-full h-full gap-2 rounded-[23px] py-[10px] px-4 
+                        transition-all duration-300 hover:bg-gray-100 flex items-center'>
+                        <span className='size-[55px] rounded-full overflow-hidden shrink-0'>
+                          <img src={athlete.profilePicture} alt={athlete.firstName} className='size-full object-cover' />
+                        </span>
+                        <span>
+                          <p className='font-bold text-base'>${athlete.fanTokenSymbol}</p>
+                          <span className='text-[#969494] text-sm'>{athlete.sport}</span>
+                        </span>
+                      </span>
+                    </button>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className='w-full'>
+            {filteredAllAthletes.length > 0 && (
+              <div>
+                <h3 className='text-lg font-semibold mt-6 mb-2'>Locked Athletes 🔒</h3>
+                <ul className='flex flex-col items-center w-full gap-3'>
+                  {filteredAllAthletes.map((athlete, index) => (
+                    <button
+                      key={`locked-${index}`}
+                      onClick={() => onSelect(athlete)}
+                      className='w-full h-[73px] primary-gradient overflow-hidden p-px rounded-3xl shadow-md cursor-pointer'
+                    >
+                      <span className='bg-white w-full h-full gap-2 rounded-[23px] py-[10px] px-4 
+                        transition-all duration-300 hover:bg-gray-100 flex items-center'>
+                        <span className='size-[55px] rounded-full overflow-hidden shrink-0'>
+                          <img src={athlete.profilePicture} alt={athlete.firstName} className='size-full object-cover' />
+                        </span>
+                        <span>
+                          <p className='font-bold text-base'>${athlete.fanTokenSymbol}</p>
+                          <span className='text-[#969494] text-sm'>{athlete.sport}</span>
+                        </span>
+                      </span>
+                    </button>
+                  ))}
+                </ul>
+              </div>
+            )}
+
           </div>
         )}
 
-        {withoutAccess.length > 0 && (
-          <div>
-            <h3 className='text-lg font-semibold mt-6 mb-2'>🔒 Locked Athletes</h3>
-            <ul className='flex flex-col items-center w-full gap-3'>
-              {withoutAccess.map((athlete, index) => (
-                <button
-                  key={`locked-${index}`}
-                  onClick={() => onSelect(athlete)}
-                  className='w-full h-[73px] primary-gradient overflow-hidden p-px rounded-3xl shadow-md cursor-pointer'
-                >
-                  <span className='bg-white w-full h-full gap-2 rounded-[23px] py-[10px] px-4 
-                    transition-all duration-300 hover:bg-gray-100 flex items-center'>
-                    <span className='size-[55px] rounded-full overflow-hidden shrink-0'>
-                      <img src={athlete.profilePicture} alt={athlete.firstName} className='size-full object-cover' />
-                    </span>
-                    <span>
-                      <p className='font-bold text-base'>${athlete.fanTokenSymbol}</p>
-                      <span className='text-[#969494] text-sm'>{athlete.sport}</span>
-                    </span>
-                  </span>
-                </button>
-              ))}
-            </ul>
-          </div>
-        )}
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { FiSearch } from 'react-icons/fi'
 import { FaPlay } from 'react-icons/fa'
 import { motion } from "framer-motion";
@@ -11,9 +11,12 @@ import { useSelector } from "react-redux";
 import EventChat from './EventChat';
 import ReactCountryFlag from "react-country-flag"
 import { getCountryFlagFromName } from "../utils/countries";
+import VideoPopup from './VideoPopup';
+import MobileSidebar from './mobileSidebar';
 
 const MobileOnlyPage = ({
   athletes,
+  allAthletes,
   selectedAthlete,
   events,
   onSelectAthlete,
@@ -27,7 +30,6 @@ const MobileOnlyPage = ({
 
   const { data: profiles } = useProfiles({ client });
   const [searchVisible, setSearchVisible] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
   const [showVideo, setShowVideo] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [uploadFile, setUploadFile] = useState(null);
@@ -37,8 +39,44 @@ const MobileOnlyPage = ({
   const [videoUrl, setVideoUrl] = useState(selectedAthlete?.fto?.videoUrl || "https://nargvalmcrunehnemvpa.supabase.co/storage/v1/object/sign/Athlete/Villain%20LeBron%20did%20not%20forget.mp4?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJBdGhsZXRlL1ZpbGxhaW4gTGVCcm9uIGRpZCBub3QgZm9yZ2V0Lm1wNCIsImlhdCI6MTc0MTU5ODYyOCwiZXhwIjoxNzQ0MTkwNjI4fQ.LCNqKXp4xqfja0Ga7QdfeQ4Vk-ZEUjj5lq8tXSj5sqM");
   const [subscriptionLoading, setSubscriptionLoading] = useState(false);
   const { currency } = useSelector(state => state.settings);
-  const [filtered, setFiltered] = useState(athletes);
 
+  const [search, setSearch] = useState('');
+  const [filtered, setFiltered] = useState(athletes);
+  const [filteredAllAthletes, setFilteredAllAthletes] = useState(allAthletes);
+  const [isVideoPopupOpen, setIsVideoPopupOpen] = useState(false);
+
+  const sidebarContainerRef = useRef(null);
+  const sidebarScrollPosition = useRef(0);
+  const isInitialMount = useRef(true);
+
+  const handleAthleteClick = useCallback((athlete) => {
+    // Save scroll position before updating state
+    if (sidebarContainerRef.current) {
+      sidebarScrollPosition.current = sidebarContainerRef.current.scrollTop;
+    }
+
+    onSelectAthlete(athlete);
+    setVideoUrl(athlete?.fto?.videoUrl);
+    setShowVideo(false);
+  }, [onSelectAthlete]);
+
+  // Restore scroll position after render
+  useEffect(() => {
+    if (sidebarContainerRef.current) {
+      sidebarContainerRef.current.scrollTop = sidebarScrollPosition.current;
+    }
+  }, [athletes, allAthletes, search]);
+
+
+  const videoPopupOpen = () => {
+    setIsVideoPopupOpen(true);
+    document.body.style.overflow = 'hidden';
+  }
+
+  const videoPopupClose = () => {
+    setIsVideoPopupOpen(false);
+    document.body.style.overflow = 'auto';
+  }
 
   const handleSubscriptionPurchase = async () => {
     if (!selectedAthlete?.id || !profiles?.[0]?.details?.id || !profiles?.[0]?.details?.email) {
@@ -284,18 +322,23 @@ const MobileOnlyPage = ({
   }
 
   useEffect(() => {
-    setFiltered(
-      athletes.filter(athlete => {
-        const searchTermLower = searchTerm.toLowerCase();
-        return (athlete.fanTokenSymbol?.toLowerCase() || '').includes(searchTermLower);
-      })
+    const searchLower = search.toLowerCase();
+
+    const filteredSubset = athletes.filter(athlete =>
+      (athlete.fanTokenSymbol?.toLowerCase() || '').includes(searchLower)
     );
-  }, [searchTerm, athletes]);
+    setFiltered(filteredSubset);
+
+    const filteredAll = allAthletes.filter(athlete =>
+      (athlete.fanTokenSymbol?.toLowerCase() || '').includes(searchLower)
+    );
+    setFilteredAllAthletes(filteredAll);
+  }, [search, athletes, allAthletes]);
 
   const withAccess = filtered.filter(a => a.hasAccess);
   const withoutAccess = filtered.filter(a => !a.hasAccess);
 
-  console.log("mobile athletes", athletes);
+  // console.log("mobile athletes", athletes);
 
   // Event content rendering function for the right sidebar when expanded
   const renderEventDetailContent = () => {
@@ -304,25 +347,44 @@ const MobileOnlyPage = ({
     switch (selectedEvent.type) {
       case 'video':
         return (
-          <div>
-            {selectedEvent?.video_url && (
-              <div className="mt-6 rounded-xl overflow-hidden border border-[#EEEEEE] bg-gray-500">
-                <video
-                  controls
-                  width="100%"
-                  height="auto"
-                  className="w-full object-contain aspect-video"
-                >
-                  <source src={selectedEvent.video_url} type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
-              </div>
-            )}
-            <button onClick={openChatPopup}
-              className='p-4 primary-gradient w-full inline-block px-5 text-center py-3 mt-3 text-white font-bold text-xl'>
-              OPEN CHAT
-            </button>
-          </div>
+          selectedEvent?.video_url && (
+            <div className="mt-6 w-full">
+              <button onClick={videoPopupOpen}
+                className='relative w-full aspect-video bg-gray-700 group rounded-xl overflow-hidden'>
+
+                {/* cover photo */}
+                <span className='w-full h-full'>
+                  <video
+                    autoPlay
+                    controls
+                    muted
+                    className="w-full h-full object-contain"
+                  >
+                    <source src={selectedEvent?.video_url} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                </span>
+
+                <span className='absolute top-0 left-0 w-full h-full'>
+                  <span className='size-[55px] 
+                      flex items-center justify-center
+                      rounded-full z-[3] bg-black/60 
+                      absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
+                      text-[20px] text-white pl-0.5 pb-0.5
+                      transition-all duration-500 opacity-100 group-hover:scale-105'
+                  >
+                    ▶
+                  </span>
+                </span>
+
+              </button>
+
+              <button onClick={openChatPopup}
+                className='p-4 primary-gradient w-full inline-block px-5 text-center py-3 mt-3 text-white font-bold text-xl rounded-lg'>
+                OPEN CHAT
+              </button>
+            </div>
+          )
         );
 
       case 'live_stream':
@@ -464,314 +526,303 @@ const MobileOnlyPage = ({
   };
 
   return (
-    <div className='w-full mt-[27px] flex gap-[10px] h-[calc(100vh-165px)] 
-      min-[382px]:h-[calc(100vh-193px)] min-[640px]:h-[calc(100vh-223px)]
-      relative overflow-x-hidden pr-[10px]'
-    >
-      {/* Sidebar */}
-      <div className='h-[calc(100%-20px)] shrink-0 w-[90px] min-[400px]:w-[115px] sticky z-30 left-0 top-0 rounded-r-[24px]
-        bg-[#FAFAFB] border-l-0 border border-[#EBEBEB] overflow-x-hidden'
+
+    <>
+      {/* video popup start */}
+      {isVideoPopupOpen &&
+        <VideoPopup url={selectedEvent?.video_url} videoPopupClose={videoPopupClose} />
+      }
+      {/* video popup end */}
+
+      <div className='w-full mt-[27px] flex gap-[10px] h-[calc(100vh-165px)] 
+        min-[382px]:h-[calc(100vh-193px)] min-[640px]:h-[calc(100vh-223px)]
+        relative overflow-x-hidden pr-[10px]'
       >
-        <div className='h-full w-full relative overflow-y-auto'>
-          <div className='w-full primary-gradient h-2 sticky top-0'></div>
+        {/* Sidebar */}
+        <div className='h-[calc(100%-20px)] shrink-0 w-[90px] min-[400px]:w-[115px] sticky z-30 left-0 top-0 rounded-r-[24px]
+          bg-[#FAFAFB] border-l-0 border border-[#EBEBEB] overflow-x-hidden'
+        >
+          <div ref={sidebarContainerRef} className='h-full w-full relative overflow-y-auto'>
+            <div className='w-full primary-gradient h-2 sticky top-0'></div>
 
-          <div className='divide-y-2 divide-[#EBEBEB]'>
+            <div className=''>
+              
+              <button
+                className='w-full p-[12px] flex items-center gap-1 border-b border-[#EBEBEB]'
+                onClick={() => setSearchVisible(!searchVisible)}
+              >
+                <FiSearch size={20} />
+                <span className='text-black font-bold'>Search</span>
+              </button>
 
-            <button
-              className='w-full p-[12px] flex items-center gap-1'
-              onClick={() => setSearchVisible(!searchVisible)}
-            >
-              <FiSearch size={20} />
-              <span className='text-black font-bold'>Search</span>
-            </button>
+              {(withAccess.length > 0 || withoutAccess.length > 0) ? (
+                <div className='w-full'>
 
-            {withAccess.length > 0 && (
-              <div>
-                <h3 className='text-sm border-b font-semibold py-1 text-center'>Your Athletes</h3>
-                {withAccess.map(athlete => (
-                  <button
-                    onClick={() => {
-                      onSelectAthlete(athlete)
-                      setVideoUrl(athlete?.fto?.videoUrl)
-                      setShowVideo(false)
-                    }}
-                    className='w-full flex flex-col bg-white items-center gap-[6px] px-2 py-[10px]' key={athlete.id}>
-                    <img
-                      src={athlete.profilePicture || 'https://via.placeholder.com/40'}
-                      alt={athlete.firstName}
-                      className='size-[55px] object-cover rounded-full shrink-0'
+                  {withAccess.length > 0 &&
+                    <MobileSidebar
+                      athletes={withAccess}
+                      title="My Athletes"
+                      onClick={handleAthleteClick}
                     />
-                    <span className='text-sm font-bold'>${athlete.fanTokenSymbol}</span>
-                    <span className='text-[#969494] text-sm'>
-                      {athlete.sport}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            )}
+                  }
 
-            {withoutAccess.length > 0 && (
-              <div>
-                <h3 className='text-sm border-b font-semibold py-1 text-center'>Locked Athletes</h3>
-                {withoutAccess.map(athlete => (
-                  <button
-                    onClick={() => {
-                      onSelectAthlete(athlete)
-                      setVideoUrl(athlete?.fto?.videoUrl)
-                      setShowVideo(false)
-                    }}
-                    className='w-full flex flex-col bg-white items-center gap-[6px] px-2 py-[10px]' key={athlete.id}>
-                    <img
-                      src={athlete.profilePicture || 'https://via.placeholder.com/40'}
-                      alt={athlete.firstName}
-                      className='size-[55px] object-cover rounded-full shrink-0'
+                  {withoutAccess.length > 0 && (
+                    <MobileSidebar
+                      athletes={withoutAccess}
+                      title="Locked Athletes"
+                      onClick={handleAthleteClick}
                     />
-                    <span className='text-sm font-bold'>${athlete.fanTokenSymbol}</span>
-                    <span className='text-[#969494] text-sm'>
-                      {athlete.sport}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            )}
+                  )}
+                </div>
+              ) : (
+                <div className='w-full'>
+                  {filteredAllAthletes.length > 0 && (
+                    <MobileSidebar
+                      athletes={filteredAllAthletes}
+                      title="Your Athletes"
+                      onClick={handleAthleteClick}
+                    />
+                  )}
+                </div>
+              )}
+
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Main Content */}
-      <div
-        className='relative w-[calc(100%-120px)] 
-            min-[400px]:w-[calc(100%-146px)] h-[calc(100%-20px)] 
-            rounded-[24px] overflow-y-auto'
-      >
-        {searchVisible && (
-          <div className='absolute w-full px-3 top-3 z-50'>
-            <input
-              type='text'
-              placeholder='Search athlete...'
-              value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
-              style={styles.searchInput}
-            />
-          </div>
-        )}
+        {/* Main Content */}
+        <div
+          className='relative w-[calc(100%-120px)] 
+              min-[400px]:w-[calc(100%-146px)] h-[calc(100%-20px)] 
+              rounded-[24px] overflow-y-auto'
+        >
+          {searchVisible && (
+            <div className='absolute w-full px-3 top-3 z-50'>
+              <input
+                type='text'
+                placeholder='Search athlete...'
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                style={styles.searchInput}
+              />
+            </div>
+          )}
 
-        {selectedAthlete ? (
-          <>
-            <div
-              style={styles.card} key={selectedAthlete.id}
-              className='relative z-20'
-            >
-              <div style={styles.videoWrapper}>
-                {!showVideo ? (
-                  <>
-                    <img
-                      src={
-                        selectedAthlete.profilePicture ||
-                        'https://via.placeholder.com/300x240'
-                      }
-                      alt={selectedAthlete.firstName}
-                      style={styles.videoImage}
-                    />
-                    {(selectedAthlete?.id && videoUrl) && (
-                      <div
-                        onClick={openVideoPopup}
-                        style={{
-                          position: 'absolute',
-                          top: '50%',
-                          left: '50%',
-                          transform: 'translate(-50%, -50%)',
-                          background: 'rgba(0,0,0,0.6)',
-                          borderRadius: '100%',
-                          padding: '18px',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        <FaPlay style={{ color: '#fff', fontSize: '14px' }} />
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <video
-                    key={selectedAthlete.id + '-video'}
-                    autoPlay
-                    muted
-                    className='w-full h-full object-cover rounded-[16px]'
-                    onEnded={() => {
-                      setShowVideo(false);
-                    }}
+          {selectedAthlete ? (
+            <>
+              <div
+                style={styles.card} key={selectedAthlete.id}
+                className='relative z-20'
+              >
+                <div style={styles.videoWrapper}>
+                  {!showVideo ? (
+                    <>
+                      <img
+                        src={
+                          selectedAthlete.profilePicture ||
+                          'https://via.placeholder.com/300x240'
+                        }
+                        alt={selectedAthlete.firstName}
+                        style={styles.videoImage}
+                      />
+                      {(selectedAthlete?.id && videoUrl) && (
+                        <div
+                          onClick={openVideoPopup}
+                          style={{
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                            background: 'rgba(0,0,0,0.6)',
+                            borderRadius: '100%',
+                            padding: '18px',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          <FaPlay style={{ color: '#fff', fontSize: '14px' }} />
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <video
+                      key={selectedAthlete.id + '-video'}
+                      autoPlay
+                      muted
+                      className='w-full h-full object-cover rounded-[16px]'
+                      onEnded={() => {
+                        setShowVideo(false);
+                      }}
+                    >
+                      <source src={videoUrl} type='video/mp4' />
+                      Your browser does not support the video tag.
+                    </video>
+                  )}
+
+                  <div className='bg-black/80 w-full 
+                    absolute top-0 px-4 py-2
+                    flex items-start justify-between'
                   >
-                    <source src={videoUrl} type='video/mp4' />
-                    Your browser does not support the video tag.
-                  </video>
-                )}
-
-                <div className='bg-black/80 w-full 
-                  absolute top-0 px-4 py-2
-                  flex items-start justify-between'
-                >
-                  <div className="text-white leading-tight space-y-1">
-
                     {selectedAthlete.fanTokenSymbol &&
-                      <div className="text-[4cqw] font-bold">
+                      <div className="text-[4cqw] font-bold text-white">
                         $ {selectedAthlete.fanTokenSymbol}
                       </div>
                     }
 
-                    {selectedAthlete?.sport &&
-                      <div className="text-[3.2cqw]">
-                        {selectedAthlete?.sport}
-                      </div>
-                    }
-
-                  </div>
-
-                  <div className='space-y-1'>
                     {selectedAthlete?.country &&
                       <div className="max-w-[25px] w-full ml-auto overflow-hidden">
-                        <ReactCountryFlag style={{ width: '100%', height: '100%' }} countryCode={getCountryFlagFromName(selectedAthlete.country)} svg />
+                        <ReactCountryFlag style={{ width: '100%', height: '100%', borderRadius: '2px' }} countryCode={getCountryFlagFromName(selectedAthlete.country)} svg />
                       </div>
                     }
-                    {selectedAthlete?.dayOfTheWeek &&
-                      <div className="text-white text-[4cqw] leading-tight max-w-[25cqw] font-bold">
-                        {selectedAthlete?.dayOfTheWeek || "Athlete dayOfTheWeek"}
-                      </div>
-                    }
+
+                  </div>
+
+                  <div className='bg-black/80 w-full 
+                      absolute bottom-0 px-4 py-2'
+                  >
+                    <div className='flex gap-1 items-center justify-between'>
+                      {selectedAthlete?.dayOfTheWeek &&
+                        <div className="text-white text-[4cqw] leading-tight font-bold">
+                          {selectedAthlete?.dayOfTheWeek || "Athlete dayOfTheWeek"}
+                        </div>
+                      }
+                      {selectedAthlete?.sport &&
+                        <div className="text-white text-[4cqw] leading-tight font-bold">
+                          {selectedAthlete?.sport}
+                        </div>
+                      }
+                    </div>
                   </div>
                 </div>
+              </div>
 
-                {!ownsNFT && (
-                  <div className='bg-black/80 w-full 
-                    absolute bottom-0 px-4 py-2'
-                  >
-                    <div className="shrink-0 primary-gradient overflow-hidden max-w-[35cqw] p-0.5 rounded-full cursor-pointer">
-                      <button
-                        className="text-black p-3 text-[3cqw] rounded-full bg-white leading-tight 
-                          w-full h-full flex items-center justify-center
-                          font-medium transition-all duration-300 hover:bg-gray-100"
-                        onClick={handleSubscriptionPurchase}
-                        disabled={subscriptionLoading}
-                      >
-                        {subscriptionLoading ? 'Processing...' : 'Buy Subscription'}
-                      </button>
+              <div className='w-full'>
+                {events.length > 0 ? (
+                  events.map(event => (
+                    <div
+                      key={event.id} // Always add a key when mapping!
+                      style={styles.card}
+                      onClick={() => {
+                        onEventClick(event);
+                        setSelectedEvent(event);
+                      }}
+                    >
+                      <div style={styles.cardContent}>
+                        <div className='w-full flex items-center justify-between gap-1'>
+                          <div style={styles.cardText}>
+                            {event.name || 'Untitled Event'}
+                          </div>
+
+                          <div className="shrink-0 primary-gradient overflow-hidden p-0.5 rounded-[12px]
+                            cursor-pointer text-white min-w-[80px] py-1 px-2.5 text-center"
+                          >
+                            {event.type}
+                          </div>
+                        </div>
+                        <div style={styles.cardMeta}>
+                          {event.description || 'N/A'}
+                        </div>
+
+                      </div>
                     </div>
+                  ))
+                ) : (
+                  <div
+                    className={`border border-[#E7E7E7] shadow-sm bg-[#FCFCFC]
+                      rounded-2xl flex items-center justify-center text-[#C9C8C8] text-lg font-bold p-6 overflow-y-auto`}
+                  >
+                    <h2
+                      style={{ fontFamily: "Arial, sans-serif", textAlign: "center" }}
+                    >
+                      {ownsNFT === true ? (
+                        <div className="text-center flex flex-col items-center">
+                          <span>⏳</span>
+                          <span>
+                            The first event of ${selectedAthlete.fanTokenSymbol} will be posted soon!
+                          </span>
+                        </div>
+                      ) : (
+                        <div className='flex flex-col items-center justify-center gap-1'>
+                          <div className="text-center flex flex-col items-center">
+                            <span className="text-3xl">
+                              🔒
+                            </span>
+                            <span>
+                              You need at least one ${selectedAthlete.fanTokenSymbol} token or a subscription to see these events.
+                            </span>
+                          </div>
 
+                          {!ownsNFT && (
+                            <button
+                              className="text-white shrink-0 p-3 text-[3cqw] rounded-full primary-gradient leading-tight 
+                            w-full h-full flex items-center justify-center max-w-[35cqw] cursor-pointer
+                            font-bold transition-all duration-300 hover:bg-gray-100 mx-auto"
+                              onClick={handleSubscriptionPurchase}
+                              disabled={subscriptionLoading}
+                            >
+                              {subscriptionLoading ? 'Processing...' : 'Buy Subscription'}
+                            </button>
+                          )}
+                        </div>
+                      )}
+                    </h2>
                   </div>
                 )}
               </div>
-            </div>
 
-            <div className='w-full'>
-              {events.length > 0 ? (
-                events.map(event => (
-                  <div
-                    key={event.id} // Always add a key when mapping!
-                    style={styles.card}
-                    onClick={() => {
-                      onEventClick(event);
-                      setSelectedEvent(event);
-                    }}
-                  >
-                    <div style={styles.cardContent}>
-                      <div className='w-full flex items-center justify-between gap-1'>
-                        <div style={styles.cardText}>
-                          {event.name || 'Untitled Event'}
-                        </div>
-
-                        <div className="shrink-0 primary-gradient overflow-hidden p-0.5 rounded-[12px]
-                          cursor-pointer text-white max-w-[80px] py-1 w-full text-center"
-                        >
-                          {event.type}
-                        </div>
-                      </div>
-                      <div style={styles.cardMeta}>
-                        {event.description || 'N/A'}
-                      </div>
-
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div
-                  className={`border border-[#E7E7E7] shadow-sm
-              rounded-2xl flex items-center justify-center text-[#C9C8C8] text-lg font-bold p-6 overflow-y-auto
-              ${ownsNFT ? 'bg-[#FCFCFC]' : 'blur-[0.8px]'}`}
-
-                >
-                  <h2
-                    style={{ fontFamily: "Arial, sans-serif", textAlign: "center" }}
-                  >
-                    {ownsNFT === true ? (
-                      <div>
-                        The first event of ${selectedAthlete.fanTokenSymbol} will be posted soon!
-                      </div>
-                    ) : (
-                      <div className="text-center flex flex-col items-center">
-                        <span className="text-3xl">
-                          🔒
-                        </span>
-                        <span>
-                          You need at least one ${selectedAthlete.fanTokenSymbol} token or a subscription to see these events.
-                        </span>
-                      </div>
-                    )}
-                  </h2>
-                </div>
-              )}
-            </div>
-
-          </>
-        ) : (
-          <div className='w-full h-full bg-[#FAFAFB] rounded-[24px] border border-[#EBEBEB]
-              text-[#C9C8C8] flex flex-col items-center justify-center px-5 py-6'
-          >
-            <div className='text-center text-xl font-bold'>Select an Athlete</div>
-          </div>
-        )}
-      </div>
-
-      <div className={`h-[calc(100%-20px)] rounded-[24px] 
-        overflow-x-hidden overflow-y-auto shrink-0 bg-[#FAFAFB] 
-        border border-[#EBEBEB] absolute z-50 right-0 transition-all duration-300
-        ${isExpanded ? 'translate-x-0 w-full' : 'translate-x-[89%] w-[244px] '}`}
-      >
-        <div className='px-6 py-7 relative z-50'>
-
-          {/* cross button */}
-          <button className='close-btn absolute top-2.5 right-2.5' onClick={onClose}>
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M19 1L1 19" stroke="#0A0B0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-              <path d="M1 1L19 19" stroke="#0A0B0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-          </button>
-          {!isExpanded &&
-            <button className='absolute top-2.5 left-2'>
-              <svg width="16" height="15" viewBox="0 0 16 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M5 7C5 7.55228 4.55228 8 4 8C3.44772 8 3 7.55228 3 7C3 6.44772 3.44772 6 4 6C4.55228 6 5 6.44772 5 7Z" fill="black" />
-                <path d="M9 7C9 7.55228 8.55229 8 8 8C7.44772 8 7 7.55228 7 7C7 6.44772 7.44772 6 8 6C8.55229 6 9 6.44772 9 7Z" fill="black" />
-                <path d="M12 8C12.5523 8 13 7.55228 13 7C13 6.44772 12.5523 6 12 6C11.4477 6 11 6.44772 11 7C11 7.55228 11.4477 8 12 8Z" fill="black" />
-                <path d="M2.16466 14.8029L2.18489 14.7989C4.01434 14.4363 5.13337 13.9571 5.65284 13.6939C6.39508 13.8929 7.18324 14 8 14C12.4183 14 16 10.866 16 7C16 3.13401 12.4183 0 8 0C3.58172 0 0 3.13401 0 7C0 8.76087 0.743061 10.3699 1.96979 11.6001C1.89596 12.3711 1.69422 13.1984 1.44648 13.9181L1.44259 13.9294C1.41245 14.0167 1.38164 14.1023 1.3503 14.1861C1.30097 14.3179 1.25034 14.4451 1.19898 14.5664C1.12037 14.7521 1.27271 14.9603 1.47172 14.9277C1.61264 14.9047 1.75 14.8808 1.88382 14.8563C1.97922 14.8388 2.07283 14.821 2.16466 14.8029ZM2.96523 11.6954C2.99363 11.3988 2.88828 11.1049 2.67789 10.894C1.6173 9.83038 1 8.46809 1 7C1 3.80754 4.0044 1 8 1C11.9956 1 15 3.80754 15 7C15 10.1925 11.9956 13 8 13C7.27076 13 6.56966 12.9044 5.91182 12.728C5.67381 12.6642 5.42062 12.6905 5.20082 12.8019C4.81358 12.9981 3.96166 13.3721 2.56677 13.6945C2.75502 13.0519 2.90159 12.3601 2.96523 11.6954Z" fill="black" />
-              </svg>
-            </button>
-          }
-
-          {isExpanded && selectedEvent ? (
-            <div className='w-full'>
-              <h2 className="text-2xl text-black font-bold">{selectedEvent?.name}</h2>
-              <p className="text-lg text-[#969494] mb-2">{selectedEvent?.description}</p>
-
-              {renderEventDetailContent()}
-            </div>
+            </>
           ) : (
-            <div className='w-full'>
-              <div className='text-start text-xl font-bold'>Right Section</div>
-              <div className='text-start text-[#969494]'>Additional content goes here.</div>
+            <div className='w-full h-full bg-[#FAFAFB] rounded-[24px] border border-[#EBEBEB]
+                text-[#C9C8C8] flex flex-col items-center justify-center px-5 py-6'
+            >
+              <div className='text-center text-xl font-bold'>Select an Athlete</div>
             </div>
           )}
         </div>
+
+        <div className={`h-[calc(100%-20px)] rounded-[24px] 
+          overflow-x-hidden overflow-y-auto shrink-0 bg-[#FAFAFB] 
+          border border-[#EBEBEB] absolute z-50 right-0 transition-all duration-300
+          ${isExpanded ? 'translate-x-0 w-full' : 'translate-x-[89%] w-[244px] '}`}
+        >
+          <div className='px-6 py-7 relative z-50'>
+
+            {/* cross button */}
+            <button className='close-btn absolute top-2.5 right-2.5' onClick={onClose}>
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 1L1 19" stroke="#0A0B0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M1 1L19 19" stroke="#0A0B0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+            {!isExpanded &&
+              <button className='absolute top-2.5 left-2'>
+                <svg width="16" height="15" viewBox="0 0 16 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M5 7C5 7.55228 4.55228 8 4 8C3.44772 8 3 7.55228 3 7C3 6.44772 3.44772 6 4 6C4.55228 6 5 6.44772 5 7Z" fill="black" />
+                  <path d="M9 7C9 7.55228 8.55229 8 8 8C7.44772 8 7 7.55228 7 7C7 6.44772 7.44772 6 8 6C8.55229 6 9 6.44772 9 7Z" fill="black" />
+                  <path d="M12 8C12.5523 8 13 7.55228 13 7C13 6.44772 12.5523 6 12 6C11.4477 6 11 6.44772 11 7C11 7.55228 11.4477 8 12 8Z" fill="black" />
+                  <path d="M2.16466 14.8029L2.18489 14.7989C4.01434 14.4363 5.13337 13.9571 5.65284 13.6939C6.39508 13.8929 7.18324 14 8 14C12.4183 14 16 10.866 16 7C16 3.13401 12.4183 0 8 0C3.58172 0 0 3.13401 0 7C0 8.76087 0.743061 10.3699 1.96979 11.6001C1.89596 12.3711 1.69422 13.1984 1.44648 13.9181L1.44259 13.9294C1.41245 14.0167 1.38164 14.1023 1.3503 14.1861C1.30097 14.3179 1.25034 14.4451 1.19898 14.5664C1.12037 14.7521 1.27271 14.9603 1.47172 14.9277C1.61264 14.9047 1.75 14.8808 1.88382 14.8563C1.97922 14.8388 2.07283 14.821 2.16466 14.8029ZM2.96523 11.6954C2.99363 11.3988 2.88828 11.1049 2.67789 10.894C1.6173 9.83038 1 8.46809 1 7C1 3.80754 4.0044 1 8 1C11.9956 1 15 3.80754 15 7C15 10.1925 11.9956 13 8 13C7.27076 13 6.56966 12.9044 5.91182 12.728C5.67381 12.6642 5.42062 12.6905 5.20082 12.8019C4.81358 12.9981 3.96166 13.3721 2.56677 13.6945C2.75502 13.0519 2.90159 12.3601 2.96523 11.6954Z" fill="black" />
+                </svg>
+              </button>
+            }
+
+            {isExpanded && selectedEvent ? (
+              <div className='w-full'>
+                <h2 className="text-2xl text-black font-bold">{selectedEvent?.name}</h2>
+                <p className="text-lg text-[#969494] mb-2">{selectedEvent?.description}</p>
+
+                {renderEventDetailContent()}
+              </div>
+            ) : (
+              <div className='w-full'>
+                <div className='text-start text-xl font-bold'>Right Section</div>
+                <div className='text-start text-[#969494]'>Additional content goes here.</div>
+              </div>
+            )}
+          </div>
+        </div>
+
       </div>
 
-    </div>
+    </>
   )
 }
 

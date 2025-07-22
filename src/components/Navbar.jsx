@@ -22,8 +22,8 @@ function Navbar() {
     client,
   });
   const wallet = useActiveWallet();
-  const [change,setChange] = useState(0);
-  
+  const [change, setChange] = useState(0);
+
   // Get athletes from Redux store
   const { athletes } = useSelector(state => state.athletes);
 
@@ -34,12 +34,12 @@ function Navbar() {
     const buttons3 = document.querySelectorAll('.css-86pfay');
 
     buttons2.forEach((btn) => {
-      if (btn.innerText === 'Buy' || btn.innerText === 'Send' || btn.innerText === 'Receive'  ) {
+      if (btn.innerText === 'Buy' || btn.innerText === 'Send' || btn.innerText === 'Receive') {
         btn.style.display = 'none';
       }
     });
     buttons3.forEach((btn) => {
-      if (btn.innerText === 'Transactions' || btn.innerText === 'View Assets' ) {
+      if (btn.innerText === 'Transactions' || btn.innerText === 'View Assets') {
         btn.style.display = 'none';
       }
     });
@@ -49,13 +49,13 @@ function Navbar() {
         btn.style.display = 'none';
       }
     });
-  }, [profiles,change]);
+  }, [profiles, change]);
 
   function generateRandomUsername() {
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
     const suffix = Array.from({ length: 11 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
     return `${suffix}`;
-    
+
   }
   const detectLocationDefaults = async () => {
     try {
@@ -87,7 +87,7 @@ function Navbar() {
           currency = 'USD';
           break;
         // European Union countries
-        case 'DE': case 'FR': case 'IT': case 'ES': case 'NL': 
+        case 'DE': case 'FR': case 'IT': case 'ES': case 'NL':
         case 'BE': case 'AT': case 'PT': case 'IE': case 'FI':
         case 'LU': case 'SI': case 'SK': case 'EE': case 'LV':
         case 'LT': case 'CY': case 'MT': case 'GR':
@@ -124,12 +124,12 @@ function Navbar() {
   const saveUser = async () => {
     try {
       if (!profiles || profiles.length === 0) return;
-      
+
       const userId = profiles[0]?.details.id;
       const userEmail = profiles[0]?.details.email;
-      const username = profiles[0]?.details.name? profiles[0]?.details.name : generateRandomUsername();
-      
-    
+      const username = profiles[0]?.details.name ? profiles[0]?.details.name : generateRandomUsername();
+
+
       if (!userId || !userEmail) return;
 
       // Detect user's country and set defaults
@@ -163,7 +163,7 @@ function Navbar() {
               currency = 'USD';
               break;
             // European Union countries
-            case 'DE': case 'FR': case 'IT': case 'ES': case 'NL': 
+            case 'DE': case 'FR': case 'IT': case 'ES': case 'NL':
             case 'BE': case 'AT': case 'PT': case 'IE': case 'FI':
             case 'LU': case 'SI': case 'SK': case 'EE': case 'LV':
             case 'LT': case 'CY': case 'MT': case 'GR':
@@ -216,9 +216,9 @@ function Navbar() {
         const { error: insertError } = await supabase
           .from('users')
           .insert([
-            { 
-              id: userId, 
-              email: userEmail, 
+            {
+              id: userId,
+              email: userEmail,
               username: username,
               language: language,
               currency: currency,
@@ -237,16 +237,16 @@ function Navbar() {
       console.error('Error in saveUser function:', error);
     }
   };
-   
+
   useEffect(() => {
-    if (profiles && profiles.length > 0 ) {
+    if (profiles && profiles.length > 0) {
       saveUser();
-      setInterval(()=>{
-        setChange((prev)=>prev+1);
-      },100)
-    }  
+      setInterval(() => {
+        setChange((prev) => prev + 1);
+      }, 100)
+    }
   }, [profiles]);
- 
+
   return (
     <div className='navbar shadow-md'>
       <div className='w-full grid grid-cols-2 sm:grid-cols-3 justify-between px-4 py-[10px] relative'>
@@ -255,67 +255,42 @@ function Navbar() {
 
         <div className="flex justify-start sm:justify-center">
           <a href="/" className="inline-block">
-              <img sizes="auto" alt="Logo" className="size-[60px] object-cover
-                sm:size-[80px] sm:px-[10px] sm:py-[7.5px]" src="/sixer.gif"/>
+            <img sizes="auto" alt="Logo" className="size-[60px] object-cover
+                sm:size-[80px] sm:px-[10px] sm:py-[7.5px]" src="/sixer.gif" />
           </a>
         </div>
-        
+
         <div className="flex justify-end">
           <div className="flex items-center space-x-3">
-            {/* Profile & Settings Links - Show when wallet is connected */}
-            {/* {wallet && (
-              <>
-                <Link 
-                  to="/profile" 
-                  className="flex items-center space-x-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 hover:bg-white/20 transition-colors text-white"
-                >
-                  <User size={18} />
-                  <span className="hidden sm:inline">Profile</span>
-                </Link>
-                
-                <Link 
-                  to="/settings" 
-                  className="flex items-center space-x-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 hover:bg-white/20 transition-colors text-white"
-                >
-                  <Settings size={18} />
-                  <span className="hidden sm:inline">Settings</span>
-                </Link>
-              </>
-            )} */}
-            
             <div className="primary-gradient rounded-[10px] p-0.5 overflow-hidden">
-              <ConnectButton 
+              <ConnectButton
                 client={client}
                 connectButton={{
                   label: "Login / Signup",
                 }}
-                // buttonTitle="Link Your Wallet"
-                // theme="light"
                 modalSize="wide"
                 autoConnect={true}
                 wallets={wallets}
                 connectModal={{
-                  showThirdwebBranding:false,
+                  showThirdwebBranding: false,
                 }}
-                onConnect={(profile)=>{
-                  setChange((prev)=>prev+1);
-                  saveUser();
+                onConnect={(profile) => {
+                  setChange((prev) => prev + 1);
+                  saveUser(); // works as expected
                 }}
-                theme={"light"}
-
+                onDisconnect={() => {
+                  console.log("Wallet disconnected");
+                  setChange((prev) => prev + 1);
+                  window.location.reload();
+                }}
+                theme="light"
                 detailsModal={{
-                  assetTabs: ["token","nft"],
+                  assetTabs: ["token", "nft"],
                 }}
-                chain={sepolia}                                                  
-                // supportedNFTs={athletes && athletes.length > 0 
-                //   ? athletes
-                //     .filter(athlete => athlete.nftContractAddress) 
-                //     .map(athlete => athlete.nftContractAddress)
-                //   : ["0x4d5a9F4e440e288E68d9E796AAeb1E968B79B321"]} 
-
+                chain={sepolia}
                 supportedNFTs={[...contracts]}
-                
               />
+
             </div>
           </div>
         </div>

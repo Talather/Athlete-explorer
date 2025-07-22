@@ -83,7 +83,7 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT, ope
 
           {/* video cover start */}
           <div className='w-full h-full flex items-center justify-center'>
-            <img src={athlete?.profilePicture} alt='cover' className='w-full max-w-[250px] h-[180px] object-cover object-center' />
+            <img src={athlete?.profilePicture} alt='cover' className='w-full max-w-[250px] h-[180px] object-cover object-center rounded-xl' />
           </div>
 
           <div className="bg-white/40 z-10 absolute top-0 left-0 w-full h-full flex flex-col gap-2 justify-between px-[2cqw] py-[1.5cqw]">
@@ -134,39 +134,6 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT, ope
 
               </div>
             </div>
-
-            <div className="flex items-end justify-between gap-[1.2cqw]">
-
-              {ownsNFT === true ? (
-                <></>
-              ) : (
-                <div className="shrink-0 primary-gradient overflow-hidden h-[3.2cqw] p-0.5 rounded-full cursor-pointer">
-                  <button
-                    className="text-black p-3 text-[1cqw] rounded-full bg-white leading-tight 
-                      max-w-[25cqw] h-full flex items-center justify-center
-                      font-medium transition-all duration-300 hover:bg-gray-100"
-                    onClick={handleSubscriptionPurchase}
-                    disabled={subscriptionLoading}
-                  >
-                    {subscriptionLoading ? 'Processing...' : 'Buy Subscription'}
-                  </button>
-                </div>
-              )}
-
-              {/* {athlete?.fto?.startDate && (
-                <div className="bg-[#FAFAFB] border-[#EBEBEB] 
-                    rounded-3xl leading-snug flex items-center flex-col justify-center
-                    px-[1.5cqw] py-[1.2cqw] shadow-md text-center"
-                >
-                  <div className="text-black font-bold text-[1.1cqw]">
-                    {athlete?.fto?.startDate ? new Date(athlete.fto.startDate).toLocaleDateString('en-US') : ''}
-                  </div>
-                  <div className="text-[#969494] text-[1cqw]">
-                    Tokens sale start date
-                  </div>
-                </div>
-              )} */}
-            </div>
           </div>
 
         </div>
@@ -189,16 +156,15 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT, ope
                     rounded-3xl overflow-hidden min-h-[9.4cqw] px-8 py-6 shadow-sm 
                     flex items-start flex-col"
                 >
-                  <div className="flex gap-2 justify-between w-full">
+                  <div className="flex items-start gap-2 justify-between w-full">
                     <h3 className="font-bold text-[22px] leading-tight">{event.name}</h3>
 
-
                     <div className="shrink-0 primary-gradient overflow-hidden p-0.5 rounded-[12px]
-                      cursor-pointer text-white max-w-[80px] py-1 w-full"
+                      cursor-pointer text-white inline-block min-w-[80px] py-1 px-3 capitalize"
                     >
                       {event.type}
                     </div>
-                  
+
                   </div>
                   <p className="text-[#969494] text-lg">{event.description}</p>
                 </button>
@@ -206,26 +172,44 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT, ope
             ))
           ) : (
             <div
-              className={`h-[150px] border border-[#E7E7E7] shadow-sm
-              rounded-3xl flex items-center justify-center text-[#C9C8C8] text-xl font-bold p-6 overflow-y-auto
-              ${ownsNFT ? 'bg-[#FCFCFC]' : 'blur-[0.8px]'}`}
-
+              className={`min-h-[150px] bg-[#FCFCFC] border border-[#E7E7E7] shadow-sm
+              rounded-3xl flex items-center justify-center text-[#C9C8C8] text-xl font-bold p-6 overflow-y-auto`}
             >
               <h2
                 style={{ fontFamily: "Arial, sans-serif", textAlign: "center" }}
               >
                 {ownsNFT === true ? (
-                  <div>
-                    The first event of ${athlete?.fanTokenSymbol} will be posted soon!
+                  <div className="text-center flex flex-col items-center">
+                    <span>⏳</span>
+                    <span>
+                      The first event of ${athlete?.fanTokenSymbol} will be posted soon!
+                    </span>
                   </div>
                 ) : (
-                  <div className="text-center flex flex-col items-center">
-                    <span className="text-3xl">
-                      🔒
-                    </span>
-                    <span>
-                      You need at least one ${athlete?.fanTokenSymbol} token or a subscription to see these events.
-                    </span>
+                  <div className="flex flex-col items-center justify-center gap-2">
+                    <div className="text-center flex flex-col items-center">
+                      <span className="text-3xl">
+                        🔒
+                      </span>
+                      <span>
+                        You need at least one ${athlete?.fanTokenSymbol} token or a subscription to see these events.
+                      </span>
+                    </div>
+
+                    {ownsNFT === true ? (
+                      <></>
+                    ) : (
+                      <button
+                        className="text-white p-3 text-[1cqw] rounded-full leading-tight cursor-pointer
+                          max-w-[11cqw] w-full flex items-center justify-center shrink-0 primary-gradient
+                          font-bold transition-all duration-300 hover:bg-gray-100 mx-auto"
+                        onClick={handleSubscriptionPurchase}
+                        disabled={subscriptionLoading}
+                      >
+                        {subscriptionLoading ? 'Processing...' : 'Buy Subscription'}
+                      </button>
+                    )}
+
                   </div>
                 )}
               </h2>

@@ -4,6 +4,7 @@ import TimerOverlay from './timeOverlay';
 import { client } from '../client';
 import { useProfiles } from "thirdweb/react";
 import EventChat from './EventChat';
+import VideoPopup from './VideoPopup';
 function RightSection({ isExpanded, selectedEvent, onClose, openChatPopup }) {
   const { data: profiles } = useProfiles({
     client,
@@ -13,6 +14,17 @@ function RightSection({ isExpanded, selectedEvent, onClose, openChatPopup }) {
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState(null);
   const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [isVideoPopupOpen, setIsVideoPopupOpen] = useState(false);
+
+  const videoPopupOpen = () => {
+    setIsVideoPopupOpen(true);
+    document.body.style.overflow = 'hidden';
+  }
+
+  const videoPopupClose = () => {
+    setIsVideoPopupOpen(false);
+    document.body.style.overflow = 'auto';
+  }
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -110,18 +122,39 @@ function RightSection({ isExpanded, selectedEvent, onClose, openChatPopup }) {
       case 'video':
         return (
           selectedEvent?.video_url && (
-            <div className="mt-6 rounded-xl   border border-[#EEEEEE]  w-full aspect-video">
-              <video
-                controls
-                width="100%"
-                height="auto"
-                className="w-full object-contain aspect-video"
-              >
-                <source src={selectedEvent.video_url} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
+            <div className="mt-6 w-full">
+              <button onClick={videoPopupOpen}
+                className='relative w-full aspect-video bg-gray-700 group rounded-xl overflow-hidden'>
+
+                {/* cover photo */}
+                <span className='w-full h-full'>
+                  <video
+                    autoPlay
+                    controls
+                    muted
+                    className="w-full h-full object-contain"
+                  >
+                    <source src={selectedEvent?.video_url} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                </span>
+
+                <span className='absolute top-0 left-0 w-full h-full'>
+                  <span className='size-[55px] 
+                      flex items-center justify-center
+                      rounded-full z-[3] bg-black/60 
+                      absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
+                      text-[20px] text-white pl-0.5 pb-0.5
+                      transition-all duration-500 opacity-100 group-hover:scale-105'
+                  >
+                    ▶
+                  </span>
+                </span>
+
+              </button>
+
               <button onClick={openChatPopup}
-                className='p-4 primary-gradient w-full inline-block px-5 text-center py-3 mt-3 text-white font-bold text-xl'>
+                className='p-4 primary-gradient w-full inline-block px-5 text-center py-3 mt-3 text-white font-bold text-xl rounded-lg'>
                 OPEN CHAT
               </button>
             </div>
@@ -271,38 +304,47 @@ function RightSection({ isExpanded, selectedEvent, onClose, openChatPopup }) {
     }
   };
 
+  // console.log("Selected Event", selectedEvent);
+
   return (
-    <div className={`shrink-0 border border-[#E7E7E7] bg-white rounded-3xl transition-all duration-300
-      overflow-x-hidden overflow-y-auto py-5 px-6 relative
-      ${isExpanded ? 'w-[45%] ml-[-28%]' : ' md:w-[200px] lg:w-[220px] xl:w-[300px]'}`}
-    >
-      {isExpanded ? (
-        <>
-          <div className="w-full text-end">
-            <button className='close-btn' onClick={onClose}>
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M19 1L1 19" stroke="#0A0B0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                <path d="M1 1L19 19" stroke="#0A0B0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </button>
+    <>
+      {/* video popup start */}
+      {isVideoPopupOpen &&
+        <VideoPopup url={selectedEvent?.video_url} videoPopupClose={videoPopupClose} />
+      }
+      {/* video popup end */}
+      <div className={`shrink-0 border border-[#E7E7E7] bg-white rounded-3xl transition-all duration-300
+        overflow-x-hidden overflow-y-auto py-5 px-6 relative
+        ${isExpanded ? 'w-[45%] ml-[-28%]' : ' md:w-[200px] lg:w-[220px] xl:w-[300px]'}`}
+      >
+        {isExpanded ? (
+          <>
+            <div className="w-full text-end">
+              <button className='close-btn' onClick={onClose}>
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M19 1L1 19" stroke="#0A0B0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M1 1L19 19" stroke="#0A0B0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </button>
+            </div>
+
+            <div>
+              <h2 className="text-2xl text-black font-bold">{selectedEvent?.name}</h2>
+              <p className="text-lg text-[#969494] mb-2">{selectedEvent?.description}</p>
+            </div>
+
+            {renderEventContent()}
+
+          </>
+        ) : (
+          <div className="w-full flex flex-col items-center justify-center h-full space-y-1">
+            <h2 className="text-center text-[#C9C8C8] text-[28px] font-bold leading-tight">
+              Select an Athlete and an Event.
+            </h2>
           </div>
-
-          <div>
-            <h2 className="text-2xl text-black font-bold">{selectedEvent?.name}</h2>
-            <p className="text-lg text-[#969494] mb-2">{selectedEvent?.description}</p>
-          </div>
-
-          {renderEventContent()}
-
-        </>
-      ) : (
-        <div className="w-full flex flex-col items-center justify-center h-full space-y-1">
-          <h2 className="text-center text-[#C9C8C8] text-[28px] font-bold leading-tight">
-            Select an Athlete and an Event.
-          </h2>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </>
   )
 }
 

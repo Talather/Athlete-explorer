@@ -182,8 +182,8 @@ function Home() {
           >
             <button onClick={chatPopupClose} className='close-btn absolute top-5 right-5'>
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M19 1L1 19" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                <path d="M1 1L19 19" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M19 1L1 19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M1 1L19 19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
             </button>
 
@@ -195,7 +195,7 @@ function Home() {
 
       {/* video popup start */}
       {isVideoPopupOpen &&
-        <VideoPopup selectedAthlete={selectedAthlete} videoPopupClose={videoPopupClose} />
+        <VideoPopup url={selectedAthlete?.fto?.videoUrl} videoPopupClose={videoPopupClose} />
       }
       {/* video popup end */}
 
@@ -207,6 +207,7 @@ function Home() {
             <MobileOnlyPage
               key={selectedAthlete?.id}
               athletes={athletesWithAccess}
+              allAthletes={athletes}
               selectedAthlete={selectedAthlete}
               events={events}
               onSelectAthlete={handleSelectAthlete}
@@ -231,6 +232,7 @@ function Home() {
 
           <div className="flex h-[calc(100vh-196px)] gap-5 lg:gap-10 justify-between pt-10 pb-6 px-10">
             <Sidebar
+              allAthletes={athletes}
               athletes={athletesWithAccess}
               onSelect={handleSelectAthlete}
               isBlurred={isExpanded}
