@@ -54,7 +54,7 @@ function Sidebar({ allAthletes, athletes, onSelect, isBlurred }) {
           <div className='w-full'>
             {withAccess.length > 0 && (
               <div>
-                <h3 className='text-lg font-semibold mt-2 mb-2'>My Athletes 🎯</h3>
+                <h3 className='text-lg font-semibold mt-2 mb-2'>🎯 My Athletes</h3>
                 <ul className='flex flex-col items-center w-full gap-3'>
                   {withAccess.map((athlete, index) => (
                     <button
@@ -80,7 +80,7 @@ function Sidebar({ allAthletes, athletes, onSelect, isBlurred }) {
 
             {withoutAccess.length > 0 && (
               <div>
-                <h3 className='text-lg font-semibold mt-6 mb-2'>Locked Athletes 🔒</h3>
+                <h3 className='text-lg font-semibold mt-6 mb-2'>🔒 Locked Athletes</h3>
                 <ul className='flex flex-col items-center w-full gap-3'>
                   {withoutAccess.map((athlete, index) => (
                     <button
@@ -108,7 +108,7 @@ function Sidebar({ allAthletes, athletes, onSelect, isBlurred }) {
           <div className='w-full'>
             {filteredAllAthletes.length > 0 && (
               <div>
-                <h3 className='text-lg font-semibold mt-6 mb-2'>Locked Athletes 🔒</h3>
+                <h3 className='text-lg font-semibold mt-6 mb-2'>🔒 Locked Athletes</h3>
                 <ul className='flex flex-col items-center w-full gap-3'>
                   {filteredAllAthletes.map((athlete, index) => (
                     <button

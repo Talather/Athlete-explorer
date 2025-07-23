@@ -561,7 +561,7 @@ const MobileOnlyPage = ({
                   {withAccess.length > 0 &&
                     <MobileSidebar
                       athletes={withAccess}
-                      title="My Athletes"
+                      title="🎯 My Athletes"
                       onClick={handleAthleteClick}
                     />
                   }
@@ -569,7 +569,7 @@ const MobileOnlyPage = ({
                   {withoutAccess.length > 0 && (
                     <MobileSidebar
                       athletes={withoutAccess}
-                      title="Locked Athletes"
+                      title="🔒 Locked Athletes"
                       onClick={handleAthleteClick}
                     />
                   )}
@@ -579,7 +579,7 @@ const MobileOnlyPage = ({
                   {filteredAllAthletes.length > 0 && (
                     <MobileSidebar
                       athletes={filteredAllAthletes}
-                      title="Locked Athletes"
+                      title="🔒 Locked Athletes"
                       onClick={handleAthleteClick}
                     />
                   )}
