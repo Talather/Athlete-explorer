@@ -546,7 +546,6 @@ const MobileOnlyPage = ({
             <div className='w-full primary-gradient h-2 sticky top-0'></div>
 
             <div className=''>
-              
               <button
                 className='w-full p-[12px] flex items-center gap-1 border-b border-[#EBEBEB]'
                 onClick={() => setSearchVisible(!searchVisible)}
@@ -782,7 +781,7 @@ const MobileOnlyPage = ({
         <div className={`h-[calc(100%-20px)] rounded-[24px] 
           overflow-x-hidden overflow-y-auto shrink-0 bg-[#FAFAFB] 
           border border-[#EBEBEB] absolute z-50 right-0 transition-all duration-300
-          ${isExpanded ? 'translate-x-0 w-full' : 'translate-x-[89%] w-[244px] '}`}
+          ${isExpanded ? 'translate-x-0 w-full' : 'translate-x-[89%] w-[244px]'}`}
         >
           <div className='px-6 py-7 relative z-50'>
 

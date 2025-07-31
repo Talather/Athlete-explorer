@@ -150,7 +150,7 @@ const EventChat = ({ event }) => {
 
   if (!event) {
     return (
-      <div className="h-[80vh] flex items-center justify-center text-gray-500 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+      <div className="h-[75vh] flex items-center justify-center text-gray-500 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
         <div className="text-center">
           <MessageCircle size={64} className="mx-auto mb-4 opacity-30" />
           <p className="text-lg font-medium mb-2">No Event Selected</p>
@@ -161,7 +161,7 @@ const EventChat = ({ event }) => {
   }
 
   return (
-    <div className="h-[80vh] max-w-[600px] w-full flex flex-col bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden">
+    <div className="h-[75vh] max-w-[600px] w-full flex flex-col bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden">
       {/* Chat header */}
       <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 primary-gradient">
         <div className="flex items-center gap-3">

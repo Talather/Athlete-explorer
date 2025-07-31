@@ -2,7 +2,7 @@ import { NavLink } from 'react-router-dom'
 
 function StickyBar() {
   return (
-    <div className='w-full flex items-center justify-center'>
+    <div className='w-full flex items-center justify-center relative z-[999]'>
       <div className='stickyBarWrapper max-w-[698px] w-full bg-[#EEEEEE] rounded-t-[30px] flex items-center justify-center gap-2 min-[430px]:gap-[18px]'>
         <NavLink
           to='/'

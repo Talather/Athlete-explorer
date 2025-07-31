@@ -46,7 +46,7 @@ const VideoWithCover = ({ coverImage, videoSrc, isBeforeStartDate, startDate, en
         <video
           ref={videoRef}
           src={videoSrc}
-          className='block border-none w-full h-full object-cover'
+          className='block border-none w-full h-full object-contain bg-black'
           controls
           onPlay={() => setPaused(false)}
           onPause={handlePause}

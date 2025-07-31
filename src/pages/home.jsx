@@ -23,6 +23,8 @@ import VideoPopup from "../components/VideoPopup";
 
 function Home() {
 
+  const [search, setSearch] = useState('');
+  const [searchVisible, setSearchVisible] = useState(false);
   const wallet = useActiveWallet();
   const address = wallet?.getAccount().address;
   const { userSubscriptions } = useSelector(state => state.subscriptions);
@@ -38,7 +40,6 @@ function Home() {
     error
   } = useSelector(state => state.athletes);
 
-  const [isMobile, setIsMobile] = useState(false);
   const [isChatPopupOpen, setIsChatPopupOpen] = useState(false);
   const [isVideoPopupOpen, setIsVideoPopupOpen] = useState(false);
   const [athletesWithAccess, setAthletesWithAccess] = useState([]);
@@ -62,17 +63,6 @@ function Home() {
     setIsVideoPopupOpen(false);
     document.body.style.overflow = 'auto';
   }
-
-  useEffect(() => {
-    const checkScreenSize = () => {
-      setIsMobile(window.innerWidth <= 768); // Adjust breakpoint as needed
-    };
-
-    checkScreenSize();
-    window.addEventListener("resize", checkScreenSize);
-
-    return () => window.removeEventListener("resize", checkScreenSize);
-  }, []);
 
   useEffect(() => {
     dispatch(fetchAthletes());
@@ -173,14 +163,14 @@ function Home() {
 
 
   return (
-    <>
+    <div className="overflow-x-hidden">
       {/* chat popup start */}
       {isChatPopupOpen &&
         <div className="fixed inset-0 z-[999] px-2 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm overflow-hidden">
           <div className="rounded-xl shadow-lg text-center w-full h-full
-                flex items-center justify-center relative"
+                flex items-end pb-[30px] justify-center relative"
           >
-            <button onClick={chatPopupClose} className='close-btn absolute top-5 right-5'>
+            <button onClick={chatPopupClose} className='close-btn absolute top-3 right-3 transition-all duration-300 hover:scale-110'>
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M19 1L1 19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                 <path d="M1 1L19 19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -199,65 +189,54 @@ function Home() {
       }
       {/* video popup end */}
 
-      {isMobile ? (
-        <>
-          <div className="w-full relative h-[100dvh]">
-            <Navbar />
+      <div className="h-dvh w-full relative">
+        <Navbar />
 
-            <MobileOnlyPage
-              key={selectedAthlete?.id}
-              athletes={athletesWithAccess}
-              allAthletes={athletes}
-              selectedAthlete={selectedAthlete}
-              events={events}
-              onSelectAthlete={handleSelectAthlete}
-              onEventClick={handleEventClick}
-              isExpanded={isExpanded}
-              onClose={handleClose}
-              openChatPopup={chatPopupOpen}
-              openVideoPopup={videoPopupOpen}
-              ownsNFT={selectedAthlete?.ownsNFT}
-            />
+        <div className="flex h-[calc(100dvh-145px)] min-[382px]:h-[calc(100dvh-175px)] sm:h-[calc(100dvh-196px)] md:justify-between pt-6 md:pt-10 pb-6
+            gap-2 lg:gap-10 overflow-hidden relative w-full
+            md:px-2 lg:px-10"
+        >
 
-            <div className="sticky w-full bottom-0 z-50">
-              <StickyBar />
-            </div>
+          <Sidebar
+            allAthletes={athletes}
+            athletes={athletesWithAccess}
+            onSelect={handleSelectAthlete}
+            isBlurred={isExpanded}
+            search={search}
+            setSearch={setSearch}
+            setSearchVisible={setSearchVisible}
+          />
 
-            <Footer />
-          </div>
-        </>
-      ) : (
-        <>
-          <Navbar />
+          <AthleteDetails
+            key={selectedAthlete?.id}
+            athlete={selectedAthlete}
+            events={events}
+            onEventClick={handleEventClick}
+            isBlurred={isExpanded}
+            ownsNFT={selectedAthlete?.ownsNFT}
+            openVideoPopup={videoPopupOpen}
+            search={search}
+            setSearch={setSearch}
+            searchVisible={searchVisible}
+          />
 
-          <div className="flex h-[calc(100vh-196px)] gap-5 lg:gap-10 justify-between pt-10 pb-6 px-10">
-            <Sidebar
-              allAthletes={athletes}
-              athletes={athletesWithAccess}
-              onSelect={handleSelectAthlete}
-              isBlurred={isExpanded}
-            />
-            <AthleteDetails
-              key={selectedAthlete?.id}
-              athlete={selectedAthlete}
-              events={events}
-              onEventClick={handleEventClick}
-              isBlurred={isExpanded}
-              ownsNFT={selectedAthlete?.ownsNFT}
-              openVideoPopup={videoPopupOpen}
-            />
-            <RightSection
-              isExpanded={isExpanded}
-              selectedEvent={selectedEvent}
-              onClose={handleClose}
-              openChatPopup={chatPopupOpen}
-            />
-          </div>
+          <RightSection
+            isExpanded={isExpanded}
+            selectedEvent={selectedEvent}
+            onClose={handleClose}
+            openChatPopup={chatPopupOpen}
+          />
+        </div>
+
+        <div className="sticky w-full bottom-0 z-40">
           <StickyBar />
-          <Footer />
-        </>
-      )}
-    </>
+        </div>
+
+        <Footer />
+
+      </div>
+
+    </div>
   );
 }
 

@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import ReactCountryFlag from "react-country-flag"
 import { getCountryFlagFromName } from "../utils/countries";
 
-function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT, openVideoPopup }) {
+function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT, openVideoPopup, search, setSearch, searchVisible }) {
   const [subscriptionLoading, setSubscriptionLoading] = useState(false);
   const { data: profiles } = useProfiles({ client });
   const { currency } = useSelector(state => state.settings);
@@ -72,21 +72,33 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT, ope
   // console.log(athlete);
 
   return (
-    <div className={`w-full h-full rounded-3xl overflow-y-auto
+    <div className={`w-full mr-[32px] lg:mr-0 h-full rounded-3xl overflow-y-auto relative
       ${isBlurred ? "blur-lg pointer-events-none" : ""}`}
     >
-      {(athlete?.id) && (
-        <div
-          className="rounded-3xl overflow-hidden h-[240px] relative border border-[#EEEEEE] mb-5"
-        >
-          <div className="h-2 primary-gradient z-20 rounded-t-3xl sticky top-0"></div>
+      <div className="h-2 primary-gradient z-40 rounded-t-3xl sticky top-0"></div>
 
+      {searchVisible && (
+        <div className='block sm:hidden absolute w-full px-3 top-3 z-30'>
+          <input
+            type='text'
+            placeholder='Search athlete...'
+            className="bg-white p-[10px] w-full rounded-2xl border outline-none"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
+        </div>
+      )}
+
+      {(athlete?.id) && (
+        <div className="rounded-b-3xl overflow-hidden -mt-px
+          h-[240px] relative border border-[#EEEEEE] mb-5"
+        >
           {/* video cover start */}
           <div className='w-full h-full flex items-center justify-center'>
-            <img src={athlete?.profilePicture} alt='cover' className='w-full max-w-[250px] h-[180px] object-cover object-center rounded-xl' />
+            <img src={athlete?.profilePicture} alt='cover' className='w-full h-full sm:max-w-[250px] sm:h-[180px] object-cover object-center sm:rounded-xl' />
           </div>
 
-          <div className="bg-white/40 z-10 absolute top-0 left-0 w-full h-full flex flex-col gap-2 justify-between px-[2cqw] py-[1.5cqw]">
+          <div className="sm:bg-white/40 z-10 absolute top-0 left-0 w-full h-full flex flex-col gap-2 justify-between sm:px-[2cqw] sm:py-[1.5cqw]">
             {/* pause and start video button */}
             {(athlete?.fto?.videoUrl) ?
               <button onClick={openVideoPopup} className='size-[55px] flex items-center justify-center
@@ -99,8 +111,10 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT, ope
               : <></>}
             {/* pause and start video button */}
 
-            <div className="flex justify-between items-start gap-3">
+            {/* desktop design start */}
+            <div className="hidden sm:flex justify-between items-start gap-3 @container">
               <div className="flex justify-between w-full items-start">
+
                 <div className="space-y-1">
                   <div className="flex items-center gap-3">
                     {athlete?.profilePicture &&
@@ -109,12 +123,12 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT, ope
                       </div>
                     }
 
-                    <div className="text-black font-bold text-[2cqw] leading-tight">
+                    <div className="text-black font-bold text-xl md:text-3xl leading-tight">
                       ${athlete?.fanTokenSymbol || "Fan Token Symbol"}
                     </div>
 
                   </div>
-                  <div className="text-black text-[1.3cqw] leading-tight max-w-[25cqw] font-bold">
+                  <div className="text-black text-[18px] md:text-[20px] leading-tight max-w-[25cqw] font-bold">
                     {athlete?.sport || "Athlete Sport"}
                   </div>
                 </div>
@@ -127,13 +141,51 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT, ope
                       </div>
                     }
                   </div>
-                  <div className="text-black text-[1.3cqw] leading-tight max-w-[25cqw] font-bold">
+                  <div className="text-black text-[20px] leading-tight max-w-[25cqw] font-bold">
                     {athlete?.dayOfTheWeek || "Athlete dayOfTheWeek"}
                   </div>
                 </div>
 
               </div>
             </div>
+            {/* desktop design end */}
+
+            {/* mobile design start */}
+            <div className='sm:hidden bg-black/80 w-full 
+              absolute top-0 px-4 py-2
+              flex items-start justify-between'
+            >
+              {athlete.fanTokenSymbol &&
+                <div className="text-[4cqw] font-bold text-white">
+                  $ {athlete.fanTokenSymbol}
+                </div>
+              }
+
+              {athlete?.country &&
+                <div className="max-w-[25px] w-full ml-auto overflow-hidden">
+                  <ReactCountryFlag style={{ width: '100%', height: '100%', borderRadius: '2px' }} countryCode={getCountryFlagFromName(athlete.country)} svg />
+                </div>
+              }
+
+            </div>
+
+            <div className='sm:hidden bg-black/80 w-full 
+              absolute bottom-0 px-4 py-2'
+            >
+              <div className='flex gap-1 items-center justify-between'>
+                {athlete?.dayOfTheWeek &&
+                  <div className="text-white text-[4cqw] leading-tight font-bold">
+                    {athlete?.dayOfTheWeek || "Athlete dayOfTheWeek"}
+                  </div>
+                }
+                {athlete?.sport &&
+                  <div className="text-white text-[4cqw] leading-tight font-bold">
+                    {athlete?.sport}
+                  </div>
+                }
+              </div>
+            </div>
+            {/* mobile design end */}
           </div>
 
         </div>
@@ -153,11 +205,11 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT, ope
 
                 <button onClick={() => onEventClick(event)}
                   className="w-full bg-[#FCFCFC] border border-[#EEEEEE] 
-                    rounded-3xl overflow-hidden min-h-[9.4cqw] px-8 py-6 shadow-sm 
+                    rounded-2xl sm:rounded-3xl overflow-hidden min-h-[9.4cqw] py-3 px-4 sm:px-8 sm:py-6 shadow-sm 
                     flex items-start flex-col"
                 >
                   <div className="flex items-start gap-2 justify-between w-full">
-                    <h3 className="font-bold text-[22px] leading-tight">{event.name}</h3>
+                    <h3 className="font-bold text-lg sm:text-[22px] leading-tight">{event.name}</h3>
 
                     <div className="shrink-0 primary-gradient overflow-hidden p-0.5 rounded-[12px]
                       cursor-pointer text-white inline-block min-w-[80px] py-1 px-3 capitalize"
@@ -166,27 +218,27 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT, ope
                     </div>
 
                   </div>
-                  <p className="text-[#969494] text-lg">{event.description}</p>
+                  <p className="text-[#969494] text-sm sm:text-lg">{event.description}</p>
                 </button>
               </div>
             ))
           ) : (
             <div
               className={`min-h-[150px] bg-[#FCFCFC] border border-[#E7E7E7] shadow-sm
-              rounded-3xl flex items-center justify-center text-[#C9C8C8] text-xl font-bold p-6 overflow-y-auto`}
+              rounded-3xl flex items-center justify-center text-[#C9C8C8] text-lg sm:text-xl font-bold p-3 sm:p-6`}
             >
               <h2
                 style={{ fontFamily: "Arial, sans-serif", textAlign: "center" }}
               >
                 {ownsNFT === true ? (
                   <div className="text-center flex flex-col items-center">
-                    <span>⏳</span>
+                    <span className="sm:text-3xl">⏳</span>
                     <span>
                       The first event of ${athlete?.fanTokenSymbol} will be posted soon!
                     </span>
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center justify-center gap-2">
+                  <div className="flex flex-col items-center justify-center gap-2 @container">
                     <div className="text-center flex flex-col items-center">
                       <span className="text-3xl">
                         🔒
@@ -200,8 +252,8 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT, ope
                       <></>
                     ) : (
                       <button
-                        className="text-white p-3 text-[1cqw] rounded-full leading-tight cursor-pointer
-                          max-w-[11cqw] w-full flex items-center justify-center shrink-0 primary-gradient
+                        className="text-white py-3 px-4 text-lg rounded-full leading-tight cursor-pointer
+                          text-center shrink-0 primary-gradient min-w-[180px]
                           font-bold transition-all duration-300 hover:bg-gray-100 mx-auto"
                         onClick={handleSubscriptionPurchase}
                         disabled={subscriptionLoading}
@@ -218,11 +270,11 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT, ope
         </div>
       ) : (
         <div
-          className="h-full bg-[#FCFCFC] border border-[#E7E7E7] shadow-sm 
-          rounded-3xl w-full flex items-center justify-center p-6 overflow-y-auto"
+          className="-mt-2 h-full bg-[#FCFCFC] border border-[#E7E7E7] shadow-sm 
+          rounded-3xl w-full flex items-center justify-center p-3 sm:p-6"
         >
           <div className="text-[#C9C8C8]">
-            <h2 className="text-center font-bold text-[28px]">
+            <h2 className="text-center font-bold text-xl sm:text-[28px]">
               Select an Athlete.
             </h2>
           </div>

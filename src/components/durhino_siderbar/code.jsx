@@ -186,7 +186,7 @@ const RightSidebarContent = ({ isOpen, currentFto, onClose }) => {
   }, [isOpen]);
 
   return (
-    <div className={`fixed top-0 right-0 h-screen overflow-y-auto sidebar-shadow
+    <div className={`fixed top-0 right-0 h-dvh overflow-y-auto sidebar-shadow
             bg-[#F0F0F0] transition-all duration-300 z-50 w-full max-w-[767px]
             ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
     >
@@ -200,9 +200,10 @@ const RightSidebarContent = ({ isOpen, currentFto, onClose }) => {
 
       <div className='flex flex-col sm:flex-row  h-full'>
         <div className='sm:max-w-[316px] w-full p-5 space-y-10'>
-          <h1 className='p-[10px] text-[30px] text-center font-bold leading-none'>${currentFto.Atheletes.fanTokenSymbol}</h1>
+          
+          <h1 className='px-[10px] py-[8px] text-[30px] text-center font-bold leading-none'>${currentFto.Atheletes.fanTokenSymbol}</h1>
 
-          <div className='custom-shadow bg-white rounded-[20px] py-5 divide-y-2 w-full'>
+          <div className='custom-shadow bg-white rounded-[20px] py-5 divide-y-2 w-full !mt-0'>
 
             <div className='pb-[20px] px-[10px] flex justify-between'>
               <button className='btn-plus text-[26px] rounded-tl-[9px] rounded-bl-[9px] px-[15px] text-white font-bold' onClick={handleDecrease}>−</button>
@@ -230,7 +231,7 @@ const RightSidebarContent = ({ isOpen, currentFto, onClose }) => {
         </div>
 
         {profiles?.length > 0 ? (
-          <div className='bg-white custom-shadow py-10 px-[30px] w-full h-full'>
+          <div className='bg-white custom-shadow py-[20px] px-[20px] sm:px-[30px] w-full h-full'>
             <form className='text-[#1D1D1F] h-full flex flex-col gap-5 overflow-auto'>
 
               <div className='flex flex-col w-full gap-1'>
@@ -337,12 +338,12 @@ const RightSidebarContent = ({ isOpen, currentFto, onClose }) => {
               
               {paymentSuccess && (
                 <div className="text-green-500 text-sm font-medium">
-                  Payment successful! Your NFTs will be delivered soon.
+                  Payment successful!
                 </div>
               )}
 
-              <label className='flex items-center gap-1 text-sm font-bold'>
-                <input type='checkbox' />I accept Fansday's Terms and Conditions.
+              <label className='flex items-start gap-1 text-sm font-bold'>
+                <input type='checkbox' class="mt-1"/>I accept Fansday's Terms and Conditions.
               </label>
 
               <button 

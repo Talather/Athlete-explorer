@@ -228,14 +228,14 @@ const Profile = () => {
 
   if (!address) {
     return (
-      <div className='h-[100dvh] relative'>
+      <div className='h-[100dvh] relative bg-gradient-to-r from-[#f8e3e0] to-[#e9d5f7]'>
         <Navbar />
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-[#f8e3e0] to-[#e9d5f7]">
-          <div className="text-center">
+        <div className="h-[calc(100dvh-145px)] min-[382px]:h-[calc(100dvh-175px)] sm:h-[calc(100dvh-196px)] flex flex-col items-center justify-center">
+          <div className="text-center px-5">
             <div className="bg-white p-8 rounded-xl shadow-lg max-w-md">
               <User size={64} className="mx-auto mb-4 text-[#9352ee]" />
-              <h2 className="text-2xl font-bold text-[#1D1D1D] mb-4">Connect Your Wallet</h2>
-              <p className="text-[#717071] mb-6">Please connect your wallet to access your profile</p>
+              <h2 className="text-2xl font-bold text-[#1D1D1D] mb-4">Sign In or Sign Up.</h2>
+              <p className="text-[#717071] mb-6">"Please log in or create an account to access your profile page."</p>
             </div>
           </div>
         </div>
