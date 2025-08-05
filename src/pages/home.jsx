@@ -163,36 +163,37 @@ function Home() {
 
 
   return (
-    <div className="overflow-x-hidden">
-      {/* chat popup start */}
-      {isChatPopupOpen &&
-        <div className="fixed inset-0 z-[999] px-2 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm overflow-hidden">
-          <div className="rounded-xl shadow-lg text-center w-full h-full
-                flex items-end pb-[30px] justify-center relative"
-          >
-            <button onClick={chatPopupClose} className='close-btn absolute top-3 right-3 transition-all duration-300 hover:scale-110'>
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M19 1L1 19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                <path d="M1 1L19 19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </button>
+      <div className="h-[100dvh] w-full relative">
+        {/* chat popup start */}
+        {isChatPopupOpen &&
+          <div className="fixed inset-0 z-[999] px-2 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm overflow-hidden">
+            <div className="rounded-xl shadow-lg text-center w-full h-full
+                  flex items-center pb-[30px] justify-center relative"
+            >
+              <button onClick={chatPopupClose} className='close-btn absolute top-3 right-3 transition-all duration-300 hover:scale-110'>
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M19 1L1 19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M1 1L19 19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </button>
 
-            <EventChat event={selectedEvent} />
+              <EventChat event={selectedEvent} />
+
+            </div>
           </div>
-        </div>
-      }
-      {/* chat popup end */}
+        }
+        {/* chat popup end */}
 
-      {/* video popup start */}
-      {isVideoPopupOpen &&
-        <VideoPopup url={selectedAthlete?.fto?.videoUrl} videoPopupClose={videoPopupClose} />
-      }
-      {/* video popup end */}
+        {/* video popup start */}
+        {isVideoPopupOpen &&
+          <VideoPopup url={selectedAthlete?.fto?.videoUrl} videoPopupClose={videoPopupClose} />
+        }
+        {/* video popup end */}
 
-      <div className="h-dvh w-full relative">
         <Navbar />
 
-        <div className="flex h-[calc(100dvh-145px)] min-[382px]:h-[calc(100dvh-175px)] sm:h-[calc(100dvh-196px)] md:justify-between pt-6 md:pt-10 pb-6
+        <div className="flex h-[calc(100vh-145px)] min-[382px]:h-[calc(100vh-175px)] sm:h-[calc(100vh-196px)] 
+            md:justify-between pt-4 sm:pt-6 md:pt-10 pb-8 md:pb-6
             gap-2 lg:gap-10 overflow-hidden relative w-full
             md:px-2 lg:px-10"
         >
@@ -228,15 +229,13 @@ function Home() {
           />
         </div>
 
-        <div className="sticky w-full bottom-0 z-40">
+        {/* footer start */}
+        <div className="sticky w-full bottom-0 z-[100]">
           <StickyBar />
         </div>
-
         <Footer />
 
       </div>
-
-    </div>
   );
 }
 

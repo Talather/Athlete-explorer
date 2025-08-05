@@ -36,10 +36,11 @@ function Sidebar({ allAthletes, athletes, onSelect, isBlurred, search, setSearch
 
   return (
     <div className={`max-w-[90px] min-[400px]:max-w-[115px] sm:max-w-[220px] lg:max-w-[300px] w-full 
-        bg-[#FAFAFB] h-full relative overflow-hidden border border-[#EBEBEB] shadow-sm rounded-3xl
+        bg-[#FAFAFB] h-full relative overflow-hidden border 
+          border-[#EBEBEB] border-t-0 shadow-sm rounded-r-3xl md:rounded-3xl
       ${isBlurred ? "blur-lg pointer-events-none" : ""}`}>
 
-      <div className='w-full primary-gradient h-2 rounded-t-3xl sticky top-0'></div>
+      <div className='w-full primary-gradient h-2 sticky top-0'></div>
 
       <div className='sm:p-3 lg:p-6 sm:space-y-3 h-full overflow-y-auto'>
         <h2 className='text-3xl font-bold hidden sm:block'>Athletes</h2>

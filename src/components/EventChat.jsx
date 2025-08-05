@@ -161,7 +161,7 @@ const EventChat = ({ event }) => {
   }
 
   return (
-    <div className="h-[75vh] max-w-[600px] w-full flex flex-col bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden">
+    <div className="h-[70vh] max-w-[600px] w-full flex flex-col bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden">
       {/* Chat header */}
       <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 primary-gradient">
         <div className="flex items-center gap-3">

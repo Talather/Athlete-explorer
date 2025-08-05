@@ -320,10 +320,10 @@ function RightSection({ isExpanded, selectedEvent, onClose, openChatPopup }) {
       <div className={`shrink-0 border border-[#E7E7E7] bg-white rounded-3xl transition-all duration-300
           overflow-x-hidden overflow-y-auto z-50 
           lg:h-full 
-          h-[calc(100dvh-190px)] min-[382px]:h-[calc(100dvh-222px)] sm:h-[calc(100dvh-243px)] md:h-[calc(100dvh-258px)]
+          h-[calc(100vh-190px)] min-[382px]:h-[calc(100vh-222px)] sm:h-[calc(100vh-243px)] md:h-[calc(100vh-258px)]
           absolute lg:relative
           right-0 lg:right-auto
-        ${isExpanded ? 'translate-x-0 w-full sm:w-1/2 lg:w-[45%] lg:ml-[-28%]' : 'translate-x-[90%] lg:translate-x-0 w-[244px] lg:w-[200px] lg:w-[220px] xl:w-[300px]'}`}
+        ${isExpanded ? 'translate-x-0 w-full sm:w-1/2 lg:w-[45%] lg:ml-[-28%]' : 'translate-x-[90%] lg:translate-x-0 w-[244px] lg:w-[200px] xl:w-[300px]'}`}
       >
 
         {!isExpanded &&

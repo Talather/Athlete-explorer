@@ -31,7 +31,6 @@ const stripePromise = loadStripe('pk_test_51RQyMEPNwkgmNBRfcneVX7k3o4kE3d95JtSsJ
 const RightSidebar = ({ isOpen, currentFto, onClose }) => {
   return (
     <>
-    
       <Elements stripe={stripePromise}>
         <RightSidebarContent isOpen={isOpen} currentFto={currentFto} onClose={onClose} />
       </Elements>
@@ -186,7 +185,7 @@ const RightSidebarContent = ({ isOpen, currentFto, onClose }) => {
   }, [isOpen]);
 
   return (
-    <div className={`fixed top-0 right-0 h-dvh overflow-y-auto sidebar-shadow
+    <div className={`fixed top-0 right-0 h-[100vh] overflow-y-auto sidebar-shadow
             bg-[#F0F0F0] transition-all duration-300 z-50 w-full max-w-[767px]
             ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
     >

@@ -8,6 +8,7 @@ import Settings from './pages/Settings'
 import Terms from './pages/Terms'
 import Privacy from './pages/Privacy'
 import Profile from './pages/Profile'
+import ComingSoon from './pages/ComingSoon'
 import CookiesModal from './components/CookiesModal'
 import './index.css'
 import { useWeglot } from 'react-weglot';
@@ -151,6 +152,7 @@ function AppRoutes() {
         <Route path='/terms' element={<Terms />} />
         <Route path='/privacy' element={<Privacy />} />
         <Route path='/profile' element={<Profile />} />
+        <Route path='/coming-soon' element={<ComingSoon />} />
       </Routes>
       <CookiesModal />
     </>

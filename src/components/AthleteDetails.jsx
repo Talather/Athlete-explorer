@@ -95,7 +95,7 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT, ope
         >
           {/* video cover start */}
           <div className='w-full h-full flex items-center justify-center'>
-            <img src={athlete?.profilePicture} alt='cover' className='w-full h-full sm:max-w-[250px] sm:h-[180px] object-cover object-center sm:rounded-xl' />
+            <img src={athlete?.profilePicture} alt='cover' className='w-full h-full sm:size-[160px] sm:mt-3 lg:mt-0 lg:size-[220px] border sm:rounded-full object-cover object-center' />
           </div>
 
           <div className="sm:bg-white/40 z-10 absolute top-0 left-0 w-full h-full flex flex-col gap-2 justify-between sm:px-[2cqw] sm:py-[1.5cqw]">
@@ -116,14 +116,14 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT, ope
               <div className="flex justify-between w-full items-start">
 
                 <div className="space-y-1">
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-1 lg:gap-3">
                     {athlete?.profilePicture &&
                       <div className="size-[50px] rounded-full overflow-hidden">
-                        <img src={athlete?.profilePicture} alt='cover' className='w-full h-full object-cover' />
+                        <img src={athlete?.profilePicture} alt='cover' className='w-full h-full object-cover object-top' />
                       </div>
                     }
 
-                    <div className="text-black font-bold text-xl md:text-3xl leading-tight">
+                    <div className="text-black font-bold text-2xl md:text-3xl leading-tight">
                       ${athlete?.fanTokenSymbol || "Fan Token Symbol"}
                     </div>
 
@@ -151,7 +151,7 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT, ope
             {/* desktop design end */}
 
             {/* mobile design start */}
-            <div className='sm:hidden bg-black/80 w-full 
+            <div className='sm:hidden bg-black/40 w-full 
               absolute top-0 px-4 py-2
               flex items-start justify-between'
             >
@@ -169,7 +169,7 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT, ope
 
             </div>
 
-            <div className='sm:hidden bg-black/80 w-full 
+            <div className='sm:hidden bg-black/40 w-full 
               absolute bottom-0 px-4 py-2'
             >
               <div className='flex gap-1 items-center justify-between'>
@@ -206,41 +206,41 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT, ope
                 <button onClick={() => onEventClick(event)}
                   className="w-full bg-[#FCFCFC] border border-[#EEEEEE] 
                     rounded-2xl sm:rounded-3xl overflow-hidden min-h-[9.4cqw] py-3 px-4 sm:px-8 sm:py-6 shadow-sm 
-                    flex items-start flex-col"
+                    flex items-start flex-col gap-1 text-start"
                 >
                   <div className="flex items-start gap-2 justify-between w-full">
-                    <h3 className="font-bold text-lg sm:text-[22px] leading-tight">{event.name}</h3>
+                    <h3 className="line-clamp-1 font-bold text-base sm:text-[22px] leading-tight text-start">{event.name}</h3>
 
                     <div className="shrink-0 primary-gradient overflow-hidden p-0.5 rounded-[12px]
-                      cursor-pointer text-white inline-block min-w-[80px] py-1 px-3 capitalize"
+                      cursor-pointer text-white inline-block min-w-[80px] py-1 px-3 text-center"
                     >
                       {event.type}
                     </div>
 
                   </div>
-                  <p className="text-[#969494] text-sm sm:text-lg">{event.description}</p>
+                  <p className="line-clamp-1 text-[#969494] text-sm sm:text-lg">
+                    {event.description}
+                  </p>
                 </button>
               </div>
             ))
           ) : (
             <div
               className={`min-h-[150px] bg-[#FCFCFC] border border-[#E7E7E7] shadow-sm
-              rounded-3xl flex items-center justify-center text-[#C9C8C8] text-lg sm:text-xl font-bold p-3 sm:p-6`}
+              rounded-3xl flex items-center justify-center text-[#C9C8C8] text-base leading-[1.25] sm:text-xl font-bold p-3 sm:p-6`}
             >
-              <h2
-                style={{ fontFamily: "Arial, sans-serif", textAlign: "center" }}
-              >
+              <h2>
                 {ownsNFT === true ? (
-                  <div className="text-center flex flex-col items-center">
-                    <span className="sm:text-3xl">⏳</span>
+                  <div className="text-center flex flex-col items-center gap-1">
+                    <span className="text-xl sm:text-3xl">⏳</span>
                     <span>
                       The first event of ${athlete?.fanTokenSymbol} will be posted soon!
                     </span>
                   </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center gap-2 @container">
-                    <div className="text-center flex flex-col items-center">
-                      <span className="text-3xl">
+                    <div className="text-center flex flex-col items-center gap-1">
+                      <span className="text-xl sm:text-3xl">
                         🔒
                       </span>
                       <span>
@@ -252,8 +252,8 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT, ope
                       <></>
                     ) : (
                       <button
-                        className="text-white py-3 px-4 text-lg rounded-full leading-tight cursor-pointer
-                          text-center shrink-0 primary-gradient min-w-[180px]
+                        className="text-white py-2 px-4 sm:py-3 sm:px-4 text-sm sm:text-lg rounded-full leading-tight cursor-pointer
+                          text-center shrink-0 primary-gradient min-w-[120px] sm:min-w-[180px]
                           font-bold transition-all duration-300 hover:bg-gray-100 mx-auto"
                         onClick={handleSubscriptionPurchase}
                         disabled={subscriptionLoading}
