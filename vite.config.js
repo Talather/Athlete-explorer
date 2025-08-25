@@ -6,6 +6,6 @@ import version from 'vite-plugin-package-version';
 export default defineConfig({
   plugins: [react(), version()],
   define: {
-    'process.env': {}
+    'process.env': process.env
   }
 })
