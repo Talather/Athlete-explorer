@@ -32,7 +32,8 @@
     "react-weglot": "^1.0.4",
     "redux": "^5.0.1",
     "redux-thunk": "^3.1.0",
-    "thirdweb": "^5.94.2"
+    "thirdweb": "^5.94.2",
+    "vite-plugin-package-version": "^1.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
