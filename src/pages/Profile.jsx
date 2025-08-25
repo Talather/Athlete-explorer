@@ -23,7 +23,9 @@ import {
   Trophy,
   Clock,
   Hash,
-  CreditCard
+  CreditCard,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 
 const Profile = () => {
@@ -42,6 +44,10 @@ const Profile = () => {
   const [userTransactions, setUserTransactions] = useState([]);
   const [transactionsLoading, setTransactionsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
+  const [currentTransactionPage, setCurrentTransactionPage] = useState(1);
+  const transactionsPerPage = 10;
+  const [currentMessagePage, setCurrentMessagePage] = useState(1);
+  const messagesPerPage = 10;
 
   const userId = profiles?.[0]?.details?.id;
   const userEmail = profiles?.[0]?.details?.email;
@@ -69,8 +75,7 @@ const Profile = () => {
             Events (*, Atheletes (*))
           `)
           .eq('user_id', userId)
-          .order('created_at', { ascending: false })
-          .limit(20);
+          .order('created_at', { ascending: false });
         if (error) throw error;
         setUserMessages(data || []);
       } catch (error) {
@@ -154,6 +159,15 @@ const Profile = () => {
       fetchUserTransactions();
     }
   }, [userId, athletes]);
+
+  // Reset pagination when switching tabs
+  useEffect(() => {
+    if (activeTab === 'transactions') {
+      setCurrentTransactionPage(1);
+    } else if (activeTab === 'messages') {
+      setCurrentMessagePage(1);
+    }
+  }, [activeTab]);
 
   const handleSubscriptionAction = async (subscription, action) => {
     try {
@@ -363,7 +377,7 @@ const Profile = () => {
                           alt={athlete.firstName}
                           className="w-full h-36 sm:h-48 object-cover rounded-lg mb-3 sm:mb-4"
                         />
-                        <h4 className="font-semibold text-[#1D1D1D] mb-2 text-sm sm:text-base">{athlete.firstName} {athlete.lastName}</h4>
+                        <h4 className="font-semibold text-[#1D1D1D] mb-2 text-sm sm:text-base">${athlete.fanTokenSymbol}</h4>
                         <p className="text-[#717071] text-xs sm:text-sm mb-3 line-clamp-2">{athlete.bio}</p>
                         <div className="flex items-center justify-between">
                           <span className="text-xs bg-gradient-to-r from-[#e99289] to-[#9352ee] text-white px-2 sm:px-3 py-1 rounded-full">
@@ -404,7 +418,7 @@ const Profile = () => {
                                 className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover"
                               />
                               <div>
-                                <h4 className="font-semibold text-[#1D1D1D] text-sm sm:text-base">{athlete?.firstName} {athlete?.lastName}</h4>
+                                <h4 className="font-semibold text-[#1D1D1D] text-sm sm:text-base">${athlete?.fanTokenSymbol}</h4>
                                 <div className="flex items-center space-x-2 text-xs sm:text-sm text-[#717071]">
                                   <Calendar size={12} />
                                   <span>Started {formatDate(subscription.created_at)}</span>
@@ -468,52 +482,91 @@ const Profile = () => {
                     <div className="w-6 h-6 sm:w-8 sm:h-8 border-4 border-t-[#9352ee] border-r-[#e99289] border-b-[#9352ee] border-l-[#e99289] rounded-full animate-spin"></div>
                   </div>
                 ) : userTransactions.length > 0 ? (
-                  <div className="space-y-3 sm:space-y-4">
-                    {userTransactions.map((transaction) => (
-                      <div key={transaction.id} className="border border-gray-200 rounded-lg p-3 sm:p-4">
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 space-y-2 sm:space-y-0">
-                          <div className="flex items-center space-x-3">
-                            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-[#e99289] to-[#9352ee] rounded-full flex items-center justify-center">
-                              <CreditCard size={16} className="sm:size-5 text-white" />
-                            </div>
-                            <div>
-                              <div className="font-medium text-[#1D1D1D] text-sm sm:text-base">
-                                {transaction.athleteName}
-                              </div>
-                              {transaction.quantity ? (
-                                <div className="text-xs text-[#717071]">
-                                  Quantity: {transaction.quantity}
-                                </div>
-                              ) : <div className="text-xs text-[#717071]">
-                              Per Month
-                            </div>}
-                            </div>
-                          </div>
-                          <div className="flex flex-col sm:items-end">
-                            <div className="text-lg sm:text-xl font-bold text-[#9352ee]">
-                              {(transaction.total_amount / 100).toFixed(2)} {transaction.currency || 'USD'}
-                            </div>
-                            <div className="text-xs text-[#717071] flex items-center space-x-1">
-                              <Clock size={10} className="sm:size-3" />
-                              <span>{formatDate(transaction.created_at)} at {formatTime(transaction.created_at)}</span>
-                            </div>
-                          </div>
-                        </div>
-                        {transaction.status && (
-                          <div className="flex justify-end items-center pt-2 border-t border-gray-100">
-                            <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium ${
-                              transaction.status === 'succeeded' 
-                                ? 'bg-green-100 text-green-700'
-                                : transaction.status === 'pending'
-                                ? 'bg-yellow-100 text-yellow-700' 
-                                : 'bg-red-100 text-red-700'
-                            }`}>
-                              {transaction.status?.charAt(0).toUpperCase() + transaction.status?.slice(1)}
-                            </span>
-                          </div>
-                        )}
+                  <div>
+                    {/* Pagination Info */}
+                    <div className="flex justify-between items-center mb-4">
+                      <div className="text-sm text-[#717071]">
+                        Showing {((currentTransactionPage - 1) * transactionsPerPage) + 1} to {Math.min(currentTransactionPage * transactionsPerPage, userTransactions.length)} of {userTransactions.length} transactions
                       </div>
-                    ))}
+                      <div className="flex items-center space-x-2">
+                        <button
+                          onClick={() => setCurrentTransactionPage(prev => Math.max(prev - 1, 1))}
+                          disabled={currentTransactionPage === 1}
+                          className={`p-2 rounded-lg border transition-colors ${
+                            currentTransactionPage === 1
+                              ? 'border-gray-200 text-gray-400 cursor-not-allowed'
+                              : 'border-[#9352ee] text-[#9352ee] hover:bg-[#9352ee] hover:text-white'
+                          }`}
+                        >
+                          <ChevronLeft size={16} />
+                        </button>
+                        <span className="text-sm text-[#717071] px-3">
+                          Page {currentTransactionPage} of {Math.ceil(userTransactions.length / transactionsPerPage)}
+                        </span>
+                        <button
+                          onClick={() => setCurrentTransactionPage(prev => Math.min(prev + 1, Math.ceil(userTransactions.length / transactionsPerPage)))}
+                          disabled={currentTransactionPage === Math.ceil(userTransactions.length / transactionsPerPage)}
+                          className={`p-2 rounded-lg border transition-colors ${
+                            currentTransactionPage === Math.ceil(userTransactions.length / transactionsPerPage)
+                              ? 'border-gray-200 text-gray-400 cursor-not-allowed'
+                              : 'border-[#9352ee] text-[#9352ee] hover:bg-[#9352ee] hover:text-white'
+                          }`}
+                        >
+                          <ChevronRight size={16} />
+                        </button>
+                      </div>
+                    </div>
+                    
+                    {/* Transactions List */}
+                    <div className="space-y-3 sm:space-y-4">
+                      {userTransactions
+                        .slice((currentTransactionPage - 1) * transactionsPerPage, currentTransactionPage * transactionsPerPage)
+                        .map((transaction) => (
+                        <div key={transaction.id} className="border border-gray-200 rounded-lg p-3 sm:p-4">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 space-y-2 sm:space-y-0">
+                            <div className="flex items-center space-x-3">
+                              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-[#e99289] to-[#9352ee] rounded-full flex items-center justify-center">
+                                <CreditCard size={16} className="sm:size-5 text-white" />
+                              </div>
+                              <div>
+                                <div className="font-medium text-[#1D1D1D] text-sm sm:text-base">
+                                  {transaction.athleteName}
+                                </div>
+                                {transaction.quantity ? (
+                                  <div className="text-xs text-[#717071]">
+                                    Quantity: {transaction.quantity}
+                                  </div>
+                                ) : <div className="text-xs text-[#717071]">
+                                Per Month
+                              </div>}
+                              </div>
+                            </div>
+                            <div className="flex flex-col sm:items-end">
+                              <div className="text-lg sm:text-xl font-bold text-[#9352ee]">
+                                {(transaction.total_amount / 100).toFixed(2)} {transaction.currency || 'USD'}
+                              </div>
+                              <div className="text-xs text-[#717071] flex items-center space-x-1">
+                                <Clock size={10} className="sm:size-3" />
+                                <span>{formatDate(transaction.created_at)} at {formatTime(transaction.created_at)}</span>
+                              </div>
+                            </div>
+                          </div>
+                          {transaction.status && (
+                            <div className="flex justify-end items-center pt-2 border-t border-gray-100">
+                              <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium ${
+                                transaction.status === 'succeeded' 
+                                  ? 'bg-green-100 text-green-700'
+                                  : transaction.status === 'pending'
+                                  ? 'bg-yellow-100 text-yellow-700' 
+                                  : 'bg-red-100 text-red-700'
+                              }`}>
+                                {transaction.status?.charAt(0).toUpperCase() + transaction.status?.slice(1)}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 ) : (
                   <div className="text-center py-8 sm:py-12">
@@ -533,42 +586,81 @@ const Profile = () => {
                     <div className="w-6 h-6 sm:w-8 sm:h-8 border-4 border-t-[#9352ee] border-r-[#e99289] border-b-[#9352ee] border-l-[#e99289] rounded-full animate-spin"></div>
                   </div>
                 ) : userMessages.length > 0 ? (
-                  <div className="space-y-3 sm:space-y-4">
-                    {userMessages.map((message) => (
-                      <div key={message.id} className="border border-gray-200 rounded-lg p-3 sm:p-4">
-                        <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-3 space-y-2 sm:space-y-0">
-                          <div className="flex items-center space-x-3">
-                            <img
-                              src={message.Events?.Atheletes?.profilePicture || '/default-athlete.png'}
-                              alt={message.Events?.Atheletes?.firstName}
-                              className="w-6 h-6 sm:w-8 sm:h-8 rounded-full object-cover"
-                            />
-                            <div>
-                              <div className="font-medium text-[#1D1D1D] text-xs sm:text-sm">
-                                {message.Events?.Atheletes?.firstName} {message.Events?.Atheletes?.lastName}
-                              </div>
-                              <div className="text-xs text-[#717071] line-clamp-1">
-                                {message.Events?.name}
-                              </div>
-                            </div>
-                          </div>
-                          <div className="text-xs text-[#717071] flex items-center space-x-1 sm:space-x-2">
-                            <Clock size={10} className="sm:size-3" />
-                            <span className="hidden sm:inline">{formatDate(message.created_at)} at {formatTime(message.created_at)}</span>
-                            <span className="sm:hidden">{formatTime(message.created_at)}</span>
-                          </div>
-                        </div>
-                        <div className="bg-gray-50 rounded-lg p-2 sm:p-3">
-                          <p className="text-[#1D1D1D] text-sm sm:text-base break-words">{message.content}</p>
-                          {message.message_type !== 'text' && (
-                            <div className="mt-2 text-xs text-[#717071] flex items-center space-x-1">
-                              <Hash size={10} />
-                              <span>{message.message_type}</span>
-                            </div>
-                          )}
-                        </div>
+                  <div>
+                    {/* Pagination Info */}
+                    <div className="flex justify-between items-center mb-4">
+                      <div className="text-sm text-[#717071]">
+                        Showing {((currentMessagePage - 1) * messagesPerPage) + 1} to {Math.min(currentMessagePage * messagesPerPage, userMessages.length)} of {userMessages.length} messages
                       </div>
-                    ))}
+                      <div className="flex items-center space-x-2">
+                        <button
+                          onClick={() => setCurrentMessagePage(prev => Math.max(prev - 1, 1))}
+                          disabled={currentMessagePage === 1}
+                          className={`p-2 rounded-lg border transition-colors ${
+                            currentMessagePage === 1
+                              ? 'border-gray-200 text-gray-400 cursor-not-allowed'
+                              : 'border-[#9352ee] text-[#9352ee] hover:bg-[#9352ee] hover:text-white'
+                          }`}
+                        >
+                          <ChevronLeft size={16} />
+                        </button>
+                        <span className="text-sm text-[#717071] px-3">
+                          Page {currentMessagePage} of {Math.ceil(userMessages.length / messagesPerPage)}
+                        </span>
+                        <button
+                          onClick={() => setCurrentMessagePage(prev => Math.min(prev + 1, Math.ceil(userMessages.length / messagesPerPage)))}
+                          disabled={currentMessagePage === Math.ceil(userMessages.length / messagesPerPage)}
+                          className={`p-2 rounded-lg border transition-colors ${
+                            currentMessagePage === Math.ceil(userMessages.length / messagesPerPage)
+                              ? 'border-gray-200 text-gray-400 cursor-not-allowed'
+                              : 'border-[#9352ee] text-[#9352ee] hover:bg-[#9352ee] hover:text-white'
+                          }`}
+                        >
+                          <ChevronRight size={16} />
+                        </button>
+                      </div>
+                    </div>
+                    
+                    {/* Messages List */}
+                    <div className="space-y-3 sm:space-y-4">
+                      {userMessages
+                        .slice((currentMessagePage - 1) * messagesPerPage, currentMessagePage * messagesPerPage)
+                        .map((message) => (
+                        <div key={message.id} className="border border-gray-200 rounded-lg p-3 sm:p-4">
+                          <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-3 space-y-2 sm:space-y-0">
+                            <div className="flex items-center space-x-3">
+                              <img
+                                src={message.Events?.Atheletes?.profilePicture || '/default-athlete.png'}
+                                alt={message.Events?.Atheletes?.firstName}
+                                className="w-6 h-6 sm:w-8 sm:h-8 rounded-full object-cover"
+                              />
+                              <div>
+                                <div className="font-medium text-[#1D1D1D] text-xs sm:text-sm">
+                                  {message.Events?.Atheletes?.firstName} {message.Events?.Atheletes?.lastName}
+                                </div>
+                                <div className="text-xs text-[#717071] line-clamp-1">
+                                  {message.Events?.name}
+                                </div>
+                              </div>
+                            </div>
+                            <div className="text-xs text-[#717071] flex items-center space-x-1 sm:space-x-2">
+                              <Clock size={10} className="sm:size-3" />
+                              <span className="hidden sm:inline">{formatDate(message.created_at)} at {formatTime(message.created_at)}</span>
+                              <span className="sm:hidden">{formatTime(message.created_at)}</span>
+                            </div>
+                          </div>
+                          <div className="bg-gray-50 rounded-lg p-2 sm:p-3">
+                            <p className="text-[#1D1D1D] text-sm sm:text-base break-words">{message.content}</p>
+                            {message.message_type !== 'text' && (
+                              <div className="mt-2 text-xs text-[#717071] flex items-center space-x-1">
+                                <Hash size={10} />
+                                <span>{message.message_type}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 ) : (
                   <div className="text-center py-8 sm:py-12">

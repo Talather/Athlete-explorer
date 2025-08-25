@@ -75,6 +75,39 @@ button:focus-visible {
   background-image: linear-gradient(65deg, #EB9486, #8F4FF3);
 }
 
+/* * {
+  scrollbar-width: thin;
+  scrollbar-color: #8F4FF3 rgba(235, 148, 134, 0.1);
+} */
+
+/* Custom Scrollbar Styles */
+/* Webkit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(235, 148, 134, 0.1);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(65deg, #EB9486, #8F4FF3);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(65deg, #d67d6e, #7a42d9);
+  transform: scale(1.1);
+}
+
+::-webkit-scrollbar-corner {
+  background: rgba(235, 148, 134, 0.1);
+}
+
+
 .stickyBarLink {
   @apply px-[11px] py-[14px] min-[382px]:py-[20px] md:py-[33px] text-sm min-[382px]:text-lg 
   flex flex-col md:flex-row

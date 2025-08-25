@@ -15,8 +15,23 @@ import VideoWithCover from "../components/videoWithCover";
 import Navbar from "../components/Navbar";
 import VideoPopup from "../components/VideoPopup";
 import TimerOverlay from "../components/timeOverlay";
+import { useActiveWallet } from "thirdweb/react";
+import { ConnectButton } from "thirdweb/react";
+import { inAppWallet } from "thirdweb/wallets";
+
+import { client } from "../client";
+
 
 function Durhino() {
+  const wallets = [
+    inAppWallet({
+      auth: {
+        options: ["google", "email", "phone", "discord", "facebook"],
+      },
+    }),
+  ];
+  
+  const wallet = useActiveWallet();
   const [showSidebar, setShowSidebar] = useState(false);
   const [currentFto, setCurrentFto] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -269,7 +284,7 @@ function Durhino() {
                   flex flex-col items-center px-2 py-5"
                   >
                     <strong className="text-[#1D1D1D] text-center leading-normal text-base sm:text-2xl font-bold">
-                      {new Date(currentFto.startDate).toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' })}
+                      {new Date(currentFto.startDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
                     </strong>
                     <p className="text-sm sm:text-lg text-center text-[#717071] leading-normal font-[600]">
                       Start date
@@ -277,20 +292,29 @@ function Durhino() {
                   </div>
                 </div>
 
-                {isBeforeStartDate && (
+                {isBeforeStartDate && !wallet && (
                   <div className="w-full p-4 ">
                     <div className="text-center mb-3">
                       <h2 className="text-[#1D1D1D] text-lg font-bold">JOIN THE WAITLIST AND RECEIVE AN EMAIL WHEN THE SALE STARTS</h2>
                     </div>
-                    <div className="flex flex-col  justify-center items-center gap-3 max-w-xl mx-auto">
-                      <input
-                        type="email"
-                        placeholder="indicate@youremail.com"
-                        className="w-full border border-gray-300 rounded-md p-3"
+                    <div className="flex justify-center">
+                      <ConnectButton
+                        client={client}
+                        theme="light"
+                        wallets={wallets}
+                        connectButton={{
+                          label: "Connect to Join Waitlist",
+                          style: {
+                            background: "linear-gradient(65deg, #EB9486, #8F4FF3)",
+                            color: "white",
+                            fontWeight: "bold",
+                            padding: "12px 24px",
+                            borderRadius: "25px",
+                            border: "none",
+                            fontSize: "16px"
+                          }
+                        }}
                       />
-                      <button className="bg-gradient-to-r from-[#e99289] to-[#9352ee] text-white font-bold py-3 px-8 rounded-full">
-                        SUBMIT
-                      </button>
                     </div>
                   </div>
                 )}

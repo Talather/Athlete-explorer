@@ -16,6 +16,7 @@ import { supabase } from './../../lib/supabase';
 import toast from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 import { convertCurrency, formatCurrency } from '../../utils/currencyConverter';
+import { useNavigate } from 'react-router-dom';
 
 const wallets = [
   inAppWallet({
@@ -40,7 +41,7 @@ const RightSidebar = ({ isOpen, currentFto, onClose }) => {
 
 // Main component with Stripe functionality
 const RightSidebarContent = ({ isOpen, currentFto, onClose }) => {
-
+  const navigate = useNavigate();
   const wallet = useActiveWallet();
     const address = wallet?.getAccount().address;
   //  if (!profiles || profiles.length === 0) return;
@@ -55,6 +56,7 @@ const RightSidebarContent = ({ isOpen, currentFto, onClose }) => {
   const [loading, setLoading] = useState(false);
   const [paymentError, setPaymentError] = useState(null);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
   
   const [quantity, setQuantity] = useState(1);
   const pricePerNFT = currentFto?.Atheletes?.fanTokenInitialPrice || 0;
@@ -158,6 +160,8 @@ const RightSidebarContent = ({ isOpen, currentFto, onClose }) => {
               duration: 5000,
             }
           );
+          // Redirect to home page
+          navigate('/');
         }, 1500);
       } else {
         throw new Error(`Payment status: ${paymentIntent.status}. Expected 'succeeded'.`);
@@ -342,12 +346,17 @@ const RightSidebarContent = ({ isOpen, currentFto, onClose }) => {
               )}
 
               <label className='flex items-start gap-1 text-sm font-bold'>
-                <input type='checkbox' class="mt-1"/>I accept Fansday's Terms and Conditions.
+                <input 
+                  type='checkbox' 
+                  className="mt-1"
+                  checked={termsAccepted}
+                  onChange={(e) => setTermsAccepted(e.target.checked)}
+                />I accept Fansday's Terms and Conditions.
               </label>
 
               <button 
-                className={`inline-block text-center w-full rounded-[10px] text-base font-bold ${loading ? 'bg-gray-500' : 'bg-black'} text-white p-[10px]`}
-                disabled={!stripe || loading || quantity <= 0 || total <= 0}
+                className={`inline-block text-center w-full rounded-[10px] text-base font-bold ${loading || !termsAccepted ? 'bg-gray-500' : 'bg-black'} text-white p-[10px]`}
+                disabled={!stripe || loading || quantity <= 0 || total <= 0 || !termsAccepted}
                 onClick={handleSubmit}
               >
                 {loading ? 'Processing...' : `Pay ${getFormattedPrice(total)}`}

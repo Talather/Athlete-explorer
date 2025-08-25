@@ -5,6 +5,8 @@ import { client } from '../client';
 import { useProfiles } from "thirdweb/react";
 import EventChat from './EventChat';
 import VideoPopup from './VideoPopup';
+import LiteYouTubeEmbed from 'react-lite-youtube-embed';
+import 'react-lite-youtube-embed/dist/LiteYouTubeEmbed.css';
 function RightSection({ isExpanded, selectedEvent, onClose, openChatPopup }) {
   const { data: profiles } = useProfiles({
     client,
@@ -162,22 +164,27 @@ function RightSection({ isExpanded, selectedEvent, onClose, openChatPopup }) {
         );
 
       case 'live_stream':
+        console.log(selectedEvent?.live_stream_url);
         return (
           selectedEvent?.live_stream_url && (
             <div>
               <div className="mt-6 rounded-xl overflow-hidden relative">
-                <div className="aspect-video">
+              <LiteYouTubeEmbed
+                  id={selectedEvent?.live_stream_url}
+                  title="What’s new in Material Design for the web (Chrome Dev Summit 2019)"
+              />
+                {/* <div className="aspect-video">
                   <iframe
                     width="100%"
                     height="100%"
-                    src={selectedEvent.live_stream_url}
+                    src={"selectedEvent.live_stream_url"}
                     title="Livestream"
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                     className="w-full h-full"
                   ></iframe>
-                </div>
+                </div> */}
                 <div className="bg-red-500 text-white px-3 py-1 rounded-full absolute top-2 right-2 z-30 text-sm font-medium">
                   LIVE
                 </div>

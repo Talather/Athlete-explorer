@@ -285,9 +285,19 @@ function SettingsPage() {
                       className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 border-white shadow-lg"
                     />
                   ):(
-                    <User size={90}/>
+                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 border-white shadow-lg">
+                      {/* <User size={90}/> */}
+                    </div>
                   )}
-                    
+                  {
+                   !profileImage && (
+                     <label className={`absolute inset-0 bg-black/50 rounded-full opacity-0 opacity-100 flex items-center justify-center text-white cursor-pointer transition-opacity ${uploadingPicture ? 'opacity-100' : ''}`}>
+                        <Camera size={20} />
+                    </label>
+                   )
+
+                  }
+                   
                     <label className={`absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center text-white cursor-pointer transition-opacity ${uploadingPicture ? 'opacity-100' : ''}`}>
                       {uploadingPicture ? (
                         <Loader2 size={20} className="animate-spin" />

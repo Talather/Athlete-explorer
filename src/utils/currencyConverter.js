@@ -80,11 +80,10 @@ export const supportedCurrencies = [
 //   { code: 'hi', name: 'हिन्दी', flag: '🇮🇳' },
 //   { code: 'ru', name: 'Русский', flag: '🇷🇺' },
 // ];
-
 export const supportedLanguages = [
   { code: 'en', name: 'English', flag: '🇺🇸' }, // USA
   { code: 'tr', name: 'Türkçe', flag: '🇹🇷' },  // Turkish (TRY)
-  { code: 'pt', name: 'Português', flag: '🇪🇺' }, // Portuguese (EU)
+  { code: 'pt', name: 'Português Brasileiro', flag: '🇧🇷' }, // Brazilian Portuguese
   { code: 'ja', name: 'Japanese 日本語', flag: '🇯🇵' },  // Japanese (JPY)
   { code: 'ko', name: 'Korean 한국어', flag: '🇰🇷' },  // Korean (KRW)
 ];
