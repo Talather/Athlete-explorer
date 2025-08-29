@@ -10,6 +10,7 @@ import Privacy from './pages/Privacy'
 import Profile from './pages/Profile'
 import ComingSoon from './pages/ComingSoon'
 import CookiesModal from './components/CookiesModal'
+import { AuthProvider, useAuth } from './contexts/AuthContext'
 import './index.css'
 import { useWeglot } from 'react-weglot';
 import { useEffect } from 'react'
@@ -20,8 +21,8 @@ import { client } from './client';
 import { useProfiles } from 'thirdweb/react';
 import { fetchUserProfile } from './store/slices/userSlice'
 
-// Main App Routes Component
-function AppRoutes() {
+// Protected Routes Component
+function ProtectedRoutes() {
   const wallet = useActiveWallet();
   const dispatch = useDispatch();
   const { data: profiles } = useProfiles({ client });
@@ -146,17 +147,42 @@ function AppRoutes() {
   return (
     <>
       <Routes>
-        <Route path='/' element={<ComingSoon />} />
-        {/* <Route path='/page' element={<Durhino />} />
+        <Route path='/' element={<Home />} />
+        <Route path='/page' element={<Durhino />} />
         <Route path='/settings' element={<Settings />} />
         <Route path='/terms' element={<Terms />} />
         <Route path='/privacy' element={<Privacy />} />
         <Route path='/profile' element={<Profile />} />
-        <Route path='/coming-soon' element={<ComingSoon />} /> */}
       </Routes>
       <CookiesModal />
     </>
   );
+}
+
+// Main App Routes Component with Authentication
+function AppRoutes() {
+  const { isAuthenticated, isLoading, login } = useAuth();
+
+  const handlePasswordSuccess = () => {
+    login();
+  };
+
+  if (isLoading) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-gradient-to-r from-[#f8e3e0] to-[#e9d5f7]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <ComingSoon onPasswordSuccess={handlePasswordSuccess} />;
+  }
+
+  return <ProtectedRoutes />;
 }
 
 function App () {
@@ -165,7 +191,9 @@ function App () {
   return (
     <Provider store={store}>
       <ThirdwebProvider>
-        <AppRoutes />
+        <AuthProvider>
+          <AppRoutes />
+        </AuthProvider>
       </ThirdwebProvider>
     </Provider>
   )
