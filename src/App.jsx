@@ -146,13 +146,13 @@ function AppRoutes() {
   return (
     <>
       <Routes>
-        <Route path='/' element={<Home />} />
-        <Route path='/page' element={<Durhino />} />
+        <Route path='/' element={<ComingSoon />} />
+        {/* <Route path='/page' element={<Durhino />} />
         <Route path='/settings' element={<Settings />} />
         <Route path='/terms' element={<Terms />} />
         <Route path='/privacy' element={<Privacy />} />
         <Route path='/profile' element={<Profile />} />
-        <Route path='/coming-soon' element={<ComingSoon />} />
+        <Route path='/coming-soon' element={<ComingSoon />} /> */}
       </Routes>
       <CookiesModal />
     </>
