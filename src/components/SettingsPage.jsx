@@ -102,7 +102,7 @@ function SettingsPage() {
     const file = e.target.files[0];
     if (file) {
       if (!userId) {
-        toast.error('Please connect your wallet first');
+        toast.error('Please log in or signup to continue');
         return;
       }
 
@@ -128,7 +128,7 @@ function SettingsPage() {
 
   const handleSaveProfile = async () => {
     if (!userId) {
-      toast.error('Please connect your wallet first');
+      toast.error('Please log in or signup to continue');
       return;
     }
 
@@ -146,7 +146,7 @@ function SettingsPage() {
 
   const handleSaveSettings = async () => {
     if (!userId) {
-      toast.error('Please connect your wallet first');
+      toast.error('Please log in or signup to continue');
       return;
     }
 
@@ -167,7 +167,7 @@ function SettingsPage() {
 
   const handleSaveNotifications = async () => {
     if (!userId) {
-      toast.error('Please connect your wallet first');
+      toast.error('Please log in or signup to continue');
       return;
     }
 

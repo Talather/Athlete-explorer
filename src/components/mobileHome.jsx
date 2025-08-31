@@ -80,7 +80,7 @@ const MobileOnlyPage = ({
 
   const handleSubscriptionPurchase = async () => {
     if (!selectedAthlete?.id || !profiles?.[0]?.details?.id || !profiles?.[0]?.details?.email) {
-      toast.error('Please connect your wallet and ensure all required information is available');
+      toast.error('Please log in or signup and ensure all required information is available');
       return;
     }
 
@@ -136,7 +136,7 @@ const MobileOnlyPage = ({
   const handleSubmit = async () => {
     if (!uploadFile || !selectedEvent) return;
     if (!profiles || profiles.length === 0) {
-      setUploadError('Please connect your wallet first to upload files');
+      setUploadError('Please log in or signup first to upload files');
       return;
     }
 

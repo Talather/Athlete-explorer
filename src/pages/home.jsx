@@ -73,7 +73,7 @@ function Home() {
   }, [profiles]);
   const handleSelectAthlete = async (athlete) => {
     if (!address) {
-      toast.error("Please connect your wallet to continue", {
+      toast.error("Please log in or signup to continue", {
         icon: '🔒',
         duration: 3000
       });

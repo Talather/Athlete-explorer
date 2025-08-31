@@ -49,7 +49,7 @@ function Sidebar({ allAthletes, athletes, onSelect, isBlurred, search, setSearch
           className='w-full p-[12px] flex sm:hidden items-center gap-1 border-b border-[#EBEBEB]'
           onClick={toggleSearchVisible}
         >
-          <FiSearch size={20} />
+          <FiSearch size={15} />
           <span className='text-black font-bold'>Search</span>
         </button>
 

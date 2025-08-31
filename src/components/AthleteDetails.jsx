@@ -29,7 +29,7 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT, ope
 
   const handleSubscriptionPurchase = async () => {
     if (!athlete?.id || !profiles?.[0]?.details?.id || !profiles?.[0]?.details?.email) {
-      toast.error('Please connect your wallet and ensure all required information is available');
+      toast.error('Please log in or signup and ensure all required information is available');
       return;
     }
 

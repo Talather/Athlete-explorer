@@ -91,6 +91,11 @@ const RightSidebarContent = ({ isOpen, currentFto, onClose }) => {
   
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if(!termsAccepted){
+      toast.error('Please accept the terms and conditions');
+      return;
+    }
     
     if (!stripe || !elements || quantity <= 0) {
       return;
@@ -154,7 +159,7 @@ const RightSidebarContent = ({ isOpen, currentFto, onClose }) => {
           onClose();
           // Show toast notification after sidebar is closed
           toast.success(
-            'Payment successful! You can view your NFTs in your wallet.',
+            'Payment successful, you can now select your athlete and an event.',
             {
               icon: '🎉',
               duration: 5000,
@@ -356,7 +361,7 @@ const RightSidebarContent = ({ isOpen, currentFto, onClose }) => {
 
               <button 
                 className={`inline-block text-center w-full rounded-[10px] text-base font-bold ${loading || !termsAccepted ? 'bg-gray-500' : 'bg-black'} text-white p-[10px]`}
-                disabled={!stripe || loading || quantity <= 0 || total <= 0 || !termsAccepted}
+                disabled={!stripe || loading || quantity <= 0 || total <= 0}
                 onClick={handleSubmit}
               >
                 {loading ? 'Processing...' : `Pay ${getFormattedPrice(total)}`}

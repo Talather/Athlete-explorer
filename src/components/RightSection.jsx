@@ -46,7 +46,7 @@ function RightSection({ isExpanded, selectedEvent, onClose, openChatPopup }) {
   const handleSubmit = async () => {
     if (!uploadFile || !selectedEvent) return;
     if (!profiles || profiles.length === 0) {
-      setUploadError('Please connect your wallet first to upload files');
+      setUploadError('Please log in or signup first to upload files');
       return;
     }
 
@@ -185,9 +185,9 @@ function RightSection({ isExpanded, selectedEvent, onClose, openChatPopup }) {
                     className="w-full h-full"
                   ></iframe>
                 </div> */}
-                <div className="bg-red-500 text-white px-3 py-1 rounded-full absolute top-2 right-2 z-30 text-sm font-medium">
+                {/* <div className="bg-red-500 text-white px-3 py-1 rounded-full absolute top-2 right-2 z-30 text-sm font-medium">
                   LIVE
-                </div>
+                </div> */}
               </div>
                 <button onClick={openChatPopup}
                   className='p-4 primary-gradient w-full inline-block px-5 text-center py-3 mt-3 text-white font-bold text-xl rounded-xl'>
