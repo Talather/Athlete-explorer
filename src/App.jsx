@@ -161,26 +161,26 @@ function ProtectedRoutes() {
 
 // Main App Routes Component with Authentication
 function AppRoutes() {
-  const { isAuthenticated, isLoading, login } = useAuth();
+  // const { isAuthenticated, isLoading, login } = useAuth();
 
-  const handlePasswordSuccess = () => {
-    login();
-  };
+  // const handlePasswordSuccess = () => {
+  //   login();
+  // };
 
-  if (isLoading) {
-    return (
-      <div className="h-screen flex items-center justify-center bg-gradient-to-r from-[#f8e3e0] to-[#e9d5f7]">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
-        </div>
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="h-screen flex items-center justify-center bg-gradient-to-r from-[#f8e3e0] to-[#e9d5f7]">
+  //       <div className="text-center">
+  //         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+  //         <p className="text-gray-600">Loading...</p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
-  if (!isAuthenticated) {
-    return <ComingSoon onPasswordSuccess={handlePasswordSuccess} />;
-  }
+  // if (!isAuthenticated) {
+  //   return <ComingSoon onPasswordSuccess={handlePasswordSuccess} />;
+  // }
 
   return <ProtectedRoutes />;
 }
