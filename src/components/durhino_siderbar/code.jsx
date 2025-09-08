@@ -16,6 +16,7 @@ import { supabase } from './../../lib/supabase';
 import toast from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 import { convertCurrency, formatCurrency } from '../../utils/currencyConverter';
+import { processCompleteAirwallexPayment } from '../../utils/airwallexPayment';
 import { useNavigate } from 'react-router-dom';
 
 const wallets = [
@@ -57,6 +58,15 @@ const RightSidebarContent = ({ isOpen, currentFto, onClose }) => {
   const [paymentError, setPaymentError] = useState(null);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [showRetry, setShowRetry] = useState(false);
+  const [paymentProvider, setPaymentProvider] = useState('stripe'); // 'stripe' or 'airwallex'
+  const [airwallexCardDetails, setAirwallexCardDetails] = useState({
+    number: '',
+    expiry_month: '',
+    expiry_year: '',
+    cvc: '',
+    name: ''
+  });
   
   const [quantity, setQuantity] = useState(1);
   const pricePerNFT = currentFto?.Atheletes?.fanTokenInitialPrice || 0;
@@ -97,89 +107,158 @@ const RightSidebarContent = ({ isOpen, currentFto, onClose }) => {
       return;
     }
     
-    if (!stripe || !elements || quantity <= 0) {
+    if ((!stripe || !elements) && paymentProvider === 'stripe') {
+      return;
+    }
+    
+    if (quantity <= 0) {
       return;
     }
     
     setLoading(true);
     setPaymentError(null);
+    setShowRetry(false);
+    
     if(!currentFto.Atheletes.nftContractAddress){
       setPaymentError("Contract address is not found");
       setLoading(false);
       return;
     }
+
+    const paymentData = {
+      quantity: quantity,
+      wallet: address,
+      pricePerNFT: convertCurrency(pricePerNFT, 'EUR', currency, exchangeRates),
+      contractAddress: currentFto?.Atheletes?.nftContractAddress,
+      email: profiles?.[0]?.details?.email || "test@example.com",
+      userId: profiles?.[0]?.details.id,
+      currency: currency,
+    };
     
     try {
-      const { data, error } = await supabase.functions.invoke('create-payment-intent', {
-        body:{
-          quantity: quantity,
-          wallet: address,
-          pricePerNFT: convertCurrency(pricePerNFT, 'EUR', currency, exchangeRates),
-          contractAddress: currentFto?.Atheletes?.nftContractAddress,
-          email: profiles?.[0]?.details?.email || "test@example.com",
-          userId:profiles?.[0]?.details.id,
-          currency: currency,
-        },
-      })
-      
-      if (error) {
-        console.error('Error creating payment intent:', error);
-        throw new Error(error.message || 'Failed to create payment');
-      }
-      
-      if (!data || !data.clientSecret) {
-        throw new Error('No client secret received from the server');
-      }
-      
-      console.log('Payment intent created');
-      const {clientSecret} = data;
-      
-      const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card: elements.getElement(CardElement),
-          billing_details: {
-            email: profiles?.[0]?.details?.email || '',
-            name: profiles?.[0]?.details?.displayName || '',
-          },
-        },
-      });
-      
-      if (confirmError) {
-        console.error('Payment confirmation error:', confirmError);
-        throw new Error(confirmError.message);
-      }
-      
-      // Handle successful payment
-      if (paymentIntent.status === 'succeeded') {
-        console.log('Payment succeeded:', paymentIntent.id);
-        setPaymentSuccess(true);
-        
-        // Close the sidebar after a brief delay to show success message
-        setTimeout(() => {
-          onClose();
-          // Show toast notification after sidebar is closed
-          toast.success(
-            'Payment successful, you can now select your athlete and an event.',
-            {
-              icon: '🎉',
-              duration: 5000,
-            }
-          );
-          // Redirect to home page
-          navigate('/');
-        }, 1500);
+      if (paymentProvider === 'stripe') {
+        await processStripePayment(paymentData);
       } else {
-        throw new Error(`Payment status: ${paymentIntent.status}. Expected 'succeeded'.`);
+        await processAirwallexPaymentFlow(paymentData);
       }
-      
     } catch (error) {
-      console.error('Payment error:', error);
-      setPaymentError(error.message || 'An error occurred with your payment');
-      toast.error(`Payment failed: ${error.message || 'Unknown error'}`);
+      console.log( error);
+      if (paymentProvider === 'stripe') {
+        // if (error.toString().includes("incomplete_number")) {
+        //   toast.error("Please enter a valid card number");
+        // }else{
+          // Stripe failed, offer retry with Airwallex
+          setPaymentError(`Payment failed, but you can retry. On retry, we'll process your payment through an alternative provider`);
+          setShowRetry(true);
+          toast.error(`Payment failed, but you can retry. On retry, we'll process your payment through an alternative provider`);
+        // }
+      } else {
+        // Both providers failed
+        setPaymentError(error.message || 'Payment failed with both providers');
+        toast.error(`Payment failed, but you can retry. On retry, we'll process your payment through an alternative provider`);
+      }
     } finally {
       setLoading(false);
     }
-  }
+  };
+
+  const processStripePayment = async (paymentData) => {
+    const { data, error } = await supabase.functions.invoke('create-payment-intent', {
+      body: paymentData,
+    });
+    
+    if (error) {
+      console.error('Error creating Stripe payment intent:', error);
+      throw new Error(error.message || 'Failed to create Stripe payment');
+    }
+    
+    if (!data || !data.clientSecret) {
+      throw new Error('No client secret received from Stripe server');
+    }
+    
+    console.log('Stripe payment intent created');
+    const {clientSecret} = data;
+    
+    const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+      payment_method: {
+        card: elements.getElement(CardElement),
+        billing_details: {
+          email: profiles?.[0]?.details?.email || '',
+          name: profiles?.[0]?.details?.displayName || '',
+        },
+      },
+    });
+    
+    if (confirmError) {
+      console.error('Stripe payment confirmation error:', confirmError);
+      throw new Error(confirmError.code);
+    }
+    
+    if (paymentIntent.status === 'succeeded') {
+      console.log('Stripe payment succeeded:', paymentIntent.id);
+      handlePaymentSuccess();
+    } else {
+      throw new Error(`Payment status: ${paymentIntent.status}. Expected 'succeeded'.`);
+    }
+  };
+
+  const processAirwallexPaymentFlow = async (paymentData) => {
+    // Validate Airwallex card details
+    if (!airwallexCardDetails.number || !airwallexCardDetails.expiry_month || 
+        !airwallexCardDetails.expiry_year || !airwallexCardDetails.cvc) {
+      throw new Error('Please fill in all card details');
+    }
+
+    const cardDetails = {
+      number: airwallexCardDetails.number.replace(/\s/g, ''), // Remove spaces
+      expiry_month: airwallexCardDetails.expiry_month,
+      expiry_year: airwallexCardDetails.expiry_year,
+      cvc: airwallexCardDetails.cvc,
+      name: airwallexCardDetails.name || profiles?.[0]?.details?.displayName || 'Customer'
+    };
+
+    console.log('Processing Airwallex payment with card details:', {
+      ...cardDetails,
+      number: '****-****-****-' + cardDetails.number.slice(-4),
+      cvc: '***'
+    });
+    
+    // Process complete payment through Edge function
+    const paymentResult = await processCompleteAirwallexPayment(paymentData, cardDetails);
+    
+    if (paymentResult.success) {
+      console.log('Airwallex payment succeeded:', paymentResult.paymentId);
+      handlePaymentSuccess();
+    } else {
+      throw new Error(paymentResult.error || 'Airwallex payment failed');
+    }
+  };
+
+  const handlePaymentSuccess = () => {
+    setPaymentSuccess(true);
+    
+    // Close the sidebar after a brief delay to show success message
+    setTimeout(() => {
+      onClose();
+      // Show toast notification after sidebar is closed
+      toast.success(
+        'Payment successful, you can now select your athlete and an event.',
+        {
+          icon: '🎉',
+          duration: 5000,
+        }
+      );
+      // Redirect to home page
+      navigate('/');
+    }, 1500);
+  };
+
+  const handleRetryPayment = () => {
+    setPaymentProvider('airwallex');
+    setPaymentError(null);
+    setShowRetry(false);
+    // The form will now use Airwallex on next submit
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -317,31 +396,94 @@ const RightSidebarContent = ({ isOpen, currentFto, onClose }) => {
 
               <div className='flex flex-col w-full gap-1'>
                 <label htmlFor="card-element" className="text-base font-bold">Card details</label>
-                <div className="py-3 px-3 rounded outline-none custom-shadow border-[1px] border-[#ccc] focus:border-blue-400">
-                  <CardElement
-                    options={{
-                      style: {
-                        base: {
-                          fontSize: '16px',
-                          color: '#424770',
-                          '::placeholder': {
-                            color: '#aab7c4',
+                
+                {paymentProvider === 'stripe' ? (
+                  <div className="py-3 px-3 rounded outline-none custom-shadow border-[1px] border-[#ccc] focus:border-blue-400">
+                    <CardElement
+                      options={{
+                        style: {
+                          base: {
+                            fontSize: '16px',
+                            color: '#424770',
+                            '::placeholder': {
+                              color: '#aab7c4',
+                            },
+                            fontFamily: 'Arial, sans-serif',
                           },
-                          fontFamily: 'Arial, sans-serif',
+                          invalid: {
+                            color: '#9e2146',
+                          },
                         },
-                        invalid: {
-                          color: '#9e2146',
-                        },
-                      },
-                    }}
-                  />
-                </div>
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    <input
+                      type="text"
+                      placeholder="Card number (e.g., 2223000048410010)"
+                      className="w-full py-2 px-3 rounded outline-none custom-shadow border-[1px] border-[#ccc] focus:border-blue-400 font-[600]"
+                      value={airwallexCardDetails.number}
+                      onChange={(e) => setAirwallexCardDetails(prev => ({...prev, number: e.target.value}))}
+                      maxLength="19"
+                    />
+                    
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        placeholder="MM"
+                        className="w-1/4 py-2 px-3 rounded outline-none custom-shadow border-[1px] border-[#ccc] focus:border-blue-400 font-[600]"
+                        value={airwallexCardDetails.expiry_month}
+                        onChange={(e) => setAirwallexCardDetails(prev => ({...prev, expiry_month: e.target.value}))}
+                        maxLength="2"
+                      />
+                      <input
+                        type="text"
+                        placeholder="YYYY"
+                        className="w-1/4 py-2 px-3 rounded outline-none custom-shadow border-[1px] border-[#ccc] focus:border-blue-400 font-[600]"
+                        value={airwallexCardDetails.expiry_year}
+                        onChange={(e) => setAirwallexCardDetails(prev => ({...prev, expiry_year: e.target.value}))}
+                        maxLength="4"
+                      />
+                      <input
+                        type="text"
+                        placeholder="CVC"
+                        className="w-1/4 py-2 px-3 rounded outline-none custom-shadow border-[1px] border-[#ccc] focus:border-blue-400 font-[600]"
+                        value={airwallexCardDetails.cvc}
+                        onChange={(e) => setAirwallexCardDetails(prev => ({...prev, cvc: e.target.value}))}
+                        maxLength="4"
+                      />
+                    </div>
+                    
+                    <input
+                      type="text"
+                      placeholder="Cardholder name"
+                      className="w-full py-2 px-3 rounded outline-none custom-shadow border-[1px] border-[#ccc] focus:border-blue-400 font-[600]"
+                      value={airwallexCardDetails.name}
+                      onChange={(e) => setAirwallexCardDetails(prev => ({...prev, name: e.target.value}))}
+                    />
+                    
+                    <div className="text-xs text-gray-600 bg-blue-50 p-2 rounded">
+                      💡 For testing, use: 2223000048410010, 12/2025, CVC: 123
+                    </div>
+                  </div>
+                )}
               </div>
               
               {paymentError && (
                 <div className="text-red-500 text-sm font-medium">
                   {paymentError}
                 </div>
+              )}
+
+              {showRetry && (
+                <button 
+                  type="button"
+                  className="inline-block text-center w-full rounded-[10px] text-base font-bold bg-orange-500 hover:bg-orange-600 text-white p-[10px] mb-2"
+                  onClick={handleRetryPayment}
+                >
+                  Retry with Alternative Payment Method
+                </button>
               )}
               
               {paymentSuccess && (

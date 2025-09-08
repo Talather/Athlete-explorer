@@ -3,7 +3,8 @@ import ArrowDown from '/arrow-down-sign-to-navigate.svg'
 
 function FAQItem({ question, answer }) {
   const [open, setOpen] = useState(false)
-  const contentRef = useRef(null)
+  const contentRef = useRef(null);
+  console.log(answer);
 
   return (
     <div
@@ -27,7 +28,13 @@ function FAQItem({ question, answer }) {
           maxHeight: open ? `${contentRef.current?.scrollHeight}px` : '0px'
         }}
       >
-        <p className="text-base sm:text-[20px] leading-normal font-bold pt-5">{answer}</p>
+        <div className="text-base sm:text-[20px] leading-normal font-bold pt-5">
+          {answer.split('\n').map((line, index) => (
+            <p key={index} className={index > 0 ? 'mt-2' : ''}>
+              {line}
+            </p>
+          ))}
+        </div>
       </div>
     </div>
   )

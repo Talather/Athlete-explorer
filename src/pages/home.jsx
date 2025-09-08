@@ -79,10 +79,6 @@ function Home() {
       });
       return;
     }
-    // console.log(athlete);
-
-
-
     // Check if user has an active subscription for this athlete
     const hasActiveSubscription = userSubscriptions?.some(
       subscription => subscription.athleteId === athlete.id && subscription.active === true

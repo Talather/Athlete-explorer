@@ -433,7 +433,7 @@ const Profile = () => {
                                 {subscription.active ? 'Active' : 'Inactive'}
                               </span>
                               <div className="flex space-x-1 sm:space-x-2">
-                                {subscription.active ? (
+                                {/* {subscription.active ? (
                                   <button
                                     onClick={() => handleSubscriptionAction(subscription, 'pause')}
                                     className="p-1.5 sm:p-2 text-[#717071] hover:text-[#e99289] transition-colors"
@@ -449,14 +449,14 @@ const Profile = () => {
                                   >
                                     <Play size={14} className="sm:size-4" />
                                   </button>
-                                )}
-                                {/* <button
+                                )} */}
+                                <button
                                   onClick={() => handleSubscriptionAction(subscription, 'cancel')}
                                   className="p-1.5 sm:p-2 text-[#717071] hover:text-red-500 transition-colors"
                                   title="Cancel subscription"
                                 >
                                   <Trash2 size={14} className="sm:size-4" />
-                                </button> */}
+                                </button>
                               </div>
                             </div>
                           </div>

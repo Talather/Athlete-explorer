@@ -5,7 +5,7 @@ export const useStaticPages = (pageType) => {
   const [content, setContent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  console.log(content);
   useEffect(() => {
     const fetchStaticPage = async () => {
       try {
