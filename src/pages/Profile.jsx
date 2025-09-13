@@ -139,7 +139,6 @@ const Profile = () => {
         // Enhance transactions with athlete names
         const enhancedTransactions = data?.map(transaction => {
           const athlete = athletes?.find(a => a.nftContractAddress === transaction.contract_address);
-          console.log(transaction.quantity);
           return {
             ...transaction,
             athleteName: athlete ? `${athlete.fanTokenSymbol}` : 'Subscription'
@@ -196,6 +195,15 @@ const Profile = () => {
           );
           console.log('Resume subscription result:', result);
           break;
+        case 'cancel':
+          console.log('Invoking cancel subscription function...');
+          result = await subscriptionActions.cancelSubscription(
+            subscription.id,
+            subscription.stripe_subscription_id
+          );
+          console.log('Cancel subscription result:', result);
+          break;
+
         default:
           throw new Error(`Unknown action: ${action}`);
       }
@@ -203,12 +211,12 @@ const Profile = () => {
       toast.dismiss(loadingToast);
 
       if (result.success) {
-        toast.success(`Subscription ${action}d successfully!`);
+        toast.success(`Subscription ${action} successfully!`);
 
         // Refresh subscriptions from database
         console.log('Refreshing subscriptions from database...');
         if (userId) {
-          await dispatch(fetchUserSubscriptions(userId));
+          dispatch(fetchUserSubscriptions(userId));
           console.log('Subscriptions refreshed successfully');
         }
       } else {

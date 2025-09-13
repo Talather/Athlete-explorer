@@ -48,7 +48,6 @@ export const fetchExchangeRates = createAsyncThunk(
       const response = await fetch(`https://api.frankfurter.dev/v1/latest?base=${baseCurrency}`);
       if (!response.ok) throw new Error('Failed to fetch exchange rates');
       const data = await response.json();
-      console.log(data);
       return { base: baseCurrency, rates: data.rates, date: data.date };
     } catch (error) {
       return rejectWithValue(error.message);

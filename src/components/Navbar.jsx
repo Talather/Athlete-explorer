@@ -57,144 +57,71 @@ function Navbar() {
     return `${suffix}`;
 
   }
-  const detectLocationDefaults = async () => {
-    try {
-      // Use IP geolocation service to detect country
-      const response = await fetch('https://ipapi.co/json/');
-      console.log(response);
-      const locationData = await response.json();
-      console.log(locationData);
-      const countryCode = locationData.country_code?.toUpperCase();
-      console.log(countryCode);
-
-      console.log('Detected country:', countryCode);
-
-      // Set language and currency based on country
-      let language = 'en'; // Default to English
-      let currency = 'USD'; // Default to USD
-
-      switch (countryCode) {
-        case 'TR': // Turkey
-          language = 'tr';
-          currency = 'TRY';
-          break;
-        case 'GB': // United Kingdom
-          language = 'en';
-          currency = 'GBP';
-          break;
-        case 'US': // United States
-          language = 'en';
-          currency = 'USD';
-          break;
-        // European Union countries
-        case 'DE': case 'FR': case 'IT': case 'ES': case 'NL':
-        case 'BE': case 'AT': case 'PT': case 'IE': case 'FI':
-        case 'LU': case 'SI': case 'SK': case 'EE': case 'LV':
-        case 'LT': case 'CY': case 'MT': case 'GR':
-          language = 'en';
-          currency = 'EUR';
-          break;
-        case 'BR': // Brazil
-          language = 'pt';
-          currency = 'BRL';
-          break;
-        case 'KR': // South Korea
-          language = 'ko';
-          currency = 'KRW';
-          break;
-        case 'JP': // Japan
-          language = 'ja';
-          currency = 'JPY';
-          break;
-        default:
-          // For all other countries, keep English and USD
-          language = 'en';
-          currency = 'USD';
-      }
-
-      return { language, currency, country: countryCode };
-    } catch (error) {
-      console.error('Error detecting location:', error);
-      // Fallback to defaults
-      return { language: 'en', currency: 'USD', country: null };
-    }
-  };
-
+ 
+  
+  
+  
 
   const saveUser = async () => {
     try {
       if (!profiles || profiles.length === 0) return;
-
+     console.log("IM HERE");
       const userId = profiles[0]?.details.id;
-      const userEmail = profiles[0]?.details.email;
+      const userEmail = profiles[0]?.details.email ? profiles[0]?.details.email : "";
       const username = profiles[0]?.details.name ? profiles[0]?.details.name : generateRandomUsername();
-
-
-      if (!userId || !userEmail) return;
+      const phoneNo = profiles[0]?.details.phone ? profiles[0]?.details.phone : "";
+      if (!userId ||  (!userEmail && !phoneNo)) return;
 
       // Detect user's country and set defaults
-      const detectLocationDefaults = async () => {
+      async function detectLocationDefaults() {
         try {
-          // Use IP geolocation service to detect country
-          const response = await fetch('https://ipapi.co/json/');
-          console.log(response);
-          const locationData = await response.json();
-          console.log(locationData);
-          const countryCode = locationData.country_code?.toUpperCase();
-          console.log(countryCode);
-
-          console.log('Detected country:', countryCode);
-
-          // Set language and currency based on country
-          let language = 'en'; // Default to English
-          let currency = 'USD'; // Default to USD
-
-          switch (countryCode) {
-            case 'TR': // Turkey
-              language = 'tr';
-              currency = 'TRY';
-              break;
-            case 'GB': // United Kingdom
-              language = 'en';
-              currency = 'GBP';
-              break;
-            case 'US': // United States
-              language = 'en';
-              currency = 'USD';
-              break;
-            // European Union countries
-            case 'DE': case 'FR': case 'IT': case 'ES': case 'NL':
-            case 'BE': case 'AT': case 'PT': case 'IE': case 'FI':
-            case 'LU': case 'SI': case 'SK': case 'EE': case 'LV':
-            case 'LT': case 'CY': case 'MT': case 'GR':
-              language = 'en';
-              currency = 'EUR';
-              break;
-            case 'BR': // Brazil
-              language = 'pt';
-              currency = 'BRL';
-              break;
-            case 'KR': // South Korea
-              language = 'ko';
-              currency = 'KRW';
-              break;
-            case 'JP': // Japan
-              language = 'ja';
-              currency = 'JPY';
-              break;
+          const controller = new AbortController();
+          const timeout = setTimeout(() => controller.abort(), 2500);
+      
+          const res = await fetch("https://get.geojs.io/v1/ip/geo.json", { signal: controller.signal });
+          console.log(res);
+          clearTimeout(timeout);
+          if (!res.ok) throw new Error(`GeoJS HTTP ${res.status}`);
+      
+          const data = await res.json();
+          const cc = String(data.country_code || data.country || "").toUpperCase();
+          console.log("this is real", cc);
+          let language = "en";
+          let currency = "USD";
+      
+          switch (cc) {
+            case "TR": // Turkey
+              language = "tr"; currency = "TRY"; break;
+            case "GB": // United Kingdom
+              language = "en"; currency = "GBP"; break;
+            case "US": // United States
+              language = "en"; currency = "USD"; break;
+      
+            // European Union countries (exactly as in your code)
+            case "DE": case "FR": case "IT": case "ES": case "NL":
+            case "BE": case "AT": case "PT": case "IE": case "FI":
+            case "LU": case "SI": case "SK": case "EE": case "LV":
+            case "LT": case "CY": case "MT": case "GR":
+              language = "en"; currency = "EUR"; break;
+      
+            case "BR": // Brazil
+              language = "pt"; currency = "BRL"; break;
+            case "KR": // South Korea
+              language = "ko"; currency = "KRW"; break;
+            case "JP": // Japan
+              language = "ja"; currency = "JPY"; break;
+      
             default:
-              // For all other countries, keep English and USD
-              language = 'en';
-              currency = 'USD';
+              language = "en"; currency = "USD";
           }
-
-          return { language, currency, country: countryCode };
-        } catch (error) {
-          console.error('Error detecting location:', error);
+      
+          return { language, currency, country: cc || null };
+        } catch {
           // Fallback to defaults
-          return { language: 'en', currency: 'USD', country: null };
+          return { language: "en", currency: "USD", country: null };
         }
-      };
+      }
+      
 
       // Check if user already exists
       const { data: existingUser, error: fetchError } = await supabase
@@ -207,7 +134,8 @@ function Navbar() {
         console.error('Error checking user:', fetchError);
         return;
       }
-
+      const { language, currency, country } = await detectLocationDefaults();
+     console.log(language,currency,country)
       // Only save if user doesn't exist
       if (!existingUser) {
         // Detect location and set defaults
@@ -222,6 +150,7 @@ function Navbar() {
               username: username,
               language: language,
               currency: currency,
+              phone:phoneNo
             }
           ]);
 
@@ -243,7 +172,7 @@ function Navbar() {
       saveUser();
       setInterval(() => {
         setChange((prev) => prev + 1);
-      }, 100)
+      }, 5000)
     }
   }, [profiles]);
 

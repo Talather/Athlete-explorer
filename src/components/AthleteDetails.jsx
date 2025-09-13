@@ -28,8 +28,16 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT, ope
   // console.log(currency);
 
   const handleSubscriptionPurchase = async () => {
-    if (!athlete?.id || !profiles?.[0]?.details?.id || !profiles?.[0]?.details?.email) {
+    if (!athlete?.id || !profiles?.[0]?.details?.id) {
       toast.error('Please log in or signup and ensure all required information is available');
+      return;
+    }
+
+    const userEmail = profiles[0]?.details.email ? profiles[0]?.details.email : "";
+    const phoneNo = profiles[0]?.details.phone ? profiles[0]?.details.phone : "";
+
+    if (!userEmail && !phoneNo) {
+      toast.error('Please provide either email or phone number to proceed');
       return;
     }
 
@@ -40,7 +48,8 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT, ope
         body: {
           athleteId: athlete.id,
           userId: profiles[0].details.id,
-          email: profiles[0].details.email,
+          email: userEmail,
+          phone: phoneNo,
           currencyCode: currency,
         }
       });

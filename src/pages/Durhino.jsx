@@ -214,7 +214,7 @@ function Durhino() {
 
                 <div className="px-[10px] pt-4 pb-5 sm:px-0">
                   <div className="text-xs md:text-lg leading-normal font-[600]">
-                    Tokens left: {tokensLeft.toFixed(1)}%
+                    Tokens left : {(currentFto.remainingTokens / currentFto.tokensForSale * 100).toFixed(1)} %
                   </div>
 
                   <div class="relative h-[15px] w-full rounded-[20px]
@@ -223,7 +223,7 @@ function Durhino() {
                   >
                     <div className="bg-white h-full w-full rounded-[20px]">
                       <div className="bg-gradient-to-b absolute top-0 left-0 from-[#f1b371] to-[#9853ec] h-full rounded-[10px]"
-                        style={{ width: `${tokensLeft}%` }}
+                        style={{ width: `${(currentFto.remainingTokens / currentFto.tokensForSale * 100).toFixed(1)}%` }}
                       ></div>
                     </div>
                   </div>

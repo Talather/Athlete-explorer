@@ -4,7 +4,6 @@ import ArrowDown from '/arrow-down-sign-to-navigate.svg'
 function FAQItem({ question, answer }) {
   const [open, setOpen] = useState(false)
   const contentRef = useRef(null);
-  console.log(answer);
 
   return (
     <div

@@ -46,19 +46,35 @@ export const subscriptionActions = {
   // Cancel subscription
   cancelSubscription: async (subscriptionId, stripeSubscriptionId) => {
     try {
-      const { data, error } = await supabase
-        .from('subscriptions')
-        .update({ 
-          active: false, 
-          paused: false,
-        })
-        .eq('id', subscriptionId)
-        .select();
+      // Call Supabase Edge Function to cancel in Stripe
+      const { data: cancelData, error: cancelError } = await supabase.functions.invoke('smart-service', {
+        body: {
+          subscriptionId: stripeSubscriptionId
+        }
+      });
+      console.log(cancelData);
+      console.log(cancelError);
 
-      if (error) throw error;
+      if (cancelError) {
+        console.error('Stripe cancellation error:', cancelError);
+        throw cancelError;
+      }
 
-      console.log('Subscription cancelled locally:', data);
-      return { success: true, data };
+      // // Update local database
+      // const { data, error } = await supabase
+      //   .from('subscriptions')
+      //   .update({ 
+      //     active: false, 
+      //     paused: false,
+      //     cancelled_at: new Date().toISOString()
+      //   })
+      //   .eq('id', subscriptionId)
+      //   .select();
+
+      // if (error) throw error;
+
+      console.log('Subscription cancelled:');
+      return { success: true };
       
     } catch (error) {
       console.error('Error cancelling subscription:', error);
@@ -95,7 +111,7 @@ export const validateSubscriptionAction = (subscription, action) => {
   const validActions = {
     'active': ['pause', 'cancel'],
     'paused': ['resume', 'cancel'],
-    'cancelled': []
+    'cancelled': ['cancel']
   };
 
   const currentStatus = subscription.active ? 'active' : 

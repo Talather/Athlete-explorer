@@ -74,7 +74,6 @@ const RightSidebarContent = ({ isOpen, currentFto, onClose }) => {
 
   // Redux settings state for currency
   const { currency, exchangeRates } = useSelector(state => state.settings);
-  console.log(currency);
 
   // Helper function to convert and format price
   const getFormattedPrice = (priceInUSD) => {

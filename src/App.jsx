@@ -63,70 +63,67 @@ function ProtectedRoutes() {
     });
   };
 
-  const getCountryCodeFromLatLng = async (lat, lng) => {
+  
+  async function detectLocationDefaults() {
     try {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`
-      );
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 2500);
+  
+      const res = await fetch("https://get.geojs.io/v1/ip/geo.json", { signal: controller.signal });
+      clearTimeout(timeout);
+      if (!res.ok) throw new Error(`GeoJS HTTP ${res.status}`);
+  
       const data = await res.json();
-      console.log(data , lat,lng);
-      const countryCode = data?.address?.country_code?.toUpperCase(); // e.g. "PK", "US"
-      return countryCode || null;
-    } catch (error) {
-      console.error('Reverse geocoding failed:', error);
-      return null;
-    }
-  };
-  const detectLocationDefaults = async () => {
-    try {
-      const { lat, lng } = await getUserLocation(); // from previous step
-      const countryCode = await getCountryCodeFromLatLng(lat, lng);
+      const cc = String(data.country_code || data.country || "").toUpperCase();
+      console.log("this is real", cc);
+      let language = "en";
+      let currency = "USD";
   
-      console.log('Detected country:', countryCode);
+      switch (cc) {
+        case "TR": // Turkey
+          language = "tr"; currency = "TRY"; break;
+        case "GB": // United Kingdom
+          language = "en"; currency = "GBP"; break;
+        case "US": // United States
+          language = "en"; currency = "USD"; break;
   
-      let language = 'en';
-      let currency = 'USD';
+        // European Union countries (exactly as in your code)
+        case "DE": case "FR": case "IT": case "ES": case "NL":
+        case "BE": case "AT": case "PT": case "IE": case "FI":
+        case "LU": case "SI": case "SK": case "EE": case "LV":
+        case "LT": case "CY": case "MT": case "GR":
+          language = "en"; currency = "EUR"; break;
   
-      switch (countryCode) {
-        case 'TR': language = 'tr'; currency = 'TRY'; break;
-        case 'GB': language = 'en'; currency = 'GBP'; break;
-        case 'US': language = 'en'; currency = 'USD'; break;
-        case 'DE': case 'FR': case 'IT': case 'ES': case 'NL':
-        case 'BE': case 'AT': case 'PT': case 'IE': case 'FI':
-        case 'LU': case 'SI': case 'SK': case 'EE': case 'LV':
-        case 'LT': case 'CY': case 'MT': case 'GR':
-          language = 'en'; currency = 'EUR'; break;
-        case 'BR': language = 'pt'; currency = 'BRL'; break;
-        case 'KR': language = 'ko'; currency = 'KRW'; break;
-        case 'JP': language = 'ja'; currency = 'JPY'; break;
+        case "BR": // Brazil
+          language = "pt"; currency = "BRL"; break;
+        case "KR": // South Korea
+          language = "ko"; currency = "KRW"; break;
+        case "JP": // Japan
+          language = "ja"; currency = "JPY"; break;
+  
+        default:
+          language = "en"; currency = "USD";
       }
   
-      return { language, currency, country: countryCode };
-    } catch (err) {
-      console.error('Location detection failed:', err);
-      return { language: 'en', currency: 'USD', country: null };
+      return { language, currency, country: cc || null };
+    } catch {
+      // Fallback to defaults
+      return { language: "en", currency: "USD", country: null };
     }
-  };
+  }
+  
   useEffect(() => {
     (async () => {
       try {
         const { language, currency, country } = await detectLocationDefaults();
-        console.log('Detected:', { language, currency, country });
+        console.log(language,currency,country);
         
         // Get previously stored location data from localStorage
         const storedLocationData = localStorage.getItem('userLocationData');
         const previousData = storedLocationData ? JSON.parse(storedLocationData) : null;
         
-        console.log('Previous data:', previousData);
         
-        // Check if location has changed or if it's the first time
-        const hasLocationChanged = !previousData || 
-          previousData.language !== language || 
-          previousData.currency !== currency ||
-          previousData.country !== country;
         
-        if (hasLocationChanged) {
-          console.log('Location changed, updating settings...');
           
           // Store new location data in localStorage
           const newLocationData = { language, currency, country, timestamp: Date.now() };
@@ -135,9 +132,6 @@ function ProtectedRoutes() {
           // Dispatch changes to Redux
           dispatch(setLanguage(language));
           dispatch(setCurrency(currency));
-        } else {
-          console.log('Location unchanged, skipping update');
-        }
       } catch (error) {
         console.error('Location detection failed:', error);
       }
