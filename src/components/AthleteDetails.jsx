@@ -34,7 +34,10 @@ function AthleteDetails({ athlete, events, onEventClick, isBlurred, ownsNFT, ope
     }
 
     const userEmail = profiles[0]?.details.email ? profiles[0]?.details.email : "";
-    const phoneNo = profiles[0]?.details.phone ? profiles[0]?.details.phone : "";
+    let phoneNo = profiles[0]?.details.phone ? profiles[0]?.details.phone : "";
+    if(profiles[0].type === "custom_auth_endpoint"){
+      phoneNo = profiles[0]?.details.id.split(":")[1];
+    }
 
     if (!userEmail && !phoneNo) {
       toast.error('Please provide either email or phone number to proceed');

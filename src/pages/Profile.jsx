@@ -27,6 +27,7 @@ import {
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
+import SEO from '../components/SEO';
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -270,7 +271,20 @@ const Profile = () => {
   }
 
   return (
+    <>
+    <SEO
+        title="My Profile"
+        description="View your NFTs, manage subscriptions, and track exclusive content from your favorite athletes."
+        robots="noindex, nofollow"
+        canonical="https://fansday.com/profile"
+        ogTitle="My Profile - Fansday"
+        ogDescription="Manage your fan tokens and access exclusive perks."
+        ogImage="https://fansday.com/assets/og.png"
+        twitterCard="summary_large_image"
+      />
     <div className='h-[100dvh] relative'>
+      
+
       <Navbar />
       <div className="min-h-screen bg-gradient-to-r from-[#f8e3e0] to-[#e9d5f7] py-4 sm:py-8 px-2 sm:px-4">
         <div className="max-w-7xl mx-auto">
@@ -687,6 +701,8 @@ const Profile = () => {
       </div>
       <Footer />
     </div>
+    </>
+
   );
 };
 

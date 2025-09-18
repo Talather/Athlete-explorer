@@ -8,14 +8,12 @@ import './styles/main.css'
 import './index.css'
 import App from './App.jsx'
 import { Toaster } from 'react-hot-toast';
-import { HelmetProvider } from "react-helmet-async";
+import {Helmet} from "react-helmet";
 
-
-
+const hemletContext = {};
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Provider store={store}>
-        <HelmetProvider>
       <BrowserRouter>
         <Toaster position="top-center" toastOptions={{
               duration: 5000,
@@ -34,7 +32,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             }} />
         <App />
       </BrowserRouter>
-        </HelmetProvider>
     </Provider>
   </React.StrictMode>
 )

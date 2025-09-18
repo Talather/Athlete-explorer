@@ -1,13 +1,13 @@
 import { Link } from "react-router-dom"
-import { ConnectButton } from "thirdweb/react";
+import { useProfiles, useActiveWallet, useDisconnect , ConnectButton } from "thirdweb/react";
 import { client } from '../client';
-import { useProfiles, useActiveWallet } from "thirdweb/react";
 import { supabase } from '../lib/supabase';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { sepolia } from "thirdweb/chains";
 import { inAppWallet } from "thirdweb/wallets";
-import { User, Settings } from 'lucide-react';
+import { User, Settings, LogOut } from 'lucide-react';
+import CustomWalletModal from './CustomWalletModal';
 
 const wallets = [
   inAppWallet({
@@ -21,8 +21,13 @@ function Navbar() {
   const { data: profiles } = useProfiles({
     client,
   });
+  console.log(profiles);
   const wallet = useActiveWallet();
+  console.log("in Navbar",profiles , wallet);
+  const { disconnect } = useDisconnect();
   const [change, setChange] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
 
   // Get athletes from Redux store
   const { athletes } = useSelector(state => state.athletes);
@@ -57,19 +62,17 @@ function Navbar() {
     return `${suffix}`;
 
   }
- 
-  
-  
-  
 
   const saveUser = async () => {
     try {
       if (!profiles || profiles.length === 0) return;
-     console.log("IM HERE");
       const userId = profiles[0]?.details.id;
       const userEmail = profiles[0]?.details.email ? profiles[0]?.details.email : "";
       const username = profiles[0]?.details.name ? profiles[0]?.details.name : generateRandomUsername();
-      const phoneNo = profiles[0]?.details.phone ? profiles[0]?.details.phone : "";
+      let phoneNo = profiles[0]?.details.phone ? profiles[0]?.details.phone : "";
+      if(profiles[0].type === "custom_auth_endpoint"){
+        phoneNo = profiles[0]?.details.id.split(":")[1];
+      }
       if (!userId ||  (!userEmail && !phoneNo)) return;
 
       // Detect user's country and set defaults
@@ -191,40 +194,60 @@ function Navbar() {
 
         <div className="flex justify-end">
           <div className="flex items-center space-x-3">
-            <div className="primary-gradient rounded-[10px] p-0.5 overflow-hidden">
-              <ConnectButton
-                client={client}
-                connectButton={{
-                  label: "Login / Signup",
-                }}
-                modalSize="wide"
-                autoConnect={true}
-                wallets={wallets}
-                connectModal={{
-                  showThirdwebBranding: false,
-                }}
-                onConnect={(profile) => {
-                  setChange((prev) => prev + 1);
-                  saveUser(); // works as expected
-                }}
-                onDisconnect={() => {
-                  console.log("Wallet disconnected");
-                  setChange((prev) => prev + 1);
-                  window.location.reload();
-                }}
-                theme="light"
-                detailsModal={{
-                  assetTabs: ["token", "nft"],
-                }}
-                chain={sepolia}
-                supportedNFTs={[...contracts]}
-              />
+            {!wallet ? (
+              <div className="primary-gradient rounded-[10px] p-0.5 overflow-hidden">
+                <button
+                  onClick={() => setIsModalOpen(true)}
+                  className="bg-white text-gray-800 font-medium py-2 px-4 rounded-[8px] hover:bg-gray-50 transition-colors"
+                >
+                  Login / Signup
+                </button>
+              </div>
+            ) : (
+              <div className="primary-gradient rounded-[10px] p-0.5 overflow-hidden">
 
-            </div>
+              <ConnectButton
+              client={client}
+              connectButton={{
+                label: "Login / Signup",
+              }}
+              modalSize="wide"
+              autoConnect={true}
+              wallets={wallets}
+              connectModal={{
+                showThirdwebBranding: false,
+              }}
+              onConnect={(profile) => {
+                setChange((prev) => prev + 1);
+                saveUser(); // works as expected
+              }}
+              onDisconnect={() => {
+                console.log("Wallet disconnected");
+                setChange((prev) => prev + 1);
+                window.location.reload();
+              }}
+              theme="light"
+              detailsModal={{
+                assetTabs: ["token", "nft"],
+              }}
+              chain={sepolia}
+              supportedNFTs={[...contracts]}
+            />
+            </div>  
+            )}
           </div>
         </div>
 
       </div>
+      
+      <CustomWalletModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConnect={(account) => {
+          setChange((prev) => prev + 1);
+          saveUser();
+        }}
+      />
     </div>
   )
 }

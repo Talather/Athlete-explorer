@@ -18,7 +18,7 @@ import TimerOverlay from "../components/timeOverlay";
 import { useActiveWallet } from "thirdweb/react";
 import { ConnectButton } from "thirdweb/react";
 import { inAppWallet } from "thirdweb/wallets";
-
+import SEO from "../components/SEO";
 import { client } from "../client";
 
 
@@ -170,6 +170,15 @@ function Durhino() {
 
   return (
     <>
+     <SEO
+        title="Buy NFT Fan Passes – Limited Sales"
+        description="Secure your NFT fan passes before the sale ends. Limited supply, lifetime access to exclusive athlete content and fan perks."
+        canonical="https://fansday.com/sale"
+        ogTitle="Join the Fan Token Sale Today"
+        ogDescription="Don’t miss your chance to own official NFT Fan Passes. Limited supply, lifetime benefits."
+        ogImage="https://fansday.com/assets/og.png"
+        twitterCard="summary_large_image"
+      />
       {/* video popup start */}
       {isVideoPopupOpen &&
         <VideoPopup url={currentFto.videoUrl} videoPopupClose={videoPopupClose} />

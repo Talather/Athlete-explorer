@@ -156,22 +156,21 @@ function Home() {
 
     enhanceAthletes();
   }, [athletes, address, userSubscriptions]);
-
-
+ 
 
   return (
       <div className="h-[100vh] w-full relative">
-      <SEO
-        title="Fansday – NFT Fan Pass & Exclusive Athlete Content"
-        description="Own NFT Fan Passes, unlock VIP content, vote on athlete decisions, and access exclusive events. Join the next generation of fan engagement."
-        keywords="fan tokens, NFT, athlete engagement, sports crypto, exclusive content"
-        canonical="https://fansday.com/"
-        ogTitle="FansDay – Where Fans Own the Game"
-        ogDescription="Buy Fan Tokens to get lifetime or monthly access to exclusive videos, votes, contests & more."
-        ogImage="https://fansday.com/assets/og-home.jpg"
-        twitterCard="summary_large_image"
-        twitterImage="https://fansday.com/assets/og-home.jpg"
-      />
+    <SEO
+      title="Fansday – NFT Fan Pass & Exclusive Athlete Content"
+      description="Own NFT Fan Passes, unlock VIP content, vote on athlete decisions, and access exclusive events. Join the next generation of fan engagement."
+      keywords="fan tokens, NFT, athlete engagement, sports crypto, exclusive content"
+      canonical="https://fansday.com/"
+      ogTitle="FansDay – Where Fans Own the Game"
+      ogDescription="Buy Fan Tokens to get lifetime or monthly access to exclusive videos, votes, contests & more."
+      ogImage="https://fansday.com/assets/og.png"
+      twitterCard="summary_large_image"
+      twitterImage="https://fansday.com/assets/og.png"
+    />
         {/* chat popup start */}
         {isChatPopupOpen &&
           <div className="fixed inset-0 z-[999] px-2 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm overflow-hidden">

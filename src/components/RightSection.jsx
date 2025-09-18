@@ -330,6 +330,7 @@ function RightSection({ isExpanded, selectedEvent, onClose, openChatPopup }) {
           h-[calc(100vh-190px)] min-[382px]:h-[calc(100vh-222px)] sm:h-[calc(100vh-243px)] md:h-[calc(100vh-258px)]
           absolute lg:relative
           right-0 lg:right-auto
+          z-[10]
         ${isExpanded ? 'translate-x-0 w-full sm:w-1/2 lg:w-[45%] lg:ml-[-28%]' : 'translate-x-[90%] lg:translate-x-0 w-[244px] lg:w-[200px] xl:w-[300px]'}`}
       >
 
